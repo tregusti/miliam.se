@@ -15,7 +15,7 @@ describe 'Entry class', ->
 
         actual instanceof expected
 
-  Entry = require '../lib/entry'
+  Entry = require('../lib/entry').Entry
 
   fixture = (slug) ->
     return path.join __dirname, 'fixtures', slug
@@ -64,4 +64,4 @@ describe 'Entry class', ->
       it 'sends an instance of the Entry class if info file exists', ->
         runs ->
           expect(err).toBeNull()
-          expect(entry).toBeAnInstanceOf Entry.Klass
+          expect(entry).toBeAnInstanceOf Entry
