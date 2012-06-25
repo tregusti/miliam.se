@@ -45,7 +45,7 @@ function parseInfo(info) {
   return {
     body: body,
     title: meta.title,
-    date: dateutils.ISOStringInSweden(s)
+    date: new Date(dateutils.ISOStringInSweden(s))
   }
 }
 
