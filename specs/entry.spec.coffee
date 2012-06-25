@@ -65,3 +65,7 @@ describe 'Entry class', ->
         runs ->
           expect(err).toBeNull()
           expect(entry).toBeAnInstanceOf Entry
+
+      # it 'should read in title', ->
+      #   runs ->
+      #     expect(entry.title).toBe 'This is an example with only text'

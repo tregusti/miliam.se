@@ -1,1 +1,1 @@
-title: Hejsan
+title: This is an example with only text
