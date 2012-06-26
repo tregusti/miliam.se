@@ -1,3 +1,5 @@
+require './matchers'
+
 NotFoundError = require('../lib/errors').NotFoundError
 ArgumentError = require('../lib/errors').ArgumentError
 EntryError = require('../lib/errors').EntryError
@@ -7,14 +9,6 @@ path = require 'path'
 
 describe 'Entry class', ->
 
-  beforeEach ->
-    @addMatchers
-      toBeAnInstanceOf: (expected) ->
-        actual = @actual
-        @message = -> "Expected " + actual + " to be an instance of " + expected.prototype.name
-
-        actual instanceof expected
-
   Entry = require('../lib/entry').Entry
 
   fixture = (slug) ->
@@ -23,7 +17,19 @@ describe 'Entry class', ->
   it 'should exist', ->
     expect(Entry).toBeTruthy()
 
-  describe 'static load method', ->
+  describe 'constructor', ->
+    it 'should take 1 param', ->
+      expect(Entry.length).toBe 1
+
+  describe 'observable', ->
+    it 'should inherit from observable', ->
+      expect(Entry.prototype.constructor.name).toBe 'Observable'
+    it 'should invoke observable constructor', ->
+      expect(new Entry).toDefine('observableId')
+
+
+
+  xdescribe 'static load method', ->
 
     entry = err = null
     beforeEach -> entry = err = null
