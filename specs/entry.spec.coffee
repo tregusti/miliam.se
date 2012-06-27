@@ -4,10 +4,9 @@ path = require 'path'
 # spec helpers
 chai = require 'chai'
 should = chai.should()
+expect = chai.expect
 spies = require 'chai-spies'
 chai.use spies
-
-require './matchers'
 
 # own code
 ArgumentError = require '../lib/errors/argument'
