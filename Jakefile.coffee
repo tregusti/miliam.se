@@ -16,6 +16,6 @@ task 'default', ->
 
 desc 'Run all specs'
 task 'specs', ->
-  cmd = child.spawn './node_modules/jasmine-node/bin/jasmine-node', ['--coffee', 'specs']
+  cmd = child.spawn "./node_modules/mocha/bin/mocha", "--colors --timeout 1000 --recursive --compilers coffee:coffee-script specs".split ' '
   cmd.stdout.on 'data', (data) -> process.stdout.write data
   cmd.stderr.on 'data', (data) -> process.stderr.write data
