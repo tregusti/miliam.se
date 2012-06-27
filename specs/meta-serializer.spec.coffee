@@ -40,6 +40,8 @@ describe 'MetaSerializer', ->
         d = new Date dateStr + ' 13:00:00'
         @entry.time.toLocaleString().should.equal d.toLocaleString()
 
-      it 'uses specified date and time'
+      it 'uses specified date and time', ->
+        MetaSerializer.deserialize @entry, "date: 2011-12-24\ntime: 15:00:00"
+        @entry.time.toLocaleString().should.equal new Date("2011-12-24 15:00:00").toLocaleString()
       it 'allows for missing seconds'
       it "uses the corect timezone, no matter if it's currently windter/summer time"
