@@ -32,7 +32,7 @@ describe 'Entry class', ->
 
   describe 'observable', ->
     it 'should inherit from observable', ->
-      expect(Entry.prototype.constructor.name).to.equal 'Observable'
+      expect(Entry.prototype.constructor.__super__.constructor.name).to.equal 'Observable'
     it 'should invoke observable constructor', ->
       expect(new Entry fixture 'only-text').to.have.property 'observableId'
 
