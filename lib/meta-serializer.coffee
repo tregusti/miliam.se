@@ -18,6 +18,8 @@ deserialize = (entry, contents) ->
 
   entry.title = meta.title if 'title' of meta
   if 'time' of meta
+    today = new Date().toISOString().substr(0,10)
+    entry.time = new Date "#{today} #{meta.time}"
   else
     entry.time = new Date
 
