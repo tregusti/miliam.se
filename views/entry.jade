@@ -1,5 +1,10 @@
 extends layout
 
 block content
-  h1= title
-  p Welcomesss to #{title}
+  article.entry
+    header
+      h1= title
+    section.body
+      = text
+    footer
+      time= time
