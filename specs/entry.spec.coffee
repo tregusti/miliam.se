@@ -38,12 +38,11 @@ describe 'Entry class', ->
 
   describe 'with entry only-text', ->
 
-    create = -> new Entry fixture 'only-text'
-
     it 'should not throw error', ->
-      create.should.not.throw Error
+      f = -> new Entry fixture 'only-text'
+      f.should.not.throw Error
     it 'should trigger load event', (done) ->
-      create().on 'load', done
+      new Entry(fixture 'only-text').on 'load', done
 
     describe 'when loaded', ->
       it 'should invoke EntryInfoSerializer.deserialize', (done) ->
@@ -54,7 +53,7 @@ describe 'Entry class', ->
           arguments[1].should.be.a 'string'
           deserialize.apply null, arguments
 
-        subject = create()
+        subject = new Entry fixture 'only-text'
         subject.on 'load', ->
           EntryInfoSerializer.deserialize.should.have.been.called.once
           EntryInfoSerializer.deserialize = deserialize
