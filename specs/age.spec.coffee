@@ -1,4 +1,4 @@
-du = require 'date-utils'
+require 'date-utils'
 
 chai = require 'chai'
 should = chai.should()

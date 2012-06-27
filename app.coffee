@@ -17,6 +17,14 @@ app.configure ->
 app.configure "development", ->
   app.use express.errorHandler()
 
+
+Age = require './lib/age'
+birth = new Date '2012-06-06 19:30:00'
+
+app.locals.use (req, res) ->
+  res.locals.humanAge = Age.since birth
+
+
 # routes
 app.get /^\/(\d\d\d\d)\/(\d\d)\/([\w-]+)$/, routes.entry
 app.get "/", routes.index

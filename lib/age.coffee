@@ -1,3 +1,5 @@
+require 'date-utils'
+
 pluralize = (entity, count) ->
   switch entity
     when 'år'
