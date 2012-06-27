@@ -49,14 +49,6 @@ describe 'Entry class', ->
       create().on 'load', done
 
     describe 'when loaded', ->
-      # loaded = false
-      # subject = null
-      # runs ->
-      #   subject = create()
-      #   subject.on 'load', ->
-      #     loaded = true
-      # waitsFor (-> loaded), 200
-
       it 'should invoke MetaSerializer.deserialize', (done) ->
         MetaSerializer = require './../lib/meta-serializer'
         deserialize = MetaSerializer.deserialize
