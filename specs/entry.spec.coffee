@@ -20,11 +20,11 @@ describe 'Entry class', ->
     return path.join __dirname, 'fixtures', slug
 
   it 'should exist', ->
-    expect(Entry).toBeTruthy()
+    expect(Entry).to.be.defined
 
   describe 'constructor', ->
     it 'should take 1 param', ->
-      expect(Entry.length).toBe 1
+      Entry.should.have.length 1
     it 'throws an error when path is undefined', ->
       (-> new Entry).should.throw ArgumentError
     it 'throws an error when path is empty', ->
@@ -32,9 +32,9 @@ describe 'Entry class', ->
 
   describe 'observable', ->
     it 'should inherit from observable', ->
-      expect(Entry.prototype.constructor.name).toBe 'Observable'
+      expect(Entry.prototype.constructor.name).to.equal 'Observable'
     it 'should invoke observable constructor', ->
-      expect(new Entry fixture 'only-text').toDefine('observableId')
+      expect(new Entry fixture 'only-text').to.have.property 'observableId'
 
   xdescribe 'with bad path', ->
     it 'triggers an error'
@@ -45,11 +45,8 @@ describe 'Entry class', ->
 
     it 'should not throw error', ->
       create.should.not.throw Error
-    it 'should trigger load event', ->
-      spy = chai.spy()
-      create().on 'load', spy
-      waits 50
-      runs -> spy.should.have.been.called.once
+    it 'should trigger load event', (done) ->
+      create().on 'load', done
 
     describe 'when loaded', ->
       # loaded = false
@@ -60,7 +57,7 @@ describe 'Entry class', ->
       #     loaded = true
       # waitsFor (-> loaded), 200
 
-      it 'should invoke MetaSerializer.deserialize', ->
+      it 'should invoke MetaSerializer.deserialize', (done) ->
         MetaSerializer = require './../lib/meta-serializer'
         deserialize = MetaSerializer.deserialize
         MetaSerializer.deserialize = chai.spy ->
@@ -68,14 +65,8 @@ describe 'Entry class', ->
           arguments[1].should.be.a 'string'
           deserialize.apply null, arguments
 
-        loaded = false
-        subject = null
-        runs ->
-          subject = create()
-          subject.on 'load', ->
-            loaded = true
-        waitsFor (-> loaded), 200
-
-        runs ->
+        subject = create()
+        subject.on 'load', ->
           MetaSerializer.deserialize.should.have.been.called.once
           MetaSerializer.deserialize = deserialize
+          done()
