@@ -3,15 +3,20 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app"
+    "start": "node -e 'require(\"coffee-script\");require(\"./app\")'",
+    "test": "jake specs"
   },
   "dependencies": {
     "express": "3.0.0beta3",
     "jade": "*",
     "stylus": "*",
-    "sprintf": "*"
+    "sprintf": "*",
+    "imagemagick": "*"
   },
   "devDependencies": {
-    "jasmine-node": "1.0.26"
+    "colors": "*",
+    "mocha": "1.2.x",
+    "chai": "1.0.4",
+    "chai-spies": "0.2.2"
   }
 }
