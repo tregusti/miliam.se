@@ -13,8 +13,7 @@ describe 'MetaSerializer', ->
   describe 'method deserialize', ->
 
     beforeEach ->
-      @entry = new Object
-      @entry.constructor = Entry
+      @entry = new Entry '/tmp'
 
     it 'should exist', ->
       MetaSerializer.should.respondTo 'deserialize'
@@ -22,27 +21,15 @@ describe 'MetaSerializer', ->
       MetaSerializer.deserialize.should.have.length 2
     it 'set the title', ->
       MetaSerializer.deserialize @entry, 'title: Hello'
-      @entry.title.should.equal 'Hello'
-    # it 'defaults to now if no time or date is specified', ->
-    #   MetaSerializer.deserialize @entry, ''
-    #   @entry.date
-    # describe 'custom date and time', ->
-    #   beforeEach ->
-    #     MetaSerializer.deserialize @entry, "
-    #       date: 2012-06-06
-    #       time: 19:30:00
-    #     "
-    #
-    #   it 'sets the date', ->
-    #     @entry.date.to.to.should.equal 'Hello'
+      @entry.should.have.property 'title', 'Hello'
 
-      # it 'should have a title', ->
-      #   subject.should.have.property 'title', 'This is an example with only text'
-      #
-      # describe 'property date', ->
-      #   it 'should exist', -> subject.should.have.property 'date'
-      #   it 'should be a date', -> subject.date.should.be.a 'date'
-      #   it 'should include hour', -> subject.date.getHours().should.be.equal 10
-      #   it 'should include minutes', -> subject.date.getMinutes().should.be.equal 14
-      #   it 'should include seconds', -> subject.date.getSeconds().should.be.equal 20
-      #   it 'should be a date', -> subject.date.should.be.a 'date'
+    describe 'time property', ->
+      it 'should be set', ->
+        MetaSerializer.deserialize @entry, 'title: Hello'
+        @entry.should.have.property 'time'
+      it 'defaults to now if no time or date is specified', ->
+        MetaSerializer.deserialize @entry, 'title: Hello'
+        # equal dates (similar enough). Date is hard to mock...
+        @entry.time.toISOString().substr(0,19).should.equal new Date().toISOString().substr(0, 19)
+      it 'defaults to today but uses specified time'
+      it 'uses specified date and time'

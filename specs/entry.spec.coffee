@@ -36,9 +36,6 @@ describe 'Entry class', ->
     it 'should invoke observable constructor', ->
       expect(new Entry fixture 'only-text').to.have.property 'observableId'
 
-  xdescribe 'with bad path', ->
-    it 'triggers an error'
-
   describe 'with entry only-text', ->
 
     create = -> new Entry fixture 'only-text'
