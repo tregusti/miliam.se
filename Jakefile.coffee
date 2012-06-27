@@ -8,12 +8,22 @@ invoke = (tasks) ->
     jake.Task[task].invoke()
 
 
+# LIST
 desc 'List all available tasks'
 task 'default', ->
   console.log "This is the same as running 'jake -T'.\n"
   child.exec 'jake -T', (error, stdout, stderr) ->
     console.log stdout
 
+# RUNNER
+desc "Start up the server"
+task "start", ->
+  cmd = child.spawn "./node_modules/coffee-script/bin/coffee", ["app.coffee"]
+  cmd.stdout.on 'data', (data) -> process.stdout.write data
+  cmd.stderr.on 'data', (data) -> process.stderr.write data
+
+
+# SPECS
 runSpecs = (params, reporter) ->
   cmd = child.spawn "./node_modules/mocha/bin/mocha", "
       --colors

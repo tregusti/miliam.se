@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node -e 'require(\"coffee-script\");require(\"./app\")'",
+    "start": "jake start",
     "test": "jake specs"
   },
   "dependencies": {
