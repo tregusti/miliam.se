@@ -7,6 +7,11 @@ invoke = (tasks) ->
     console.log "Invoking #{task.blue}:"
     jake.Task[task].invoke()
 
+spawn = (cmd, args) ->
+  cmd = child.spawn cmd, args
+  cmd.stdout.on 'data', (data) -> process.stdout.write data
+  cmd.stderr.on 'data', (data) -> process.stderr.write data
+
 
 # LIST
 desc 'List all available tasks'
@@ -18,9 +23,12 @@ task 'default', ->
 # RUNNER
 desc "Start up the server"
 task "start", ->
-  cmd = child.spawn "./node_modules/coffee-script/bin/coffee", ["app.coffee"]
-  cmd.stdout.on 'data', (data) -> process.stdout.write data
-  cmd.stderr.on 'data', (data) -> process.stderr.write data
+  spawn "./node_modules/coffee-script/bin/coffee", ["app.coffee"]
+
+namespace 'start', ->
+  desc "Start a self-resarting development server"
+  task 'dev', ->
+    spawn "supervisor", "-e js\|jade\|coffee -w routes,views,. app.coffee".split " "
 
 
 # SPECS
