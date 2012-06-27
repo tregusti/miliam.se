@@ -13,11 +13,11 @@ since = (date) ->
   now = new Date
 
   # years
-  years++ while date.isBefore now.clone().addYears -years - 1
+  years++ while date.isBefore now.clone().addYears(-years - 1).addDays(1)
   date = date.addYears years
 
   # months
-  months++ while date.isBefore now.clone().addMonths -months - 1
+  months++ while date.isBefore now.clone().addMonths(-months - 1).addDays(1)
   date = date.addMonths months
 
   days = date.getDaysBetween now.clone()
