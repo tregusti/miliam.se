@@ -23,6 +23,18 @@ describe 'EntryInfoSerializer', ->
       EntryInfoSerializer.deserialize @entry, 'title: Hello'
       @entry.should.have.property 'title', 'Hello'
 
+    describe 'text property', ->
+      it 'defaults to null', ->
+        EntryInfoSerializer.deserialize @entry, 'title: hello'
+        @entry.should.have.property 'text'
+        expect(@entry.text).to.be.null
+
+      it 'should be set', ->
+        EntryInfoSerializer.deserialize @entry, "\n\nBody text."
+        @entry.should.have.property 'text'
+        expect(@entry.text).to.equal 'Body text.'
+        
+
     describe 'time property', ->
 
       it 'should be set', ->

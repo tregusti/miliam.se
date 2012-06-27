@@ -17,6 +17,7 @@ deserialize = (entry, contents) ->
             ), {}
 
   entry.title = meta.title if 'title' of meta
+  entry.text = contents.split('\n\n')[1] || null
 
   if 'time' of meta
     if 'date' of meta
