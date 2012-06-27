@@ -46,16 +46,16 @@ describe 'Entry class', ->
       create().on 'load', done
 
     describe 'when loaded', ->
-      it 'should invoke MetaSerializer.deserialize', (done) ->
-        MetaSerializer = require './../lib/meta-serializer'
-        deserialize = MetaSerializer.deserialize
-        MetaSerializer.deserialize = chai.spy ->
+      it 'should invoke EntryInfoSerializer.deserialize', (done) ->
+        EntryInfoSerializer = require './../lib/entry-info-serializer'
+        deserialize = EntryInfoSerializer.deserialize
+        EntryInfoSerializer.deserialize = chai.spy ->
           arguments[0].should.be.an.instanceof Entry
           arguments[1].should.be.a 'string'
           deserialize.apply null, arguments
 
         subject = create()
         subject.on 'load', ->
-          MetaSerializer.deserialize.should.have.been.called.once
-          MetaSerializer.deserialize = deserialize
+          EntryInfoSerializer.deserialize.should.have.been.called.once
+          EntryInfoSerializer.deserialize = deserialize
           done()
