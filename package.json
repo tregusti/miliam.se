@@ -14,6 +14,8 @@
     "imagemagick": "*"
   },
   "devDependencies": {
+    "chai": "1.0.4",
+    "chai-spies": "0.2.2",
     "jasmine-node": "1.0.26"
   }
 }

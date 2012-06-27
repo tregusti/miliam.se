@@ -1,15 +1,21 @@
+# system modules
+path = require 'path'
+
+# spec helpers
+chai = require 'chai'
+should = chai.should()
+spies = require 'chai-spies'
+chai.use spies
+
 require './matchers'
 
-NotFoundError = require('../lib/errors').NotFoundError
-ArgumentError = require('../lib/errors').ArgumentError
-EntryError = require('../lib/errors').EntryError
-
-path = require 'path'
+# own code
+ArgumentError = require '../lib/errors/argument'
 
 
 describe 'Entry class', ->
 
-  Entry = require('../lib/entry').Entry
+  Entry = require '../lib/entry'
 
   fixture = (slug) ->
     return path.join __dirname, 'fixtures', slug
@@ -20,58 +26,57 @@ describe 'Entry class', ->
   describe 'constructor', ->
     it 'should take 1 param', ->
       expect(Entry.length).toBe 1
+    it 'throws an error when path is undefined', ->
+      (-> new Entry).should.throw ArgumentError
+    it 'throws an error when path is empty', ->
+      (-> new Entry '').should.throw ArgumentError
 
   describe 'observable', ->
     it 'should inherit from observable', ->
       expect(Entry.prototype.constructor.name).toBe 'Observable'
     it 'should invoke observable constructor', ->
-      expect(new Entry).toDefine('observableId')
+      expect(new Entry fixture 'only-text').toDefine('observableId')
 
+  xdescribe 'with bad path', ->
+    it 'triggers an error'
 
+  describe 'with entry only-text', ->
 
-  xdescribe 'static load method', ->
+    create = -> new Entry fixture 'only-text'
 
-    entry = err = null
-    beforeEach -> entry = err = null
+    it 'should not throw error', ->
+      create.should.not.throw Error
+    it 'should trigger load event', ->
+      spy = chai.spy()
+      create().on 'load', spy
+      waits 50
+      runs -> spy.should.have.been.called.once
 
-    it 'takes a path parameter and a callback', ->
-      (expect Entry.load.length).toBe 2
+    describe 'when loaded', ->
+      # loaded = false
+      # subject = null
+      # runs ->
+      #   subject = create()
+      #   subject.on 'load', ->
+      #     loaded = true
+      # waitsFor (-> loaded), 200
 
-    it 'sends argument error when no path param is sent', ->
-      runs ->
-        Entry.load null, -> [err, entry] = arguments
-      waits 100
-      runs ->
-        expect(err).toBeAnInstanceOf ArgumentError
-        expect(err.argumentName).toBe 'path'
-        expect(entry).toBeNull()
+      it 'should invoke MetaSerializer.deserialize', ->
+        MetaSerializer = require './../lib/meta-serializer'
+        deserialize = MetaSerializer.deserialize
+        MetaSerializer.deserialize = chai.spy ->
+          arguments[0].should.be.an.instanceof Entry
+          arguments[1].should.be.a 'string'
+          deserialize.apply null, arguments
 
-    it 'sends not found error if path does not exist', ->
-      runs ->
-        Entry.load (fixture 'non-existing'), -> [err, entry] = arguments
-      waits 250
-      runs ->
-        expect(err).toBeAnInstanceOf NotFoundError
-        expect(entry).toBeNull()
-
-    it 'sends an error when no info-txt file exists', ->
-      runs ->
-        Entry.load '/tmp', -> [err, entry] = arguments
-      waits 100
-      runs ->
-        expect(err).toBeAnInstanceOf EntryError
-
-    describe 'entry with only text', ->
-      beforeEach ->
+        loaded = false
+        subject = null
         runs ->
-          Entry.load (fixture 'only-text'), -> [err, entry] = arguments
-        waits 100
+          subject = create()
+          subject.on 'load', ->
+            loaded = true
+        waitsFor (-> loaded), 200
 
-      it 'sends an instance of the Entry class if info file exists', ->
         runs ->
-          expect(err).toBeNull()
-          expect(entry).toBeAnInstanceOf Entry
-
-      # it 'should read in title', ->
-      #   runs ->
-      #     expect(entry.title).toBe 'This is an example with only text'
+          MetaSerializer.deserialize.should.have.been.called.once
+          MetaSerializer.deserialize = deserialize
