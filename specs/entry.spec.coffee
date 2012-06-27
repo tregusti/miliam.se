@@ -58,3 +58,17 @@ describe 'Entry class', ->
           EntryInfoSerializer.deserialize.should.have.been.called.once
           EntryInfoSerializer.deserialize = deserialize
           done()
+
+      describe 'human time', ->
+        before (done) ->
+          @subject = new Entry fixture 'only-text'
+          @subject.on 'load', done
+        it 'has a pretty date prop', ->
+          @subject.should.have.property 'humanDate', "6 jun 2012"
+        it 'has a pretty date prop', ->
+          @subject.should.have.property 'humanTime', "10:14"
+        it 'is readonly', ->
+          @subject.humanTime = 'nope'
+          @subject.humanDate = 'nope'
+          @subject.should.have.property 'humanTime', "10:14"
+          @subject.should.have.property 'humanDate', "6 jun 2012"
