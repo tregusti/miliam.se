@@ -1,5 +1,7 @@
 require 'date-utils'
 
+BIRTH = '2012-06-06 19:30:00'
+
 pluralize = (entity, count) ->
   switch entity
     when 'år'
@@ -43,3 +45,11 @@ since = (date) ->
   s
 
 module.exports.since = since
+
+attach = (app) ->
+  app.locals.use (req, res) ->
+    res.locals.humanAge = since new Date BIRTH
+
+
+module.exports.birth = BIRTH # should not be exposed
+module.exports.attach = attach

@@ -47,3 +47,15 @@ describe 'Age', ->
       it "uses years and months", ->
         d = @date.addYears(-3).addMonths(-1)
         Age.since(d).should.equal '3 år och 1 månad'
+
+  it 'should have a birth property', ->
+    Age.should.have.property 'birth', '2012-06-06 19:30:00'
+
+  describe 'attach method', ->
+    it 'should exist', ->
+      Age.should.have.property('attach')
+      Age.attach.should.be.a('function').and.have.length(1)
+    it 'adds a property to view locals object', ->
+      app = locals: use: chai.spy()
+      Age.attach app
+      app.locals.use.should.have.been.called.once
