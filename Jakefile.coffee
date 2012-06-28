@@ -63,3 +63,11 @@ namespace 'specs', ->
 
   desc 'Continously run specs watching for file changes'
   task 'watch', -> runSpecs "--watch"
+
+
+# IMPORT
+desc 'Import if needed'
+task 'import', ->
+  basepath = __dirname + "/data/create"
+  Importer = require './lib/importer'
+  new Importer basepath
