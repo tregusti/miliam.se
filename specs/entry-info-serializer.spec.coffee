@@ -33,18 +33,12 @@ describe 'EntryInfoSerializer', ->
         EntryInfoSerializer.deserialize @entry, "\n\nBody text."
         @entry.should.have.property 'text'
         expect(@entry.text).to.equal 'Body text.'
-        
-
+    
     describe 'time property', ->
 
       it 'should be set', ->
         EntryInfoSerializer.deserialize @entry, 'title: Hello'
-        @entry.should.have.property 'time'
-
-      it 'defaults to now if no time or date is specified', ->
-        EntryInfoSerializer.deserialize @entry, 'title: Hello'
-        # equal dates (similar enough). Date is hard to mock...
-        @entry.time.toISOString().substr(0,19).should.equal new Date().toISOString().substr(0, 19)
+        @entry.should.have.property 'time', null
 
       it 'defaults to today but uses specified time', ->
         EntryInfoSerializer.deserialize @entry, 'time: 13:00:00'

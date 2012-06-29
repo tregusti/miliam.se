@@ -21,6 +21,7 @@ require('./lib/age').attach app
 
 # routes
 app.get /^\/(\d\d\d\d)\/(\d\d)\/([\w-]+)$/, routes.entry
+app.get /^\/(\d\d\d\d)\/(\d\d)\/([\w-]+)\/(original|normal|thumb)\.jpg$/, routes.entryImage
 app.get "/", routes.index
 
 

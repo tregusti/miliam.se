@@ -1,4 +1,5 @@
 Path = require 'path'
+express = require 'express'
 
 Entry = require '../lib/entry'
 
@@ -12,4 +13,14 @@ exports.entry = (req, res) ->
   [year, month, slug] = req.params
   entry = new Entry Path.join(datapath, year, month, slug)
   entry.on 'load', ->
-    res.render "entry", entry
+    res.render "entry",
+      title: entry.title,
+      hasImage: entry.image?,
+      text: entry.text,
+      date: entry.humanDate,
+      time: entry.humanTime,
+      thumb: entry.image?.thumb.replace datapath, ''
+
+exports.entryImage = (req, res) ->
+  middleware = express.static __dirname + "/../data"
+  middleware req, res

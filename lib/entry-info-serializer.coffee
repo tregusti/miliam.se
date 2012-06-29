@@ -26,6 +26,6 @@ deserialize = (entry, contents) ->
       today = new Date().toISOString().substr(0,10)
     entry.time = new Date "#{today} #{meta.time}"
   else
-    entry.time = new Date
+    entry.time = null
 
 module.exports.deserialize = deserialize;

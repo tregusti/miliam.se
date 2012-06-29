@@ -4,10 +4,13 @@ block content
   article.entry
     header
       h1= title
+    if hasImage
+      img(src=thumb, alt=title)
+
     section.body
       = text
     footer
       time
-        = humanDate
+        = date
         = " "
-        = humanTime
+        = time
