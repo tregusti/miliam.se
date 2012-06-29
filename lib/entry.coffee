@@ -2,6 +2,7 @@ fs = require("fs")
 Path = require("path")
 
 sprintf = require('sprintf').sprintf
+gm = require 'gm'
 
 ArgumentError = require("./errors/argument")
 Observable = require("observables").Observable
@@ -37,6 +38,16 @@ hasAllImages = (entry, callback) ->
         return callback false unless exists
         callback true
 
+getImageDate = (path, callback) ->
+  gm(path).identify (err, identity) ->
+    date = identity?['Profile-EXIF']?['Date Time Original'] || null
+    # graphicsmagick uses bad format for dates: YYYY:MM:DD HH:MM:SS
+    # date separator should be '-', not ':'
+    if date
+      date = date.replace /^(\d\d\d\d):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)/, '$1-$2-$3 $4:$5:$6'
+      date = new Date date
+    callback date
+
 class Entry extends Observable
   constructor: (path) ->
     super
@@ -51,6 +62,11 @@ class Entry extends Observable
       hasAllImages entry, (exists) ->
         entry.image = null
         entry.image = imagePaths entry if exists
-        entry.fire "load"
+        if entry.time is null
+          getImageDate entry.image.original, (date) ->
+            entry.time = if date then date else new Date
+            entry.fire "load"
+        else
+          entry.fire "load"
 
 module.exports = Entry

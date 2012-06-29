@@ -11,7 +11,7 @@
     "jade": "*",
     "stylus": "*",
     "sprintf": "*",
-    "imagemagick": "*"
+    "gm": "*"
   },
   "devDependencies": {
     "colors": "*",
