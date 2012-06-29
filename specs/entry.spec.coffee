@@ -12,7 +12,7 @@ chai.use spies
 ArgumentError = require '../lib/errors/argument'
 
 
-describe 'Entry class', ->
+describe 'Entry', ->
 
   Entry = require '../lib/entry'
 
@@ -72,3 +72,19 @@ describe 'Entry class', ->
           @subject.humanDate = 'nope'
           @subject.should.have.property 'humanTime', "10:14"
           @subject.should.have.property 'humanDate', "6 jun 2012"
+  describe 'image parsing', ->
+
+    it 'should load ok with image', (done) ->
+      new Entry(fixture 'with-image').on 'load', done
+    it 'should have an image property with null when no images', (done) ->
+      entry = new Entry fixture 'only-text'
+      entry.on 'load', ->
+        entry.should.have.property 'image', null
+        done()
+    it 'should have an image property with paths', (done) ->
+      path = fixture 'with-image'
+      entry = new Entry path
+      entry.on 'load', ->
+        entry.should.have.property 'image'
+        entry.image[type].should.equal "#{path}/#{type}.jpg" for type in ['normal', 'thumb', 'original']
+        done()
