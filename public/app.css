@@ -6,15 +6,13 @@ ol,ul{list-style:none}
 blockquote,q{quotes:none}
 blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}
 table{border-collapse:collapse;border-spacing:0}
-body{font:15px/1.4 Georgia;width:320px;}
-body:after{content:'';position:fixed;right:0;left:0;bottom:0;border-bottom:5px solid #ace600}
-#head{background:#c38671;color:#fff;padding:3px 6px;overflow:hidden;border-bottom:5px solid #ace600;}
+body{font:15px/1.4 Georgia;width:320px}
+#head{background:#c38671;background:-webkit-gradient(linear, left top, left bottom, color-stop(0, #ad6349), color-stop(1, #c38671));background:-webkit-linear-gradient(top, #ad6349 0%, #c38671 100%);background:-moz-linear-gradient(top, #ad6349 0%, #c38671 100%);background:-o-linear-gradient(top, #ad6349 0%, #c38671 100%);background:-ms-linear-gradient(top, #ad6349 0%, #c38671 100%);background:linear-gradient(top, #ad6349 0%, #c38671 100%);color:#fff;padding:3px 6px;overflow:hidden;border-bottom:5px solid #ace600;}
 #head h1{text-shadow:1px 2px 0 rgba(0,0,0,0.2);font-size:40px;letter-spacing:-1px;font-family:UbuntuRegular,Arial,Helvetica}
 #head h2{float:right;margin-top:-10px;text-shadow:1px 1px 0 rgba(0,0,0,0.2)}
 #content{padding:3px 6px;}
-#content h1{font:20px/1.4 UbuntuRegular,Arial,Helvetica}
-#content img{width:320px;margin:0 -6px}
-#footer{background:rgba(255,255,255,0.7);}
-#footer div{padding:3px 6px}
-#footer #parents{float:left}
-#footer #tech{float:right}
+#content article header{margin:5px 0;border-bottom:1px solid rgba(172,230,0,0.5);}
+#content article header h1{font:20px/1.4 UbuntuRegular,Arial,Helvetica;margin-bottom:-6px;text-shadow:1px 1px 0 rgba(0,0,0,0.2)}
+#content article img{width:320px;margin:5px -6px 0 -6px;-webkit-box-shadow:0 0 5px rgba(0,0,0,0.6);box-shadow:0 0 5px rgba(0,0,0,0.6)}
+#content article time{text-align:right;display:block}
+#footer{position:fixed;right:0;left:0;bottom:0;border-bottom:5px solid #ace600}

@@ -12,17 +12,9 @@ body
   font: 15px/1.4 Georgia
   width: 320px
 
-  &:after
-    content: ''
-    position: fixed
-    right: 0
-    left: 0
-    bottom: 0
-    border-bottom: 5px solid green
-
-
 #head
   background: brown
+  background: linear-gradient(top, darken(brown, 20%), brown)
   color: white
   padding: padding
   overflow: hidden
@@ -42,19 +34,28 @@ body
 #content
   padding: padding
 
-  h1
-    font: 20px/1.4 headline
+  article
+    header
+      margin: 5px 0
+      border-bottom: 1px solid rgba(green, .5)
 
-  img
-    width: 320px
-    margin: 0 -6px
+      h1
+        font: 20px/1.4 headline
+        margin-bottom: -6px
+        text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
+
+    img
+      width: 320px
+      margin: 5px -6px 0 -6px
+      box-shadow: 0 0 5px rgba(0, 0, 0, .6)
+
+    time
+      text-align: right
+      display: block
 
 #footer
-  background: rgba(255, 255, 255, .7)
-
-  div
-    padding: padding
-  #parents
-    float: left
-  #tech
-    float: right
+  position: fixed
+  right: 0
+  left: 0
+  bottom: 0
+  border-bottom: 5px solid green
