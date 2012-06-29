@@ -1,10 +1,24 @@
 doctype 5
 html
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    title
+      = title
+      = " | Miliam Jorde"
+    link(rel='stylesheet', href='/app.css')
+    meta(http-equiv='refresh', content='3')
+    meta(name="viewport", content="device-width,initial-scale=1")
   body
-    block content
+    hgroup#head
+      h1 Miliam Jorde
+      h2
+        = "är nu "
+        span= humanAge
+        = " gammal"
+    #content
+      block content
 
     footer#footer
-      = "Jag är nu " + humanAge + " gammal"
+      #parents Miliam är son till Glenn och Sigyn Jorde
+      //- #tech
+      //-   = "Källkoden finns på "
+      //-   a(href="https://github.com/tregusti/miliam.se") Github
