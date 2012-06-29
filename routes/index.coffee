@@ -10,8 +10,8 @@ exports.index = (req, res) ->
     title: "Express"
 
 exports.entry = (req, res) ->
-  [year, month, slug] = req.params
-  entry = new Entry Path.join(datapath, year, month, slug)
+  [year, month, date, slug] = req.params
+  entry = new Entry Path.join(datapath, year, month, date, slug)
   entry.on 'load', ->
     res.render "entry",
       title: entry.title,

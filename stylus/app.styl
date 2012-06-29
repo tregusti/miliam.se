@@ -1,0 +1,68 @@
+@import url('/ubuntu/stylesheet.css')
+
+@import 'reset'
+
+
+headline = UbuntuRegular, Arial, Helvetica
+padding = 3px 8px
+brown = rgb(195, 134, 113)
+green = rgb(172, 230, 0)
+
+body
+  font: 15px/1.4 Georgia
+  width: 320px
+
+#head
+  background: brown
+  background: linear-gradient(top, darken(brown, 20%), brown)
+  color: white
+  padding: padding
+  overflow: hidden
+  border-bottom: 5px solid green
+
+  h1
+    text-shadow: 1px 2px 0 rgba(0, 0, 0, .2)
+    font-size: 40px
+    letter-spacing: -1px
+    font-family: headline
+  h2
+    float: right
+    margin-top: -10px
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
+
+
+#content
+  padding: padding
+  margin-bottom: 10px
+
+  article
+    header
+      margin: 5px 0
+      border-bottom: 1px solid rgba(green, .5)
+
+      h1
+        font: 20px/1.4 headline
+        margin-bottom: -6px
+        text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
+
+    img
+      width: 320px
+      margin: 5px -6px 0 -6px
+      box-shadow: 0 0 5px rgba(0, 0, 0, .6)
+
+    time
+      text-align: right
+      font-size: 11px
+      font-family: helvetica, arial
+      display: block
+
+    section
+      padding-top: 10px
+      text-align: justify
+
+#footer
+  position: fixed
+  right: 0
+  left: 0
+  bottom: 0
+  border-bottom: 5px solid green

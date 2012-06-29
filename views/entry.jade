@@ -1,16 +1,15 @@
 extends layout
 
 block content
-  article.entry
+  article
     header
       h1= title
     if hasImage
       img(src=thumb, alt=title)
-
-    section.body
-      = text
     footer
-      time
+      time(pubdate)
         = date
         = " "
         = time
+    section.body
+      = text
