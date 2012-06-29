@@ -2,8 +2,11 @@ doctype 5
 html
   head
     title
-      = title
-      = " | Miliam Jorde"
+      if title
+        = title
+        = " | Miliam Jorde"
+      else
+        = "Miliam Jorde"
     link(rel='stylesheet', href='/app.css')
     meta(name="viewport", content="device-width,initial-scale=1")
   body
