@@ -1,4 +1,5 @@
 Path = require 'path'
+express = require 'express'
 
 Entry = require '../lib/entry'
 
@@ -19,3 +20,7 @@ exports.entry = (req, res) ->
       date: entry.humanDate,
       time: entry.humanTime,
       thumb: entry.image?.thumb.replace datapath, ''
+
+exports.entryImage = (req, res) ->
+  middleware = express.static __dirname + "/../data"
+  middleware req, res
