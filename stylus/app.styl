@@ -11,10 +11,19 @@ green = rgb(172, 230, 0)
 body
   font: 15px/1.4 Georgia
   width: 320px
+  margin: auto
+
+  &:after
+    content: ''
+    position: fixed
+    top: 0
+    left: 0
+    right: 0
+    height: 1500px
+    background: url('/bg.jpg') fixed
+    z-index: -1
 
 #head
-  background: brown
-  background: linear-gradient(top, darken(brown, 20%), brown)
   color: white
   padding: padding
   overflow: hidden
@@ -27,13 +36,15 @@ body
     font-family: headline
   h2
     float: right
+    font-size: 14px
     margin-top: -10px
     text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
 
 
 #content
   padding: padding
-  margin-bottom: 10px
+  margin-bottom: 20px
+  background: rgba(255, 255, 255, .6)
 
   article
     header
@@ -47,7 +58,7 @@ body
 
     img
       width: 320px
-      margin: 5px -6px 0 -6px
+      margin: 5px -8px 0 -8px
       box-shadow: 0 0 5px rgba(0, 0, 0, .6)
 
     time
