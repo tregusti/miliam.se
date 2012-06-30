@@ -2,18 +2,17 @@ Path = require 'path'
 express = require 'express'
 
 Entry = require '../lib/entry'
+EntryList = require '../lib/entry-list'
 
 datapath = Path.join __dirname, '..', 'data'
 
 exports.list = (req, res) ->
   [year, month, date] = req.params
-  finder = new EntryFinder
-  entries = finder.limit 0, 10, year, month, date, ->
+  el= new EntryList datapath
+  entries = el.get (err, entries) ->
     res.render "list",
       title: 'Lista',
       entries: entries
-
-
 
 exports.entry = (req, res) ->
   [year, month, date, slug] = req.params

@@ -5,12 +5,12 @@ block content
     article
       header
         h1= entry.title
-      if entry.hasImage
-        img(src=entry.thumb, alt=entry.title)
+      if entry.image
+        img(src=data2www(entry.image.thumb), alt=entry.title)
       footer
         time(pubdate)
-          = entry.date
+          = entry.humanDate
           = " "
-          = entry.time
+          = entry.humanTime
       section.body
         = entry.text
