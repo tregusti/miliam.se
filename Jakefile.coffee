@@ -7,10 +7,12 @@ invoke = (tasks) ->
     console.log "Invoking #{task.blue}:"
     jake.Task[task].invoke()
 
-spawn = (cmd, args) ->
+spawn = (cmd, args, done) ->
   cmd = child.spawn cmd, args
   cmd.stdout.on 'data', (data) -> process.stdout.write data
   cmd.stderr.on 'data', (data) -> process.stderr.write data
+  cmd.on 'exit', done if done?
+  cmd
 
 
 # LIST
@@ -32,19 +34,16 @@ namespace 'start', ->
 
 
 # SPECS
-runSpecs = (params, reporter) ->
-  cmd = child.spawn "./node_modules/mocha/bin/mocha", "
+runSpecs = (params, reporter, done) ->
+  spawn "./node_modules/mocha/bin/mocha", "
       --colors
-      --timeout 1000
+      --timeout 2000
       --recursive
       --compilers coffee:coffee-script
       #{params || ''}
       --reporter #{reporter || 'dot'}
       specs
-  ".trim().split /\s+/
-  cmd.stdout.on 'data', (data) -> process.stdout.write data
-  cmd.stderr.on 'data', (data) -> process.stderr.write data
-
+  ".trim().split(/\s+/), done
 
 desc 'Run all specs'
 task 'specs', (params) ->
@@ -54,5 +53,13 @@ namespace 'specs', ->
   desc 'Run all specs and pretty print'
   task 'pretty', -> runSpecs null, 'spec'
 
+  desc 'Run specs with debugger'
+  task 'debug', ->
+    console.log "Running specs and start node-inspector".blue
+    runSpecs '--debug-brk', null, ->
+      console.log "\nSpecs done, kill inspector".blue
+      insp.kill()
+    insp = spawn 'node-inspector'
+
   desc 'Continously run specs watching for file changes'
-  task 'watch', -> runSpecs "--watch --growl"
+  task 'watch', -> runSpecs "--watch"

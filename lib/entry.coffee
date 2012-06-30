@@ -55,7 +55,7 @@ class Entry extends Observable
     entry = this
     @path = path
     fs.readFile Path.join(path, "info.txt"), "utf8", (err, data) ->
-      return if err
+      return entry.fire 'error', err if err
 
       EntryInfoSerializer.deserialize entry, data
       defineHumanTimes entry

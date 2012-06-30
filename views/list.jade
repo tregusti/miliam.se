@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  each entry in entries
+    article
+      header
+        h1= entry.title
+      if entry.image
+        img(src=data2www(entry.image.thumb), alt=entry.title)
+      footer
+        time(pubdate)
+          = entry.humanDate
+          = " "
+          = entry.humanTime
+      section.body
+        = entry.text

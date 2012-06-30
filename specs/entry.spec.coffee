@@ -17,7 +17,14 @@ describe 'Entry', ->
   Entry = require '../lib/entry'
 
   fixture = (slug) ->
-    return Path.join __dirname, 'fixtures', slug
+    base = Path.join __dirname, 'fixtures'
+    switch slug
+      when 'only-text'
+        Path.join base, "2011", "11", "11", slug
+      when 'with-image'
+        Path.join base, "2012", "01", "10", slug
+      when 'with-image-and-datetime'
+        Path.join base, "2012", "01", "11", slug
 
   it 'should exist', ->
     expect(Entry).to.be.defined
@@ -93,7 +100,7 @@ describe 'Entry', ->
       entry = new Entry fixture 'with-image-and-datetime'
       entry.on 'load', ->
         # +0100 due to winter time
-        entry.time.toISOString().should.equal new Date('2012-12-12 10:10:10+0100').toISOString()
+        entry.time.toISOString().should.equal new Date('2012-01-11 10:10:10+0100').toISOString()
         done()
 
     it 'sets date and time from original image when omitted in info.txt', (done) ->
