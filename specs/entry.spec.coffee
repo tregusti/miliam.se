@@ -82,8 +82,6 @@ describe 'Entry', ->
   describe 'image parsing', ->
 
     it 'should load ok with image', (done) ->
-      # This spec sometimes takes time, so up the timout limit
-      @timeout 2000
       new Entry(fixture 'with-image').on 'load', done
     it 'should have an image property with null when no images', (done) ->
       entry = new Entry fixture 'only-text'

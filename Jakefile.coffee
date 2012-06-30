@@ -35,7 +35,7 @@ namespace 'start', ->
 runSpecs = (params, reporter) ->
   cmd = child.spawn "./node_modules/mocha/bin/mocha", "
       --colors
-      --timeout 1000
+      --timeout 2000
       --recursive
       --compilers coffee:coffee-script
       #{params || ''}
