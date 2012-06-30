@@ -5,9 +5,15 @@ Entry = require '../lib/entry'
 
 datapath = Path.join __dirname, '..', 'data'
 
-exports.index = (req, res) ->
-  res.render "index",
-    title: "Express"
+exports.list = (req, res) ->
+  [year, month, date] = req.params
+  finder = new EntryFinder
+  entries = finder.limit 0, 10, year, month, date, ->
+    res.render "list",
+      title: 'Lista',
+      entries: entries
+
+
 
 exports.entry = (req, res) ->
   [year, month, date, slug] = req.params
