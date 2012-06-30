@@ -42,7 +42,7 @@ describe 'EntryList', ->
 
       el.get opts, (err, entries) ->
         expect(entries).to.have.length 2
-        # Sort by time
-        entries[0].should.have.property 'title', 'Text only'
-        entries[1].should.have.property 'title', 'With image and datetime'
+        # Sort by descending time
+        entries[0].should.have.property 'title', 'With image and datetime'
+        entries[1].should.have.property 'title', 'Text only'
         done()

@@ -36,7 +36,7 @@ class EntryList
     path = Path.join path, part for part in [year, month, date] when part?
     child.exec "find -L #{path} -name info.txt | sed 's/info.txt//'", (err, list) ->
       callback err, null if err
-      paths = list.trim().split '\n'
+      paths = list.trim().split('\n').reverse()
       entries = []
 
       loadNextEntry entries, paths, (err) ->
