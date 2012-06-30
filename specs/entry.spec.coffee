@@ -100,7 +100,7 @@ describe 'Entry', ->
       entry = new Entry fixture 'with-image-and-datetime'
       entry.on 'load', ->
         # +0100 due to winter time
-        entry.time.toISOString().should.equal new Date('2012-12-12 10:10:10+0100').toISOString()
+        entry.time.toISOString().should.equal new Date('2012-01-11 10:10:10+0100').toISOString()
         done()
 
     it 'sets date and time from original image when omitted in info.txt', (done) ->
