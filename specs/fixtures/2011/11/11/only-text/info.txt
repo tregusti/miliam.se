@@ -1,3 +1,9 @@
 title: This is an example with only text
 date: 2012-06-06
 time: 10:14
+
+Paragraph 1
+
+Paragraph 2
+
+Paragraph 3

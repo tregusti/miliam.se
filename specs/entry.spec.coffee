@@ -79,6 +79,23 @@ describe 'Entry', ->
           @subject.humanDate = 'nope'
           @subject.should.have.property 'humanTime', "10:14"
           @subject.should.have.property 'humanDate', "6 jun 2012"
+
+    describe 'body', ->
+      before (done) ->
+        @subject = new Entry fixture 'only-text'
+        @subject.on 'load', done
+      it 'should have a text property', ->
+        @subject.should.have.property 'text'
+      it 'should have a html property', ->
+        @subject.should.have.property 'html'
+      it 'html property should be readonly', ->
+        @subject.html = "nope"
+        @subject.html.should.not.equal 'nope'
+      it 'should have a html property with paragraphs', ->
+        @subject.html.should.contain '<p>Paragraph 1'
+        @subject.html.should.contain '<p>Paragraph 2'
+        @subject.html.should.contain '<p>Paragraph 3'
+
   describe 'image parsing', ->
 
     it 'should load ok with image', (done) ->

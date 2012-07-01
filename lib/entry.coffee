@@ -3,13 +3,20 @@ Path = require("path")
 
 sprintf = require('sprintf').sprintf
 gm = require 'gm'
+marked = require 'marked'
 
 ArgumentError = require("./errors/argument")
 Observable = require("observables").Observable
 Guard = require("./guard")
 EntryInfoSerializer = require("./entry-info-serializer")
 
-defineHumanTimes = (entry) ->
+defineGetters = (entry) ->
+  Object.defineProperty entry, 'html',
+    enumerable: true,
+    get: ->
+      return null unless @text
+      marked @text
+
   Object.defineProperty entry, 'humanTime',
     enumerable: true,
     get: ->
@@ -58,7 +65,7 @@ class Entry extends Observable
       return entry.fire 'error', err if err
 
       EntryInfoSerializer.deserialize entry, data
-      defineHumanTimes entry
+      defineGetters entry
       hasAllImages entry, (exists) ->
         entry.image = null
         entry.image = imagePaths entry if exists
