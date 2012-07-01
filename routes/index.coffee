@@ -14,7 +14,6 @@ exports.list = (req, res, next) ->
 
   el.get opts, (err, entries) ->
     if err
-      console.dir err
       next new NotFoundError req.path
     else
       res.render "list",

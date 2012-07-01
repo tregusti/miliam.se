@@ -35,8 +35,7 @@ class EntryList
       [year, month, date] = [options?.year || null, options?.month || null, options?.date || null]
 
     path = Path.join path, part for part in [year, month, date] when part?
-    console.dir [year, month, date]
-    child.exec "find -L #{path} -name info.txt | sed 's/info.txt//'", (err, list) ->
+    child.exec "find -L #{path} -name info.txt | sed 's/\\/info.txt//'", (err, list) ->
       return callback new NotFoundError(path), null if err
 
       list = list.trim() or null
