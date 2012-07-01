@@ -3,24 +3,30 @@ express = require 'express'
 
 Entry = require '../lib/entry'
 EntryList = require '../lib/entry-list'
+NotFoundError = require '../lib/errors/notfound'
 
 datapath = Path.join __dirname, '..', 'data'
 
-exports.list = (req, res) ->
+exports.list = (req, res, next) ->
   [year, month, date] = req.params
   el = new EntryList datapath
-  el.get (err, entries) ->
-    throw new NotFoundError unless entries.length
-    res.render "list",
-      title: 'Lista',
-      entries: entries
+  opts = year: year, month: month, date: date
 
-exports.entry = (req, res) ->
+  el.get opts, (err, entries) ->
+    if err
+      console.dir err
+      next new NotFoundError req.path
+    else
+      res.render "list",
+        title: 'Lista',
+        entries: entries
+
+exports.entry = (req, res, next) ->
   [year, month, date, slug] = req.params
   entry = new Entry Path.join(datapath, year, month, date, slug)
 
   entry.on 'error', (err) ->
-    throw new NotFoundError
+    next()
 
   entry.on 'load', ->
     res.render "entry",

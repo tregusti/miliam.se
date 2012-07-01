@@ -5,6 +5,7 @@ child = require 'child_process'
 Guard = require './guard'
 
 Entry = require './entry'
+NotFoundError = require './errors/notfound'
 
 loadNextEntry = (entries, paths, done) ->
   if paths.length is 0
@@ -34,9 +35,15 @@ class EntryList
       [year, month, date] = [options?.year || null, options?.month || null, options?.date || null]
 
     path = Path.join path, part for part in [year, month, date] when part?
+    console.dir [year, month, date]
     child.exec "find -L #{path} -name info.txt | sed 's/info.txt//'", (err, list) ->
-      callback err, null if err
-      paths = list.trim().split('\n').reverse()
+      return callback new NotFoundError(path), null if err
+
+      list = list.trim() or null
+
+      return callback new NotFoundError(path), null unless list
+
+      paths = list.split('\n').reverse()
       entries = []
 
       loadNextEntry entries, paths, (err) ->

@@ -10,6 +10,7 @@ chai.use spies
 
 # own code
 ArgumentError = require '../lib/errors/argument'
+NotFoundError = require '../lib/errors/notfound'
 
 describe 'EntryList', ->
 
@@ -45,4 +46,18 @@ describe 'EntryList', ->
         # Sort by descending time
         entries[0].should.have.property 'title', 'With image and datetime'
         entries[1].should.have.property 'title', 'Text only'
+        done()
+
+    it 'loads all entries within the specified year', (done) ->
+      opts =  year: '2012'
+
+      el.get opts, (err, entries) ->
+        expect(entries).to.have.length 3
+        done()
+
+    it 'should not find anything in 2010', (done) ->
+      opts =  year: '2010'
+      el.get opts, (err, entries) ->
+        expect(err).to.be.an.instanceof NotFoundError
+        expect(entries).to.be.null
         done()
