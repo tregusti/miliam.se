@@ -33,7 +33,13 @@ describe 'EntryInfoSerializer', ->
         EntryInfoSerializer.deserialize @entry, "\n\nBody text."
         @entry.should.have.property 'text'
         expect(@entry.text).to.equal 'Body text.'
-    
+
+      it 'should handle title and several paragraphs of body', ->
+        EntryInfoSerializer.deserialize @entry, "title: Title\n\nBody text.\n\nMore body text."
+        @entry.should.have.property 'text', 'Body text.\n\nMore body text.'
+        @entry.should.have.property 'title', 'Title'
+
+
     describe 'time property', ->
 
       it 'should be set', ->

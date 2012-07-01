@@ -1,23 +1,17 @@
 deserialize = (entry, contents) ->
   return unless contents
-  meta = contents
-            # upper part
-            .split('\n\n')[0]
-            # remove whitespace
-            .trim()
-            # Split into separate lines
+  chunks = contents.split '\n\n'
+  # throw new Error 'Invalid metadata format' unless chunks.length >= 2
+  meta = chunks
+            .shift()
             .split('\n')
-            # iterate all lines
             .reduce ((meta, line) ->
-              # Find valid key:value pair
-              m = line.match /^(\w+):\s*(.*)$/
-              # Add it to meta object
+              m = line.match /^(\w+):\s*(.+)$/
               meta[m[1]] = m[2] if m
-              meta
-            ), {}
+              meta), {}
 
+  entry.text = chunks.join('\n\n') or null
   entry.title = meta.title if 'title' of meta
-  entry.text = contents.split('\n\n')[1] || null
 
   if 'time' of meta
     if 'date' of meta
