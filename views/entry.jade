@@ -1,5 +1,15 @@
 extends layout
 
 block content
-  h1= title
-  p Welcomesss to #{title}
+  article
+    header
+      h1= title
+    if hasImage
+      img(src=thumb, alt=title)
+    footer
+      time(pubdate)
+        = date
+        = " "
+        = time
+    section.body
+      != html

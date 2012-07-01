@@ -1,7 +1,25 @@
 doctype 5
 html
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    title
+      if title
+        = title
+        = " | Miliam Jorde"
+      else
+        = "Miliam Jorde"
+    link(rel='stylesheet', href='/app.css')
+    meta(name="viewport", content="device-width,initial-scale=1")
   body
-    block content
+    hgroup#head
+      a(href="/")
+        h1 Miliam Jorde
+        h2
+          = "är nu "
+          span= humanAge
+          = " gammal"
+    #content
+      block content
+
+    footer#footer
+      aside#about.
+        Liam är son till Sigyn och Glenn Jorde
