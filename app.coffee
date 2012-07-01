@@ -4,6 +4,9 @@ routes = require "./routes"
 http = require "http"
 stylus = require 'stylus'
 nib = require 'nib'
+util = require 'util'
+
+NotFoundError = require './lib/errors/notfound'
 
 stylusMiddleware = ->
   compile = (str, path) ->
@@ -21,6 +24,19 @@ stylusMiddleware = ->
     debug: true,
     force: true
 
+errorHandler = (err, req, res, next) ->
+  # if an error occurs Connect will pass it down
+  # through these "error-handling" middleware
+  # allowing you to respond however you like
+  if err instanceof NotFoundError
+    res.render '404.jade',
+      title: '404 bebisar borta'
+      status: 404
+  else
+    res.render '500.jade',
+      status: 500
+      title: 'Nu blev det fel'
+
 app = express()
 app.configure ->
   app.set "port", process.env.PORT or 3000
@@ -30,13 +46,15 @@ app.configure ->
   app.use express.logger("dev")
   app.use express.bodyParser()
   app.use express.methodOverride()
-  app.use app.router
   app.use stylusMiddleware()
   app.use express.static __dirname + "/public"
+  app.use app.router
+  app.use errorHandler
 
 
 app.configure "development", ->
   app.use express.errorHandler()
+
 
 require('./lib/age').attach app
 
@@ -61,7 +79,7 @@ app.get ///^
 app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)$/, routes.entry
 app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)\/(original|normal|thumb)\.jpg$/, routes.entryImage
 app.get "/", routes.index
-
+app.get "/*", (req, res) -> throw new NotFoundError
 
 http.createServer(app).listen app.get("port"), ->
   console.log "Express server listening on port " + app.get("port")
