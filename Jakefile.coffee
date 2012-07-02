@@ -25,7 +25,7 @@ task 'default', ->
 # RUNNER
 desc "Start up the server"
 task "start", ->
-  spawn "./node_modules/coffee-script/bin/coffee", ["app.coffee"]
+  spawn "#{__dirname}/node_modules/coffee-script/bin/coffee", ["#{__dirname}/app.coffee"]
 
 namespace 'start', ->
   desc "Start a self-resarting development server"
@@ -35,7 +35,7 @@ namespace 'start', ->
 
 # SPECS
 runSpecs = (params, reporter, done) ->
-  spawn "./node_modules/mocha/bin/mocha", "
+  spawn "#{__dirname}/node_modules/mocha/bin/mocha", "
       --colors
       --timeout 2000
       --recursive
