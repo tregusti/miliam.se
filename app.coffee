@@ -8,6 +8,8 @@ util = require 'util'
 
 NotFoundError = require './lib/errors/notfound'
 
+prod = process.env.NODE_ENV is 'production'
+
 stylusMiddleware = ->
   compile = (str, path) ->
     stylus(str)
@@ -20,9 +22,9 @@ stylusMiddleware = ->
     src: __dirname + '/stylus'
     dest: __dirname + '/public',
     compile: compile,
-    compress: false,
-    debug: true,
-    force: true
+    compress: not prod,
+    debug: not prod,
+    force: not prod
 
 errorHandler = (err, req, res, next) ->
   # if an error occurs Connect will pass it down
