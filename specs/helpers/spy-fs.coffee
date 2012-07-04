@@ -17,10 +17,18 @@ disable = ->
 
 class FileSystemSpy
   constructor: (path, content) ->
-    @path = Object.defineProperty this, 'path',
+    Object.defineProperty this, 'path',
       enumerable: true,
       writeable: false,
       value: Path.resolve path
+    Object.defineProperty this, 'dirname',
+      enumerable: true,
+      writeable: false,
+      value: Path.dirname @path
+    Object.defineProperty this, 'filename',
+      enumerable: true,
+      writeable: false,
+      value: Path.basename @path
 
     files[@path] = content
     enable()
