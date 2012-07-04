@@ -2,23 +2,25 @@ util = require 'util'
 fs = require 'fs'
 Path = require 'path'
 
+Entry = require '../entry'
 Guard = require '../guard'
-
-Logger = do ->
-  PATH = Path.join __dirname, '..', '..', 'importer.log'
-  (o) ->
-    o = util.inspect o unless typeof o is 'string'
-    time = new Date().toISOString()
-    fs.appendFile PATH, "#{time}: #{o}"
+log = require '../log'
 
 class Importer
   constructor: (path) ->
-    Guard.string path
+    Guard.string 'path', path
+    log.info "Create new Importer instance"
+    @basepath = path
 
-    fs.readFile path, 'utf8', (err, contents) ->
-      if err
-        Logger err
-        throw err
+  entry: (callback) ->
+    log.debug 'Creating Entry instance'
+    entry = new Entry @basepath
+    entry.on 'load', ->
+      callback null, entry
+      entry.off 'load'
+      entry.off 'error'
+    entry.on 'error', (err) ->
+      callback err, null
 
 
 module.exports = Importer
