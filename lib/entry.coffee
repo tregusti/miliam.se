@@ -2,11 +2,8 @@ fs = require("fs")
 Path = require("path")
 
 sprintf = require('sprintf').sprintf
-gm = require 'gm'
 marked = require 'marked'
 
-ArgumentError = require("./errors/argument")
-Observable = require("observables").Observable
 Guard = require("./guard")
 EntryInfoSerializer = require("./entry-info-serializer")
 
@@ -36,7 +33,7 @@ defineGetters = (entry) ->
 #   original : Path.join(entry.path, "original.jpg"),
 #   normal   : Path.join(entry.path, "normal.jpg"),
 #   thumb    : Path.join(entry.path, "thumb.jpg")
-# 
+#
 # hasAllImages = (entry, callback) ->
 #   paths = imagePaths entry
 #   Path.exists paths.normal, (exists) ->
