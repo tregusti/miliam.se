@@ -74,12 +74,48 @@ defineGetters = (entry) ->
     #     else
     #       entry.fire "load"
 
+createImageObject = (name) ->
+  o = {}
+  o["w#{w}"] = "#{name}.w#{w}.jpg" for w in [320, 640, 1024]
+  o
+
+parseContents = (entry, contents) ->
+  chunks = contents.split '\n\n'
+
+  meta = {}
+  for line in chunks.shift().split('\n')
+    m = line.match /^(\w+):\s*(.+)$/
+    if m
+      if m[1] is 'image'
+        meta[m[1]] ?= []
+        meta[m[1]].push createImageObject(m[2])
+      else
+        meta[m[1]] = m[2]
+
+  entry.text = chunks.join('\n\n') or null
+  entry.title = meta.title if 'title' of meta
+  entry.images = meta.image if 'image' of meta
+  # Special treatment for datetime
+  if 'time' of meta
+    if 'date' of meta
+      today = meta.date
+    else
+      today = new Date().toISOString().substr(0,10)
+    entry.time = new Date "#{today} #{meta.time}"
+  else
+    entry.time = null
+
+
+
+
 load = (path, options, callback) ->
   Guard.string "path", path
   log.debug "Loading #{path}"
 
+  # If no options specified, shift arguments
   [options, callback] = [{}, options] if options instanceof Function
 
+  # Default values
   entry =
     basepath: path
     images: null
@@ -87,36 +123,18 @@ load = (path, options, callback) ->
     time: null
     text: null
 
+  # Load up contents
   path = Path.join entry.basepath, 'info.txt'
   fs.readFile path, 'utf8', (err, contents) ->
-    console.dir ['ojjj', err] if err
+    # Errors?
     callback err, null if err
     callback new Error("Not valid contents in #{path}"), null unless contents
+
     log.debug "File loaded: #{contents} #{err}"
-
-    chunks = contents.split '\n\n'
-    meta = chunks
-              .shift()
-              .split('\n')
-              .reduce ((meta, line) ->
-                m = line.match /^(\w+):\s*(.+)$/
-                meta[m[1]] = m[2] if m
-                meta), {}
-
-    entry.text = chunks.join('\n\n') or null
-    entry.title = meta.title if 'title' of meta
-
-    if 'time' of meta
-      if 'date' of meta
-        today = meta.date
-      else
-        today = new Date().toISOString().substr(0,10)
-      entry.time = new Date "#{today} #{meta.time}"
-    else
-      entry.time = null
-
+    parseContents entry, contents
 
     defineGetters entry
+
     callback null, entry
 
 module.exports.load = load
