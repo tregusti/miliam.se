@@ -5,7 +5,6 @@ sprintf = require('sprintf').sprintf
 marked = require 'marked'
 
 Guard = require("./guard")
-EntryInfoSerializer = require("./entry-info-serializer")
 
 log = require('./log') 'Entry'
 
@@ -75,17 +74,48 @@ defineGetters = (entry) ->
     #     else
     #       entry.fire "load"
 
-load = (path, callback) ->
+load = (path, options, callback) ->
   Guard.string "path", path
   log.debug "Loading #{path}"
 
-  entry = basepath: path
+  [options, callback] = [{}, options] if options instanceof Function
+
+  entry =
+    basepath: path
+    images: null
+    title: null
+    time: null
+    text: null
 
   path = Path.join entry.basepath, 'info.txt'
-  fs.readFile path, 'utf8', (err, str) ->
-    log.debug "File loaded: #{str} #{err}"
+  fs.readFile path, 'utf8', (err, contents) ->
+    console.dir ['ojjj', err] if err
+    callback err, null if err
+    callback new Error("Not valid contents in #{path}"), null unless contents
+    log.debug "File loaded: #{contents} #{err}"
 
-    EntryInfoSerializer.deserialize entry, str
+    chunks = contents.split '\n\n'
+    meta = chunks
+              .shift()
+              .split('\n')
+              .reduce ((meta, line) ->
+                m = line.match /^(\w+):\s*(.+)$/
+                meta[m[1]] = m[2] if m
+                meta), {}
+
+    entry.text = chunks.join('\n\n') or null
+    entry.title = meta.title if 'title' of meta
+
+    if 'time' of meta
+      if 'date' of meta
+        today = meta.date
+      else
+        today = new Date().toISOString().substr(0,10)
+      entry.time = new Date "#{today} #{meta.time}"
+    else
+      entry.time = null
+
+
     defineGetters entry
     callback null, entry
 
