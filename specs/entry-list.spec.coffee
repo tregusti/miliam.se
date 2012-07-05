@@ -8,6 +8,8 @@ expect = chai.expect
 spies = require 'chai-spies'
 chai.use spies
 
+spyfs = require './helpers/spy-fs'
+
 # own code
 ArgumentError = require '../lib/errors/argument'
 NotFoundError = require '../lib/errors/notfound'
@@ -29,29 +31,33 @@ describe 'EntryList', ->
     cp = require 'child_process'
     original = cp.exec
     entries = null
-    beforeEach (done) ->
-      cp.exec = chai.spy (str, callback) ->
-        callback null, "
-/tmp/2011/12/24/aaaa\n
-/tmp/2012/04/13/bbbb\n
-/tmp/2012/06/06/cccc\n
-/tmp/2012/06/13/dddd\n
-".trim()
 
-      EntryList.load datapath, (err, _entries)->
-        entries = _entries
-        done()
+    paths = "/tmp/2011/12/24/aaaa
+             /tmp/2012/04/13/bbbb
+             /tmp/2012/06/06/cccc
+             /tmp/2012/06/13/dddd".split /\s+/
+
+    beforeEach ->
+      # stub shell script
+      cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
+      # stub file reads
+      spyfs.on "#{path}/info.txt", "title: #{Path.basename path}" for path in paths
+
     afterEach ->
+      # revert mock
       cp.exec = original
+      # unstub file reads
+      spyfs.off()
 
-    it 'loads all entries in reversed chronological order'
-    # , ->
-    #   cp.exec.should.have.been.called.once
-    #   entries.should.have.length 4
-    #   entries[3].should.have.property 'basepath', '/tmp/2011/12/24/aaaa'
-    #   entries[2].should.have.property 'basepath', '/tmp/2012/04/13/bbbb'
-    #   entries[1].should.have.property 'basepath', '/tmp/2012/06/06/cccc'
-    #   entries[0].should.have.property 'basepath', '/tmp/2012/06/13/dddd'
+    it 'loads all entries in reversed chronological order', (done) ->
+      EntryList.load '/tmp', (err, entries) ->
+        cp.exec.should.have.been.called.once
+        entries.should.have.length 4
+        entries[3].should.have.property 'basepath', '/tmp/2011/12/24/aaaa'
+        entries[2].should.have.property 'basepath', '/tmp/2012/04/13/bbbb'
+        entries[1].should.have.property 'basepath', '/tmp/2012/06/06/cccc'
+        entries[0].should.have.property 'basepath', '/tmp/2012/06/13/dddd'
+        done()
 
 
 
