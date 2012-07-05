@@ -60,9 +60,12 @@ load = (path, options, callback) ->
   # Error handling
   return callback new ArgumentError('path'), null unless path
 
+  path = Path.join path, part for part in [options.year, options.month, options.date] when part?
+
   child.exec "find -L #{path} -name info.txt | sed 's/\\/info.txt//'", (err, list) ->
     # callback err, null if err
     list = list.trim() or null
+    callback new NotFoundError path unless list
     paths = list.split('\n').sort().reverse()
 
     entries = []

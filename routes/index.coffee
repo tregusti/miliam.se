@@ -9,9 +9,8 @@ datapath = Path.join __dirname, '..', 'data'
 
 exports.list = (req, res, next) ->
   [year, month, date] = req.params
-  EntryList.load datapath, (err, entries) ->
-    # TODO: Readd date filtering
-    # opts = year: year, month: month, date: date
+  opts = year: year, month: month, date: date
+  EntryList.load datapath, opts, (err, entries) ->
 
     if err
       next new NotFoundError req.path
