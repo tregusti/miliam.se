@@ -35,11 +35,9 @@ describe 'EntryList', ->
     paths = "/tmp/2011/12/24/aaaa
              /tmp/2012/04/13/bbbb
              /tmp/2012/06/06/cccc
-             /tmp/2012/06/13/dddd".split /\s+/
+             /tmp/2012/06/06/dddd".split /\s+/
 
     beforeEach ->
-      # stub shell script
-      cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
       # stub file reads
       spyfs.on "#{path}/info.txt", "title: #{Path.basename path}" for path in paths
 
@@ -50,39 +48,38 @@ describe 'EntryList', ->
       spyfs.off()
 
     it 'loads all entries in reversed chronological order', (done) ->
+      # stub shell script
+      cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
       EntryList.load '/tmp', (err, entries) ->
         cp.exec.should.have.been.called.once
         entries.should.have.length 4
         entries[3].should.have.property 'basepath', '/tmp/2011/12/24/aaaa'
         entries[2].should.have.property 'basepath', '/tmp/2012/04/13/bbbb'
         entries[1].should.have.property 'basepath', '/tmp/2012/06/06/cccc'
-        entries[0].should.have.property 'basepath', '/tmp/2012/06/13/dddd'
+        entries[0].should.have.property 'basepath', '/tmp/2012/06/06/dddd'
         done()
 
+    it 'loads all entries with the same date', (done) ->
+      # stub shell script
+      cp.exec = chai.spy (str, callback) -> callback null, paths.slice(2).join('\n')
+      options =
+        year: '2012'
+        month: '06'
+        date: '06'
+      EntryList.load '/tmp', options, (err, entries) ->
+        entries.should.have.length 2
+        entries[1].should.have.property 'basepath', '/tmp/2012/06/06/cccc'
+        entries[0].should.have.property 'basepath', '/tmp/2012/06/06/dddd'
+        done()
 
-
-
-    #
-    # it 'loads all entries with the same date', (done) ->
-    #   opts =  year: '2012', month: '01', date: '11'
-    #
-    #   el.get opts, (err, entries) ->
-    #     expect(entries).to.have.length 2
-    #     # Sort by descending time
-    #     entries[0].should.have.property 'title', 'With image and datetime'
-    #     entries[1].should.have.property 'title', 'Text only'
-    #     done()
-    #
-    # it 'loads all entries within the specified year', (done) ->
-    #   opts =  year: '2012'
-    #
-    #   el.get opts, (err, entries) ->
-    #     expect(entries).to.have.length 3
-    #     done()
-    #
-    # it 'should not find anything in 2010', (done) ->
-    #   opts =  year: '2010'
-    #   el.get opts, (err, entries) ->
-    #     expect(err).to.be.an.instanceof NotFoundError
-    #     expect(entries).to.be.null
-    #     done()
+    it 'loads all entries with the same year', (done) ->
+      # stub shell script
+      cp.exec = chai.spy (str, callback) -> callback null, paths.slice(1).join('\n')
+      options =
+        year: '2012'
+      EntryList.load '/tmp', options, (err, entries) ->
+        entries.should.have.length 3
+        entries[2].should.have.property 'basepath', '/tmp/2012/04/13/bbbb'
+        entries[1].should.have.property 'basepath', '/tmp/2012/06/06/cccc'
+        entries[0].should.have.property 'basepath', '/tmp/2012/06/06/dddd'
+        done()

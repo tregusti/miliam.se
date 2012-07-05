@@ -53,12 +53,17 @@ loadNextEntry = (entries, paths, done) ->
 #           callback null, entries
 
 
-load = (path, callback) ->
-  return callback new ArgumentError 'path' unless path
+load = (path, options, callback) ->
+  # If no options specified, shift arguments
+  [options, callback] = [{}, options] if options instanceof Function
+
+  # Error handling
+  return callback new ArgumentError('path'), null unless path
+
   child.exec "find -L #{path} -name info.txt | sed 's/\\/info.txt//'", (err, list) ->
     # callback err, null if err
     list = list.trim() or null
-    paths = list.split('\n').reverse()
+    paths = list.split('\n').sort().reverse()
 
     entries = []
 
