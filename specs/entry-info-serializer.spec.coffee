@@ -2,8 +2,6 @@ chai = require 'chai'
 should = chai.should()
 expect = chai.expect
 
-Entry = require '../lib/entry'
-
 describe 'EntryInfoSerializer', ->
 
   EntryInfoSerializer = require '../lib/entry-info-serializer'
@@ -13,7 +11,7 @@ describe 'EntryInfoSerializer', ->
   describe 'method deserialize', ->
 
     beforeEach ->
-      @entry = new Entry '/tmp'
+      @entry = {}
 
     it 'should exist', ->
       EntryInfoSerializer.should.respondTo 'deserialize'
