@@ -46,25 +46,10 @@ describe 'Entry', ->
             entry.should.have.a.property 'basepath', Path.resolve spy.dirname
             done()
 
-        describe 'text property', ->
-          it 'defaults to null', (done) ->
-            spy = spyfs.on '/tmp/text-null/info.txt', 'title: hello'
-            Entry.load spy.dirname, (err, entry) ->
-              entry.should.have.property 'text', null
-              done()
 
-          it 'should be set', (done) ->
-            spy = spyfs.on '/tmp/text-prop/info.txt', '\n\nBody text.'
-            Entry.load spy.dirname, (err, entry) ->
-              entry.should.have.property 'text', 'Body text.'
-              done()
 
-          it 'should handle title and several paragraphs of body', (done) ->
-            spy = spyfs.on '/tmp/multi-paras/info.txt', "title: Title\n\nBody text.\n\nMore body text."
-            Entry.load spy.dirname, (err, entry) ->
-              entry.should.have.property 'text', 'Body text.\n\nMore body text.'
-              entry.should.have.property 'title', 'Title'
-              done()
+
+        # TIME PARSING
 
         describe 'time property', ->
 
@@ -106,6 +91,13 @@ describe 'Entry', ->
               entry.time.toLocaleString().should.equal new Date("2011-06-24 15:25:00").toLocaleString()
               done()
 
+
+
+
+
+
+        # HUMANIZED TIME PROPS
+
         describe 'human time', ->
           entry = null
           before (done) ->
@@ -123,6 +115,13 @@ describe 'Entry', ->
             entry.should.have.property 'humanTime', "10:14"
             entry.should.have.property 'humanDate', "6 jun 2012"
 
+
+
+
+
+
+      # TEXT AND BODY
+
       it 'should set both text and html to null when no body', (done) ->
         spy = spyfs.on '/tmp/empty-body/info.txt', 'title: only'
         Entry.load spy.dirname, (err, entry) ->
@@ -130,6 +129,20 @@ describe 'Entry', ->
           entry.should.have.property 'html', null
           done()
 
+
+      describe 'text property', ->
+        it 'defaults to null', (done) ->
+          spy = spyfs.on '/tmp/text-null/info.txt', 'title: hello'
+          Entry.load spy.dirname, (err, entry) ->
+            entry.should.have.property 'text', null
+            done()
+
+        it 'should handle title and several paragraphs of body', (done) ->
+          spy = spyfs.on '/tmp/multi-paras/info.txt', "title: Title\n\nBody text.\n\nMore body text."
+          Entry.load spy.dirname, (err, entry) ->
+            entry.should.have.property 'text', 'Body text.\n\nMore body text.'
+            entry.should.have.property 'title', 'Title'
+            done()
 
 
       describe 'with body', ->
@@ -139,8 +152,6 @@ describe 'Entry', ->
           Entry.load spy.dirname, (err, _entry) ->
             entry = _entry
             done()
-        it 'should have a text property', ->
-          entry.should.have.property 'text'
         it 'should have a html property', ->
           entry.should.have.property 'html'
         it 'html property should be readonly', ->
