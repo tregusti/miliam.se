@@ -84,7 +84,7 @@ app.get ///^
   /?                  # We may have a trailing slash
   $///, routes.list
 app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)$/, routes.entry
-app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)\/(original|normal|thumb)\.jpg$/, routes.entryImage
+app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)\/.*?\.w(320|640|1024)\.jpg$/, routes.entryImage
 app.get "/", routes.index
 app.get "/*", (req, res) -> throw new NotFoundError
 
