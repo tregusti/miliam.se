@@ -17,7 +17,7 @@ exports.list = (req, res, next) ->
       next new NotFoundError req.path
     else
       res.render "list",
-        title: 'Lista',
+        title: ''
         entries: entries
 
 exports.entry = (req, res, next) ->
