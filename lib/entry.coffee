@@ -74,9 +74,9 @@ defineGetters = (entry) ->
     #     else
     #       entry.fire "load"
 
-createImageObject = (name) ->
+createImageObject = (base, name) ->
   o = {}
-  o["w#{w}"] = "#{name}.w#{w}.jpg" for w in [320, 640, 1024]
+  o["w#{w}"] = Path.join base, "#{name}.w#{w}.jpg" for w in [320, 640, 1024]
   o
 
 parseContents = (entry, contents) ->
@@ -88,7 +88,7 @@ parseContents = (entry, contents) ->
     if m
       if m[1] is 'image'
         meta[m[1]] ?= []
-        meta[m[1]].push createImageObject(m[2])
+        meta[m[1]].push createImageObject(entry.basepath, m[2])
       else
         meta[m[1]] = m[2]
 

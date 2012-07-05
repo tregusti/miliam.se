@@ -133,20 +133,20 @@ describe 'Entry', ->
         it 'should have image props', (done) ->
           spy = spyfs.on '/tmp/no-image/info.txt', 'image: image1'
           Entry.load spy.dirname, images: true, (err, entry) ->
-            entry.should.have.deep.property 'images[0].w320', 'image1.w320.jpg'
-            entry.should.have.deep.property 'images[0].w640', 'image1.w640.jpg'
-            entry.should.have.deep.property 'images[0].w1024', 'image1.w1024.jpg'
+            entry.should.have.deep.property 'images[0].w320',  '/tmp/no-image/image1.w320.jpg'
+            entry.should.have.deep.property 'images[0].w640',  '/tmp/no-image/image1.w640.jpg'
+            entry.should.have.deep.property 'images[0].w1024', '/tmp/no-image/image1.w1024.jpg'
             done()
 
         it 'should have props for multiple images', (done) ->
           spy = spyfs.on '/tmp/no-image/info.txt', 'image: sia\nimage: glenn'
           Entry.load spy.dirname, images: true, (err, entry) ->
-            entry.should.have.deep.property 'images[0].w320',  'sia.w320.jpg'
-            entry.should.have.deep.property 'images[0].w640',  'sia.w640.jpg'
-            entry.should.have.deep.property 'images[0].w1024', 'sia.w1024.jpg'
-            entry.should.have.deep.property 'images[1].w320',  'glenn.w320.jpg'
-            entry.should.have.deep.property 'images[1].w640',  'glenn.w640.jpg'
-            entry.should.have.deep.property 'images[1].w1024', 'glenn.w1024.jpg'
+            entry.should.have.deep.property 'images[0].w320',  '/tmp/no-image/sia.w320.jpg'
+            entry.should.have.deep.property 'images[0].w640',  '/tmp/no-image/sia.w640.jpg'
+            entry.should.have.deep.property 'images[0].w1024', '/tmp/no-image/sia.w1024.jpg'
+            entry.should.have.deep.property 'images[1].w320',  '/tmp/no-image/glenn.w320.jpg'
+            entry.should.have.deep.property 'images[1].w640',  '/tmp/no-image/glenn.w640.jpg'
+            entry.should.have.deep.property 'images[1].w1024', '/tmp/no-image/glenn.w1024.jpg'
             done()
 
 
