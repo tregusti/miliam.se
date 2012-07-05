@@ -4,12 +4,12 @@ block content
   article
     header
       h1= title
-    if hasImage
-      img(src=thumb, alt=title)
+    each image in images
+      img(src=data2www(image.w320), alt=title)
     footer
       time(pubdate)
-        = date
+        = humanDate
         = " "
-        = time
+        = humanTime
     section.body
       != html

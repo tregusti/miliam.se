@@ -8,6 +8,8 @@ util = require 'util'
 
 NotFoundError = require './lib/errors/notfound'
 
+routingLog = require('./lib/log') 'Routing'
+
 prod = process.env.NODE_ENV is 'production'
 
 stylusMiddleware = ->
@@ -31,10 +33,12 @@ errorHandler = (err, req, res, next) ->
   # through these "error-handling" middleware
   # allowing you to respond however you like
   if err instanceof NotFoundError
+    routingLog.warn "404: #{req.url} REFERRER: #{req.headers.referer or null}"
     res.render '404.jade',
       title: '404 bebisar borta'
       status: 404
   else
+    routingLog.warn "500: #{req.url} REFERRER: #{req.headers.referer or null} ERROR: #{JSON.stringify err}"
     res.render '500.jade',
       status: 500
       title: 'Nu blev det fel'
@@ -80,7 +84,7 @@ app.get ///^
   /?                  # We may have a trailing slash
   $///, routes.list
 app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)$/, routes.entry
-app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)\/(original|normal|thumb)\.jpg$/, routes.entryImage
+app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)\/.*?\.w(320|640|1024)\.jpg$/, routes.entryImage
 app.get "/", routes.index
 app.get "/*", (req, res) -> throw new NotFoundError
 
