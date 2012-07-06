@@ -70,4 +70,5 @@ desc 'Import if needed'
 task 'import', ->
   basepath = __dirname + "/data/create"
   Importer = require './lib/importer'
-  new Importer basepath
+  Importer.load basepath, (err, entry) ->
+    console.dir [err, entry]
