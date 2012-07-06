@@ -32,6 +32,13 @@ describe 'Entry', ->
 
     describe 'with valid entry data', ->
 
+      it "should be an Entry", (done) ->
+        spy = spyfs.on '/tmp/callback-invocation/info.txt', 'title: Hepp hopp'
+        debugger
+        Entry.load spy.dirname, (err, entry) ->
+          expect(entry).to.be.an.instanceof Entry
+          done()
+
       it 'should invoke callback with entry and no error', (done) ->
         spy = spyfs.on '/tmp/callback-invocation/info.txt', 'hepp: hopp'
         Entry.load spy.dirname, (err, entry) ->
