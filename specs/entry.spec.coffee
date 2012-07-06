@@ -199,36 +199,24 @@ describe 'Entry', ->
           entry.html.should.contain '<p>Paragraph 1'
           entry.html.should.contain '<p>Paragraph 2'
           entry.html.should.contain '<p>Paragraph 3'
-  #
-  # describe 'image parsing', ->
-  #
-  #   it 'should load ok with image', (done) ->
-  #     new Entry(fixture 'with-image').on 'load', done
-  #   it 'should have an image property with null when no images', (done) ->
-  #     entry = new Entry fixture 'only-text'
-  #     entry.on 'load', ->
-  #       entry.should.have.property 'image', null
-  #       done()
-  #   it 'should have an image property with paths', (done) ->
-  #     path = fixture 'with-image'
-  #     entry = new Entry path
-  #     entry.on 'load', ->
-  #       entry.should.have.property 'image'
-  #       entry.image[type].should.equal "#{path}/#{type}.jpg" for type in ['normal', 'thumb', 'original']
-  #       done()
-  #
-  #   it 'does not override info.txt datetime with image datetime', (done) ->
-  #     entry = new Entry fixture 'with-image-and-datetime'
-  #     entry.on 'load', ->
-  #       # +0100 due to winter time
-  #       entry.time.toISOString().should.equal new Date('2012-01-11 10:10:10+0100').toISOString()
-  #       done()
-  #
-  #   it 'sets date and time from original image when omitted in info.txt', (done) ->
-  #     entry = new Entry fixture 'with-image'
-  #     entry.on 'load', ->
-  #       # +0200 due to summer time
-  #       entry.time.toISOString().should.equal '2012-06-11T15:31:45.000Z'
-  #       done()
-  #
-  #   it 'should lookup the timezone from askgeo for images (postponed, build npm package)'
+
+
+
+  it 'should lookup the timezone from askgeo for images (postponed, build npm package)'
+
+
+  # SLUG
+
+  describe "#slug property", ->
+    it "should exist and be null", ->
+      new Entry().should.have.property 'slug', null
+
+    it "sluggifies åäö", ->
+      entry = new Entry
+      entry.title = "hejsan, åäö"
+      entry.slug.should.equal 'hejsan-aao'
+
+    it "lowercases capital letters", ->
+      entry = new Entry
+      entry.title = "ABCabcÅÄÖÉ"
+      entry.slug.should.equal 'abcabcaaoe'

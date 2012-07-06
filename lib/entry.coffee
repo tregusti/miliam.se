@@ -32,6 +32,12 @@ Object.defineProperty Entry::, 'html',
     return null unless @text
     marked @text
 
+Object.defineProperty Entry::, 'slug',
+  enumerable: true,
+  get: ->
+    return null unless @title
+    require('slug') @title.toLowerCase()
+
 Object.defineProperty Entry::, 'humanTime',
   enumerable: true,
   get: ->
