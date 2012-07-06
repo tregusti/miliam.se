@@ -49,7 +49,7 @@ Importer =
       cp.exec "find -L #{entry.basepath} -regex '.*\/.*.jpg$'", (err, str) ->
         return callback err, null if err
 
-        invokations = (generateImages file for file in str.split '\n' when file?)
+        invokations = (generateImages file for file in str.trim().split '\n' when file?)
 
         ok = (images) ->
           entry.images = images if Object.keys(images).length > 0

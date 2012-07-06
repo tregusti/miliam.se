@@ -32,7 +32,7 @@ describe 'Importer', ->
         spy = spyfs.on '/tmp/new/info.txt', 'title: Miliam'
         cp.exec = chai.spy (str, callback) ->
           if /^find .*jpg/.test str
-            callback null, "/tmp/new/glenn.jpg\n/tmp/new/sigyn.jpg"
+            callback null, "/tmp/new/glenn.jpg\n/tmp/new/sigyn.jpg\n"
           else if /^\/usr\/local\/bin\/gm .*echo '(.*?)'$/.test str
             callback null, RegExp.$1
           else
