@@ -37,7 +37,7 @@ namespace 'start', ->
 runSpecs = (params, reporter, done) ->
   spawn "#{__dirname}/node_modules/mocha/bin/mocha", "
       --colors
-      --timeout 2000
+      --timeout 200
       --recursive
       --compilers coffee:coffee-script
       #{params || ''}
