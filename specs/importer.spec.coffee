@@ -31,12 +31,21 @@ describe 'Importer', ->
       beforeEach ->
         spy = spyfs.on '/tmp/new/info.txt', 'title: Miliam'
         cp.exec = chai.spy (str, callback) ->
-          expect(str).to.contain " /tmp/new "
-          callback null, "/tmp/new/glenn.jpg\n/tmp/new/sigyn.jpg"
+          if /^find .*jpg/.test str
+            callback null, "/tmp/new/glenn.jpg\n/tmp/new/sigyn.jpg"
+          else if /^\/usr\/local\/bin\/gm .*echo '(.*?)'$/.test str
+            callback null, RegExp.$1
+          else
+            expect(str).to.equal 'something else...'
+
 
       afterEach ->
         # revert mock
         cp.exec = original
+
+      # If the specs below fails with timeout. It's a bad signal.
+      # Some of the expectations are failing, not timing out
+      # Strange behaviour. Might have to do with Q.
 
       it "should load an entry with a valid path", (done) ->
         Importer.load spy.dirname, (err, entry) ->
@@ -45,9 +54,25 @@ describe 'Importer', ->
           entry.should.have.property 'basepath', spy.dirname
           done()
 
+      it "should invoke graphicsmagick to generate all sizes for each image", (done) ->
+        Importer.load spy.dirname, (err, entry) ->
+
+          cp.exec.__spy.calls.should.have.length 7
+
+          i = 0
+          for file in ['glenn', 'sigyn']
+            for size in [320, 640, 1024]
+              i++
+              cp.exec.__spy.calls[i][0].should.include " -resize #{size}x#{size} "
+              cp.exec.__spy.calls[i][0].should.include "#{file}.jpg"
+              cp.exec.__spy.calls[i][0].should.include "echo '/tmp/new/#{file}.w#{size}.jpg'"
+
+          done()
+
+
       it "should expose images in folder in entry", (done) ->
         Importer.load spy.dirname, (err, entry) ->
-          cp.exec.should.have.been.called.once
+          cp.exec.__spy.calls[0][0].should.include ' /tmp/new '
           expect(entry).to.have.a.property('images').and.is.an.instanceof Array
           entry.images.should.have.length 2
 
