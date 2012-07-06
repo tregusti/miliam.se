@@ -61,22 +61,4 @@ Importer =
         Q.all(invokations).then ok, fail
 
 
-
-# class Importer
-#   constructor: (path) ->
-#     Guard.string 'path', path
-#     log.info "Create new Importer instance"
-#     @basepath = path
-#
-#   entry: (callback) ->
-#     log.debug 'Creating Entry instance'
-#     entry = new Entry @basepath
-#     entry.on 'load', ->
-#       callback null, entry
-#       entry.off 'load'
-#       entry.off 'error'
-#     entry.on 'error', (err) ->
-#       callback err, null
-
-
 module.exports = Importer
