@@ -25,6 +25,8 @@ generateImages = (path) ->
   deferred = Q.defer()
 
   ok = (paths) ->
+    # Why is the next line needed when running for real? Remove and add spec!
+    paths = paths.map (path) -> path[0].trim()
     deferred.resolve
       w320: paths[0]
       w640: paths[1]

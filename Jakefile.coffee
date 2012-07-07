@@ -68,7 +68,10 @@ namespace 'specs', ->
 # IMPORT
 desc 'Import if needed'
 task 'import', ->
-  basepath = __dirname + "/data/create"
+  basepath = __dirname + "/data"
   Importer = require './lib/importer'
-  Importer.load basepath, (err, entry) ->
-    console.dir [err, entry]
+  Importer.load basepath + '/create', (err, entry) ->
+    throw err if err
+    
+    Importer.import entry, basepath, (err) ->
+      throw err if err
