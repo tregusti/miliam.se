@@ -8,6 +8,8 @@ Q = require 'q'
 Entry = require '../entry'
 ArgumentError = require '../errors/argument'
 
+log = require('../log') 'Importer'
+
 generateImage = (path, size) ->
   out = path.replace /\.jpg$/, ".w#{size}.jpg"
   cmd = "/usr/local/bin/gm convert
@@ -43,16 +45,20 @@ moveImages = (entry, to) ->
   deferred = Q.defer()
 
   ok = (errs) ->
-    debugger
-    return deferred.reject(err) for err in errs when err
+    for err in errs when err
+      log.error "Error moving image: #{err.message}"
+      return deferred.reject(err)
     deferred.resolve()
+    log.info "Image files move ok"
 
   fail = (err) ->
+    log.error "Error moving image: #{err.message}"
     deferred.reject err
 
   fs = require 'fs'
   imgs = []
   imgs.push path for size, path of imgset for imgset in entry.images
+
   Q
     .all(Q.ninvoke fs, 'rename', img, Path.join(to, Path.basename(img)) for img in imgs)
     .then(ok, fail)
@@ -66,16 +72,20 @@ Importer =
     Entry.load path, (err, entry) ->
       return callback err, null if err
 
+      log.info "Import entry loaded ok"
       cp.exec "find -L #{entry.basepath} -regex '.*\/.*.jpg$'", (err, str) ->
         return callback err, null if err
 
         invokations = (generateImages file for file in str.trim().split '\n' when file?)
 
         ok = (images) ->
+          log.info "Generated all image sizes ok"
+          log.debug util.inspect images
           entry.images = images if Object.keys(images).length > 0
           callback null, entry
 
         fail = (err) ->
+          log.error "Image generation failed: #{err.message}"
           callback err, null
 
         Q.all(invokations).then ok, fail
@@ -92,8 +102,13 @@ Importer =
 
     mkdirp path, (err) ->
       return callback err, null if err
+
+      log.info "Ensured path to new entry exists: #{path}"
+
       fs.writeFile Path.join(path, 'info.txt'), entry.serialize(), 'utf8', (err) ->
         return callback err, null if err
+
+        log.info "Wrote to new info.txt file"
 
         moveImages(entry, path).then (err) ->
           return callback err if err
