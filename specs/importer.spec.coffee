@@ -2,10 +2,18 @@ chai = require 'chai'
 should = chai.should()
 expect = chai.expect
 
+mockery = require 'mockery'
+fs = require 'fs'
+
 ArgumentError = require '../lib/errors/argument'
 spyfs = require './helpers/spy-fs'
 
 Importer = require '../lib/importer'
+
+# If the specs below fails with timeout. It's a bad signal.
+# Some of the expectations are failing, not timing out
+# Strange behaviour. Might have to do with Q.
+
 
 describe 'Importer', ->
   afterEach ->
@@ -42,10 +50,6 @@ describe 'Importer', ->
       afterEach ->
         # revert mock
         cp.exec = original
-
-      # If the specs below fails with timeout. It's a bad signal.
-      # Some of the expectations are failing, not timing out
-      # Strange behaviour. Might have to do with Q.
 
       it "should load an entry with a valid path", (done) ->
         Importer.load spy.dirname, (err, entry) ->
@@ -88,3 +92,83 @@ describe 'Importer', ->
           entry.images.should.deep.equal [g, s]
 
           done()
+
+  describe "move pickup contents", ->
+    Entry = require '../lib/entry'
+    mkdirp_spy = entry = null
+    originalWriteFile = fs.writeFile
+
+    beforeEach ->
+      entry = new Entry
+      entry.title = "Miliam går på tå"
+      entry.time = new Date 2012, 4, 7, 1, 0, 0
+      entry.text = "Text 1\nText 2\nText 3"
+      entry.images = []
+      entry.images.push
+        w320:  "/tmp/new/image1.w320.jpg"
+        w640:  "/tmp/new/image1.w640.jpg"
+        w1024: "/tmp/new/image1.w1024.jpg"
+      entry.images.push
+        w320:  "/tmp/new/image2.w320.jpg"
+        w640:  "/tmp/new/image2.w640.jpg"
+        w1024: "/tmp/new/image2.w1024.jpg"
+      mockery.enable()
+      mockery.registerAllowable 'slug'
+
+      mkdirp_spy = chai.spy (path, callback) ->
+        expect(path).to.equal "/tmp/data/2012/05/07/miliam-gar-pa-ta"
+        callback null if path
+
+      mockery.registerMock 'mkdirp', mkdirp_spy
+
+
+    afterEach ->
+      mockery.deregisterAll()
+      mockery.disable()
+
+    it "should create folder based on date and title", (done) ->
+      Importer.import entry, '/tmp/data', (err) ->
+        mkdirp_spy.should.have.been.called.once
+        done()
+
+    it "should create a new info.txt based on updated entry", (done) ->
+      entry.serialize = -> "BOGUS"
+      originalRename = fs.rename
+      fs.rename = chai.spy (path1, path2, callback) -> callback null
+      fs.writeFile = chai.spy (path, data, encoding, callback) ->
+        expect(path).to.equal "/tmp/data/2012/05/07/miliam-gar-pa-ta/info.txt"
+        expect(data).to.equal 'BOGUS'
+        expect(encoding).to.equal 'utf8'
+        callback null if path
+
+      Importer.import entry, '/tmp/data', (err) ->
+        fs.writeFile.should.be.called.once
+        fs.rename = originalRename
+        fs.writeFile = originalWriteFile
+        done()
+
+    it "should move the image files to new folder", (done) ->
+      fs.writeFile = chai.spy (path, data, encoding, callback) -> callback null
+      originalRename = fs.rename
+      fs.rename = chai.spy (path1, path2, callback) -> callback null
+
+      Importer.import entry, '/tmp/data', (err) ->
+        fs.rename.should.have.been.called.exactly 6 # times
+
+        expect(fs.rename.__spy.calls[0][0]).to.equal '/tmp/new/image1.w320.jpg'
+        expect(fs.rename.__spy.calls[1][0]).to.equal '/tmp/new/image1.w640.jpg'
+        expect(fs.rename.__spy.calls[2][0]).to.equal '/tmp/new/image1.w1024.jpg'
+        expect(fs.rename.__spy.calls[0][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image1.w320.jpg'
+        expect(fs.rename.__spy.calls[1][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image1.w640.jpg'
+        expect(fs.rename.__spy.calls[2][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image1.w1024.jpg'
+
+        expect(fs.rename.__spy.calls[3][0]).to.equal '/tmp/new/image2.w320.jpg'
+        expect(fs.rename.__spy.calls[4][0]).to.equal '/tmp/new/image2.w640.jpg'
+        expect(fs.rename.__spy.calls[5][0]).to.equal '/tmp/new/image2.w1024.jpg'
+        expect(fs.rename.__spy.calls[3][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image2.w320.jpg'
+        expect(fs.rename.__spy.calls[4][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image2.w640.jpg'
+        expect(fs.rename.__spy.calls[5][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image2.w1024.jpg'
+
+        fs.rename = originalRename
+        fs.writeFile = originalWriteFile
+        done()

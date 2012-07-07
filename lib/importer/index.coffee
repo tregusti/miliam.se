@@ -1,13 +1,12 @@
+cp = require 'child_process'
 Path = require 'path'
-Entry = require '../entry'
+util = require 'util'
 
+sprintf = require('sprintf').sprintf
 Q = require 'q'
 
+Entry = require '../entry'
 ArgumentError = require '../errors/argument'
-# log = require('../log') "Importer"
-
-cp = require('child_process')
-
 
 generateImage = (path, size) ->
   out = path.replace /\.jpg$/, ".w#{size}.jpg"
@@ -40,6 +39,27 @@ generateImages = (path) ->
 
   deferred.promise
 
+moveImages = (entry, to) ->
+  deferred = Q.defer()
+
+  ok = (errs) ->
+    debugger
+    return deferred.reject(err) for err in errs when err
+    deferred.resolve()
+
+  fail = (err) ->
+    deferred.reject err
+
+  fs = require 'fs'
+  imgs = []
+  imgs.push path for size, path of imgset for imgset in entry.images
+  Q
+    .all(Q.ninvoke fs, 'rename', img, Path.join(to, Path.basename(img)) for img in imgs)
+    .then(ok, fail)
+
+  deferred.promise
+
+
 Importer =
   load: (path, callback) ->
     return callback new ArgumentError('path', path), null unless path
@@ -59,6 +79,26 @@ Importer =
           callback err, null
 
         Q.all(invokations).then ok, fail
+
+  import: (entry, basepath, callback) ->
+    # require here, to allow mocking in specs
+    mkdirp = require 'mkdirp'
+    fs = require 'fs'
+
+
+    date = sprintf '%04d/%02d/%02d', entry.time.getFullYear(), entry.time.getMonth() + 1, entry.time.getDate()
+
+    path = Path.join basepath, date, entry.slug
+
+    mkdirp path, (err) ->
+      return callback err, null if err
+      fs.writeFile Path.join(path, 'info.txt'), entry.serialize(), 'utf8', (err) ->
+        return callback err, null if err
+
+        moveImages(entry, path).then (err) ->
+          return callback err if err
+          callback null
+
 
 
 module.exports = Importer
