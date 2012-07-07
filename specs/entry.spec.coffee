@@ -219,3 +219,40 @@ describe 'Entry', ->
       entry = new Entry
       entry.title = "ABCabcÅÄÖÉ"
       entry.slug.should.equal 'abcabcaaoe'
+
+
+  # SERIALIZATION
+
+  describe "#serialize", ->
+    entry = 0
+    beforeEach ->
+      entry = new Entry
+      entry.title = "Miliam går på tå"
+      entry.time = new Date "2012-05-07T01:00:00+0200"
+      entry.text = "Text 1\nText 2\nText 3"
+      entry.images = []
+      entry.images.push
+        w320:  "image1.w320.jpg"
+        w640:  "image1.w640.jpg"
+        w1024: "image1.w1024.jpg"
+      entry.images.push
+        w320:  "image2.w320.jpg"
+        w640:  "image2.w640.jpg"
+        w1024: "image2.w1024.jpg"
+
+    it "should respond to serialize", ->
+      entry.should.respondTo 'serialize'
+      entry.serialize.should.have.length 0
+
+    it "should serialize meta data", ->
+      entry.serialize().should.contain "title: Miliam går på tå"
+      entry.serialize().should.contain "date: 2012-05-07"
+      entry.serialize().should.contain "time: 01:00:00"
+      entry.serialize().should.contain "Text 1\nText 2\nText 3"
+
+    it "should serialize image data for many images", ->
+      entry.serialize().should.contain "image: image1"
+      entry.serialize().should.contain "image: image2"
+      entry.serialize().should.not.contain "image: image0"
+      entry.serialize().should.not.contain "image: image3"
+      entry.serialize().should.not.contain "image: image\n"
