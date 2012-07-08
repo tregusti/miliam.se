@@ -26,7 +26,9 @@ generateImages = (path) ->
 
   ok = (paths) ->
     # Why is the next line needed when running for real? Remove and add spec!
-    paths = paths.map (path) -> path[0].trim()
+    # Every other line seems to be a blank line.
+    paths = (path.trim() for path in paths when path.trim())
+    # paths.push path
     deferred.resolve
       w320: paths[0]
       w640: paths[1]
