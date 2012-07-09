@@ -33,7 +33,7 @@ class Entry
     a.push "title: #{@title}" if @title
     a.push "date: #{date}" if @time
     a.push "time: #{time}" if @time
-    a.push "image: #{image.w320.match(/^(.*?)\.w320\.jpg/)[1]}" for image in @images when image.w320 if @images
+    a.push "image: #{image.original.match(/^(.*?)(\.original)?\.jpg/)[1]}" for image in @images when image.original if @images
     a.push "\n#{@text}" if @text
     a.join '\n'
 
@@ -95,7 +95,7 @@ parseContents = (entry, contents) ->
 
 createImageObject = (base, name) ->
   o = {}
-  o["w#{w}"] = Path.join base, "#{name}.w#{w}.jpg" for w in [320, 640, 1024]
+  o[size] = Path.join base, "#{name}.#{size}.jpg" for size in ['original', 'w320', 'w640', 'w1024']
   o
 
 

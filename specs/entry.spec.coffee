@@ -136,23 +136,17 @@ describe 'Entry', ->
             entry.should.have.property 'images', null
             done()
 
-        it 'should have image props', (done) ->
-          spy = spyfs.on '/tmp/no-image/info.txt', 'image: image1'
-          Entry.load spy.dirname, images: true, (err, entry) ->
-            entry.should.have.deep.property 'images[0].w320',  '/tmp/no-image/image1.w320.jpg'
-            entry.should.have.deep.property 'images[0].w640',  '/tmp/no-image/image1.w640.jpg'
-            entry.should.have.deep.property 'images[0].w1024', '/tmp/no-image/image1.w1024.jpg'
-            done()
-
         it 'should have props for multiple images', (done) ->
           spy = spyfs.on '/tmp/no-image/info.txt', 'image: sia\nimage: glenn'
           Entry.load spy.dirname, images: true, (err, entry) ->
-            entry.should.have.deep.property 'images[0].w320',  '/tmp/no-image/sia.w320.jpg'
-            entry.should.have.deep.property 'images[0].w640',  '/tmp/no-image/sia.w640.jpg'
-            entry.should.have.deep.property 'images[0].w1024', '/tmp/no-image/sia.w1024.jpg'
-            entry.should.have.deep.property 'images[1].w320',  '/tmp/no-image/glenn.w320.jpg'
-            entry.should.have.deep.property 'images[1].w640',  '/tmp/no-image/glenn.w640.jpg'
-            entry.should.have.deep.property 'images[1].w1024', '/tmp/no-image/glenn.w1024.jpg'
+            entry.should.have.deep.property 'images[0].original', '/tmp/no-image/sia.original.jpg'
+            entry.should.have.deep.property 'images[0].w320',     '/tmp/no-image/sia.w320.jpg'
+            entry.should.have.deep.property 'images[0].w640',     '/tmp/no-image/sia.w640.jpg'
+            entry.should.have.deep.property 'images[0].w1024',    '/tmp/no-image/sia.w1024.jpg'
+            entry.should.have.deep.property 'images[1].original', '/tmp/no-image/glenn.original.jpg'
+            entry.should.have.deep.property 'images[1].w320',     '/tmp/no-image/glenn.w320.jpg'
+            entry.should.have.deep.property 'images[1].w640',     '/tmp/no-image/glenn.w640.jpg'
+            entry.should.have.deep.property 'images[1].w1024',    '/tmp/no-image/glenn.w1024.jpg'
             done()
 
 
@@ -232,13 +226,15 @@ describe 'Entry', ->
       entry.text = "Text 1\nText 2\nText 3"
       entry.images = []
       entry.images.push
-        w320:  "image1.w320.jpg"
-        w640:  "image1.w640.jpg"
-        w1024: "image1.w1024.jpg"
+        original: "image1.original.jpg"
+        w320:     "image1.w320.jpg"
+        w640:     "image1.w640.jpg"
+        w1024:    "image1.w1024.jpg"
       entry.images.push
-        w320:  "image2.w320.jpg"
-        w640:  "image2.w640.jpg"
-        w1024: "image2.w1024.jpg"
+        original: "image2.original.jpg"
+        w320:     "image2.w320.jpg"
+        w640:     "image2.w640.jpg"
+        w1024:    "image2.w1024.jpg"
 
     it "should respond to serialize", ->
       entry.should.respondTo 'serialize'
@@ -256,3 +252,11 @@ describe 'Entry', ->
       entry.serialize().should.not.contain "image: image0"
       entry.serialize().should.not.contain "image: image3"
       entry.serialize().should.not.contain "image: image\n"
+
+    it "should remove 'original' if present", ->
+      entry.images[0].original = "image3.original.jpg"
+      entry.serialize().should.contain "image: image3\n"
+
+    it "should do nothing if 'original' isn't present in image name", ->
+      entry.images[0].original = "image3.jpg"
+      entry.serialize().should.contain "image: image3\n"
