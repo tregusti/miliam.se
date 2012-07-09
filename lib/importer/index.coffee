@@ -77,7 +77,7 @@ Importer =
       return callback err, null if err
 
       log.info "Import entry loaded ok"
-      cp.exec "find -L #{entry.basepath} -regex '.*\/.*.jpg$'", (err, str) ->
+      cp.exec "find -L #{entry.basepath} -regex '.*\/.*\.jpg$'", (err, str) ->
         return callback err, null if err
 
         invokations = (generateImages file for file in str.trim().split '\n' when file?)
