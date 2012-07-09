@@ -34,11 +34,11 @@ describe 'Importer', ->
 
     describe "with title only info.txt file", ->
       cp = require 'child_process'
-      original = cp.exec
-      spy = null
+      execOriginal = cp.exec
+      infospy = execspy = null
       beforeEach ->
-        spy = spyfs.on '/tmp/new/info.txt', 'title: Miliam'
-        cp.exec = chai.spy (str, callback) ->
+        infospy = spyfs.on '/tmp/new/info.txt', 'title: Miliam'
+        execspy = cp.exec = chai.spy (str, callback) ->
           if /^find .*jpg/.test str
             callback null, "/tmp/new/glenn.jpg\n/tmp/new/sigyn.jpg\n"
           else if /^\/usr\/local\/bin\/gm .*echo '(.*?)'$/.test str
@@ -49,45 +49,49 @@ describe 'Importer', ->
 
       afterEach ->
         # revert mock
-        cp.exec = original
+        cp.exec = execOriginal
 
       it "should load an entry with a valid path", (done) ->
-        Importer.load spy.dirname, (err, entry) ->
+        Importer.load infospy.dirname, (err, entry) ->
           expect(err).to.be.null
           expect(entry).to.not.be.null
-          entry.should.have.property 'basepath', spy.dirname
+          entry.should.have.property 'basepath', infospy.dirname
           done()
 
       it "should invoke graphicsmagick to generate all sizes for each image", (done) ->
-        Importer.load spy.dirname, (err, entry) ->
+        # save local ref. cp.exec is reloaded sometime later
+        # and make the spec fail if used in expects
+        Importer.load infospy.dirname, (err, entry) ->
 
-          cp.exec.__spy.calls.should.have.length 7
+          execspy.__spy.calls.should.have.length 7
 
           i = 0
           for file in ['glenn', 'sigyn']
             for size in [320, 640, 1024]
               i++
-              cp.exec.__spy.calls[i][0].should.include " -resize #{size}x#{size} "
-              cp.exec.__spy.calls[i][0].should.include "#{file}.jpg"
-              cp.exec.__spy.calls[i][0].should.include "echo '/tmp/new/#{file}.w#{size}.jpg'"
+              execspy.__spy.calls[i][0].should.include " -resize #{size}x#{size} "
+              execspy.__spy.calls[i][0].should.include "#{file}.jpg"
+              execspy.__spy.calls[i][0].should.include "echo '/tmp/new/#{file}.w#{size}.jpg'"
 
           done()
 
 
       it "should expose images in folder in entry", (done) ->
-        Importer.load spy.dirname, (err, entry) ->
-          cp.exec.__spy.calls[0][0].should.include ' /tmp/new '
+        Importer.load infospy.dirname, (err, entry) ->
+          execspy.__spy.calls[0][0].should.include ' /tmp/new '
           expect(entry).to.have.a.property('images').and.is.an.instanceof Array
           entry.images.should.have.length 2
 
           g =
-            w320:  "/tmp/new/glenn.w320.jpg"
-            w640:  "/tmp/new/glenn.w640.jpg"
-            w1024: "/tmp/new/glenn.w1024.jpg"
+            original: "/tmp/new/glenn.jpg"
+            w320:     "/tmp/new/glenn.w320.jpg"
+            w640:     "/tmp/new/glenn.w640.jpg"
+            w1024:    "/tmp/new/glenn.w1024.jpg"
           s =
-            w320:  "/tmp/new/sigyn.w320.jpg"
-            w640:  "/tmp/new/sigyn.w640.jpg"
-            w1024: "/tmp/new/sigyn.w1024.jpg"
+            original: "/tmp/new/sigyn.jpg"
+            w320:     "/tmp/new/sigyn.w320.jpg"
+            w640:     "/tmp/new/sigyn.w640.jpg"
+            w1024:    "/tmp/new/sigyn.w1024.jpg"
 
           entry.images.should.deep.equal [g, s]
 
@@ -105,15 +109,18 @@ describe 'Importer', ->
       entry.text = "Text 1\nText 2\nText 3"
       entry.images = []
       entry.images.push
-        w320:  "/tmp/new/image1.w320.jpg"
-        w640:  "/tmp/new/image1.w640.jpg"
-        w1024: "/tmp/new/image1.w1024.jpg"
+        original: "/tmp/new/image1.jpg"
+        w320:     "/tmp/new/image1.w320.jpg"
+        w640:     "/tmp/new/image1.w640.jpg"
+        w1024:    "/tmp/new/image1.w1024.jpg"
       entry.images.push
-        w320:  "/tmp/new/image2.w320.jpg"
-        w640:  "/tmp/new/image2.w640.jpg"
-        w1024: "/tmp/new/image2.w1024.jpg"
+        original: "/tmp/new/image2.jpg"
+        w320:     "/tmp/new/image2.w320.jpg"
+        w640:     "/tmp/new/image2.w640.jpg"
+        w1024:    "/tmp/new/image2.w1024.jpg"
       mockery.enable()
       mockery.registerAllowable 'slug'
+      mockery.registerAllowable 'fs'
 
       mkdirp_spy = chai.spy (path, callback) ->
         expect(path).to.equal "/tmp/data/2012/05/07/miliam-gar-pa-ta"
@@ -147,28 +154,36 @@ describe 'Importer', ->
         fs.writeFile = originalWriteFile
         done()
 
-    it "should move the image files to new folder", (done) ->
+    it "should move the image files to folder", (done) ->
       fs.writeFile = chai.spy (path, data, encoding, callback) -> callback null
       originalRename = fs.rename
       fs.rename = chai.spy (path1, path2, callback) -> callback null
 
       Importer.import entry, '/tmp/data', (err) ->
-        fs.rename.should.have.been.called.exactly 6 # times
+        fs.rename.should.have.been.called.exactly 8 # times
 
-        expect(fs.rename.__spy.calls[0][0]).to.equal '/tmp/new/image1.w320.jpg'
-        expect(fs.rename.__spy.calls[1][0]).to.equal '/tmp/new/image1.w640.jpg'
-        expect(fs.rename.__spy.calls[2][0]).to.equal '/tmp/new/image1.w1024.jpg'
-        expect(fs.rename.__spy.calls[0][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image1.w320.jpg'
-        expect(fs.rename.__spy.calls[1][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image1.w640.jpg'
-        expect(fs.rename.__spy.calls[2][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image1.w1024.jpg'
+        expect(fs.rename.__spy.calls[0][0]).to.equal '/tmp/new/image1.jpg'
+        expect(fs.rename.__spy.calls[1][0]).to.equal '/tmp/new/image1.w320.jpg'
+        expect(fs.rename.__spy.calls[2][0]).to.equal '/tmp/new/image1.w640.jpg'
+        expect(fs.rename.__spy.calls[3][0]).to.equal '/tmp/new/image1.w1024.jpg'
+        # add original to first file
+        expect(fs.rename.__spy.calls[0][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image1.original.jpg'
+        expect(fs.rename.__spy.calls[1][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image1.w320.jpg'
+        expect(fs.rename.__spy.calls[2][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image1.w640.jpg'
+        expect(fs.rename.__spy.calls[3][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image1.w1024.jpg'
 
-        expect(fs.rename.__spy.calls[3][0]).to.equal '/tmp/new/image2.w320.jpg'
-        expect(fs.rename.__spy.calls[4][0]).to.equal '/tmp/new/image2.w640.jpg'
-        expect(fs.rename.__spy.calls[5][0]).to.equal '/tmp/new/image2.w1024.jpg'
-        expect(fs.rename.__spy.calls[3][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image2.w320.jpg'
-        expect(fs.rename.__spy.calls[4][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image2.w640.jpg'
-        expect(fs.rename.__spy.calls[5][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image2.w1024.jpg'
+        expect(fs.rename.__spy.calls[4][0]).to.equal '/tmp/new/image2.jpg'
+        expect(fs.rename.__spy.calls[5][0]).to.equal '/tmp/new/image2.w320.jpg'
+        expect(fs.rename.__spy.calls[6][0]).to.equal '/tmp/new/image2.w640.jpg'
+        expect(fs.rename.__spy.calls[7][0]).to.equal '/tmp/new/image2.w1024.jpg'
+        # add original to first file
+        expect(fs.rename.__spy.calls[4][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image2.original.jpg'
+        expect(fs.rename.__spy.calls[5][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image2.w320.jpg'
+        expect(fs.rename.__spy.calls[6][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image2.w640.jpg'
+        expect(fs.rename.__spy.calls[7][1]).to.equal '/tmp/data/2012/05/07/miliam-gar-pa-ta/image2.w1024.jpg'
 
         fs.rename = originalRename
         fs.writeFile = originalWriteFile
         done()
+
+    it "should not used generated images as a base for new generation"

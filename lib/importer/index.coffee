@@ -21,15 +21,15 @@ generateImage = (path, size) ->
   # see: https://github.com/kriskowal/q/#adapting-node
   Q.ninvoke cp, 'exec', cmd
 
-generateImages = (path) ->
+generateImages = (original) ->
   deferred = Q.defer()
 
   ok = (paths) ->
     # Why is the next line needed when running for real? Remove and add spec!
     # Every other line seems to be a blank line.
     paths = (path.trim() for path in paths when path.trim())
-    # paths.push path
     deferred.resolve
+      original: original
       w320: paths[0]
       w640: paths[1]
       w1024: paths[2]
@@ -38,9 +38,9 @@ generateImages = (path) ->
     deferred.reject err
 
   Q.all([
-    generateImage(path, 320),
-    generateImage(path, 640),
-    generateImage(path, 1024)
+    generateImage(original, 320),
+    generateImage(original, 640),
+    generateImage(original, 1024)
   ]).then ok, fail
 
   deferred.promise
@@ -63,8 +63,13 @@ moveImages = (entry, to) ->
   imgs = []
   imgs.push path for size, path of imgset for imgset in entry.images
 
+  filename = (old) ->
+    base = Path.basename(img)
+    base = base.replace /\.jpg$/, '.original.jpg' unless /\.w\d+\.jpg$/.test base
+    Path.join to, base
+
   Q
-    .all(Q.ninvoke fs, 'rename', img, Path.join(to, Path.basename(img)) for img in imgs)
+    .all(Q.ninvoke fs, 'rename', img, filename(img) for img in imgs)
     .then(ok, fail)
 
   deferred.promise
