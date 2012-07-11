@@ -27,12 +27,13 @@ class Entry
     @images = null
 
   serialize: ->
-    date = sprintf "%04d-%02d-%02d", @time.getFullYear(), @time.getMonth()+1, @time.getDate()
-    time = sprintf "%02d:%02d:%02d", @time.getHours(), @time.getMinutes(), @time.getSeconds()
+    if @time
+      date = sprintf "%04d-%02d-%02d", @time.getFullYear(), @time.getMonth()+1, @time.getDate()
+      time = sprintf "%02d:%02d:%02d", @time.getHours(), @time.getMinutes(), @time.getSeconds()
     a = []
     a.push "title: #{@title}" if @title
-    a.push "date: #{date}" if @time
-    a.push "time: #{time}" if @time
+    a.push "date: #{date}" if date
+    a.push "time: #{time}" if time
     a.push "image: #{image.original.match(/^(.*?)(\.original)?\.jpg/)[1]}" for image in @images when image.original if @images
     a.push "\n#{@text}" if @text
     a.join '\n'

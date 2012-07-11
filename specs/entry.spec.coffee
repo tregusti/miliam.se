@@ -240,6 +240,11 @@ describe 'Entry', ->
       entry.should.respondTo 'serialize'
       entry.serialize.should.have.length 0
 
+    it "should not fail when no time is set", ->
+      delete entry.time
+      entry.serialize().should.not.contain 'time: '
+      entry.serialize().should.not.contain 'date: '
+
     it "should serialize meta data", ->
       entry.serialize().should.contain "title: Miliam går på tå"
       entry.serialize().should.contain "date: 2012-05-07"
