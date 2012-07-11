@@ -23,16 +23,21 @@ Object::tap = (f) ->
 describe 'Importer', ->
   createDirectory = '/tmp/data/create'
 
+  entry = null
+
   spies =
     gm: null
     findit: null
+    mkdirp: null
     identify: null
 
   beforeEach ->
-    spies.identify = chai.spy 'identify', (cb) -> cb(null, { exif: true })
-    spies.gm = (file) ->
-      expect(file).to.match /\.jpg$/
-      identify: spies.identify
+    entry = new Entry().tap ->
+       @time = new Date
+       @basepath = createDirectory
+
+    spies.identify = chai.spy 'identify', (cb) -> cb null, { exif: true }
+    spies.mkdirp = chai.spy 'mkdirp', (path, cb) -> cb null
     spies.findit =
       find: ->
         EventEmitter = require('events').EventEmitter
@@ -46,8 +51,13 @@ describe 'Importer', ->
       add: (file) -> @_files.push file
       name: 'findit'
     mockery.registerAllowable 'events'
-    mockery.registerMock 'gm', spies.gm
+    mockery.registerAllowable 'slug'
+    mockery.registerMock 'mkdirp', spies.mkdirp
     mockery.registerMock 'findit', spies.findit
+    mockery.registerMock 'gm', (file) ->
+      expect(file).to.match /\.jpg$/
+      identify: spies.identify
+
     mockery.enable()
 
   afterEach ->
@@ -65,15 +75,14 @@ describe 'Importer', ->
       (-> Importer.import null).should.throw ArgumentError
       (-> Importer.import true).should.throw ArgumentError
       (-> Importer.import {}).should.throw ArgumentError
-      (-> Importer.import new Entry).should.not.throw Error
+      (-> Importer.import entry).should.not.throw Error
 
 
 
     it "should not read date from image when specified in info.txt", (done) ->
-      entry = new Entry().tap -> @time = new Date
       Importer.import entry, null, (err) ->
         expect(err).to.be.null
-        spies.gm.should.not.have.been.called
+        spies.identify.should.not.have.been.called
         done()
 
 
@@ -98,8 +107,8 @@ describe 'Importer', ->
             "Date Time Original": date
         callback null, returns
 
-      entry = new Entry().tap ->
-        @basepath = '/tmp/data/create'
+      entry.time = null
+
       Importer.import entry, null, (err) ->
         expect(err).to.be.null
         spies.identify.should.have.been.called.exactly 2 # times
@@ -109,7 +118,16 @@ describe 'Importer', ->
 
 
 
-    it "should create folder base on date and title"
+    it "should create folder based on date and title", (done) ->
+      entry.title = 'Wonderboy'
+      entry.time = new Date('2012-02-28T13:13:13+0100')
+      Importer.import entry, '/tmp/data', (err) ->
+        spies.mkdirp.should.have.been.called.once
+        spies.mkdirp.__spy.calls[0][0].should.equal '/tmp/data/2012/02/28/wonderboy'
+        done()
+
+
+
     it "should generate images in new folder"
     it "should update entry with new image paths"
     it "should move original image"

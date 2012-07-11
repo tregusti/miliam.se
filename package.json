@@ -20,8 +20,8 @@
   },
   "devDependencies": {
     "colors": "*",
-    "mocha": "1.2.x",
-    "chai": "1.0.4",
-    "chai-spies": "0.2.2"
+    "mocha": "1.x",
+    "chai": "*",
+    "chai-spies": "*"
   }
 }

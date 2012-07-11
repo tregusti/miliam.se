@@ -93,6 +93,16 @@ eventuallyResolveImages = (entry) ->
 
 
 eventuallySetDateFromImages = (entry) ->
+  deferred = Q.defer()
+
+  # check if we already have time set
+  if entry.time
+    # if so resolve directly
+    deferred.resolve()
+    # and return immediately
+    return deferred.promise
+
+  # else fetch time from images
   gm = require 'gm'
   parser = (image) ->
     local = Q.defer()
@@ -105,9 +115,8 @@ eventuallySetDateFromImages = (entry) ->
       local.resolve time
     local.promise
 
-  deferred = Q.defer()
   ok = (times) ->
-    time = times.sort().pop()
+    time = times.sort().pop() # Get earliest date available
     entry.time = time
     deferred.resolve()
   fail = (err) ->
@@ -116,7 +125,25 @@ eventuallySetDateFromImages = (entry) ->
   promises = (parser image for image in entry.images or [])
   Q.all(promises).then ok, fail
 
+  # end return promise
   deferred.promise
+
+
+
+eventuallySerializeEntry = (entry) ->
+  deferred = Q.defer()
+  deferred.reject new Error("No date time available for entry") unless entry.time
+
+  # Update base path with new data
+  entry.basepath = Path.join '/tmp', 'data', entry.datePath, entry.slug
+
+  mkdirp = require 'mkdirp'
+  mkdirp entry.basepath, (err) ->
+    throw err if err
+    deferred.resolve()
+
+  deferred.promise
+
 
 Importer =
   import: (entry, basepath, callback) ->
@@ -125,42 +152,11 @@ Importer =
 
     eventuallyResolveImages(entry).then(->
       eventuallySetDateFromImages(entry).then(->
-        # console.dir [entry, arguments, callback instanceof Function]
-        callback null if callback instanceof Function
+        eventuallySerializeEntry(entry).then(->
+          callback null if callback instanceof Function
+        ).end()
       ).end()
     ).end()
-    return
-
-    # require here, to allow mocking in specs
-    mkdirp = require 'mkdirp'
-    fs = require 'fs'
-
-
-    date = sprintf '%04d/%02d/%02d', entry.time.getFullYear(), entry.time.getMonth() + 1, entry.time.getDate()
-
-    path = Path.join basepath, date, entry.slug
-
-    mkdirp path, (err) ->
-      return callback err, null if err
-
-      log.info "Ensured path to new entry exists: #{path}"
-      #
-      # loadImages...
-      #
-      # loadDateFromImage
-      #
-      # all ok?
-      #
-      # generateImages
-      #
-      # fs.writeFile Path.join(path, 'info.txt'), entry.serialize(), 'utf8', (err) ->
-      #   return callback err, null if err
-      #
-      #   log.info "Wrote to new info.txt file"
-      #
-      #   moveImages(entry, path).then (err) ->
-      #     return callback err if err
-      #     callback null
 
 
 
