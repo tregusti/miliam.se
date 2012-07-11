@@ -99,9 +99,6 @@ describe 'Entry', ->
 
 
 
-
-
-
         # HUMANIZED TIME PROPS
 
         describe 'human time', ->
@@ -196,6 +193,31 @@ describe 'Entry', ->
 
 
   it 'should lookup the timezone from askgeo for images (postponed, build npm package)'
+
+
+
+  # DATE PATH
+
+  describe "date path property", ->
+    it "should default to null", ->
+      entry = new Entry
+      expect(entry.datePath).to.be.null
+
+    it "should be read only", ->
+      entry = new Entry
+      entry.datePath = 'Nope'
+      expect(entry.datePath).to.be.null
+
+    it "should generate ok", ->
+      entry = new Entry
+      expect(entry.datePath).to.be.null
+
+      entry.time = new Date(2012, 0, 1)
+      entry.datePath.should.equal '2012/01/01'
+
+      entry.time = new Date(2012, 11, 31)
+      entry.datePath.should.equal '2012/12/31'
+
 
 
   # SLUG

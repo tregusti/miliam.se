@@ -45,6 +45,12 @@ Object.defineProperty Entry::, 'html',
     return null unless @text
     marked @text
 
+Object.defineProperty Entry::, 'datePath',
+  enumerable: true,
+  get: ->
+    return null unless @time
+    return sprintf '%04d/%02d/%02d', @time.getFullYear(), @time.getMonth() + 1, @time.getDate()
+
 Object.defineProperty Entry::, 'slug',
   enumerable: true,
   get: ->
