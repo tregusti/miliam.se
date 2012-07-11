@@ -150,13 +150,11 @@ Importer =
     # Ensure we got an entry to import
     throw new ArgumentError 'entry', entry unless entry instanceof Entry
 
-    eventuallyResolveImages(entry).then(->
-      eventuallySetDateFromImages(entry).then(->
-        eventuallySerializeEntry(entry).then(->
-          callback null if callback instanceof Function
-        ).end()
-      ).end()
-    ).end()
+    eventuallyResolveImages(entry)
+      .then(-> eventuallySetDateFromImages(entry))
+      .then(-> eventuallySerializeEntry(entry))
+      .then(-> callback null if callback instanceof Function)
+      .end()
 
 
 
