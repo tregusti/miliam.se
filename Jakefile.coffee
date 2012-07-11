@@ -70,8 +70,8 @@ desc 'Import if needed'
 task 'import', ->
   basepath = __dirname + "/data"
   Importer = require './lib/importer'
-  Importer.load basepath + '/create', (err, entry) ->
+  Entry.load basepath + '/create', (err, entry) ->
     throw err if err
-    
+
     Importer.import entry, basepath, (err) ->
       throw err if err
