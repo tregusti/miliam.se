@@ -94,17 +94,29 @@ eventuallyResolveImages = (entry) ->
 
 eventuallySetDateFromImages = (entry) ->
   gm = require 'gm'
-
   parser = (image) ->
-    deferred = Q.defer()
+    local = Q.defer()
     gm(image.original).identify (err, info) ->
-      deferred.resolve info
-    deferred.promise
+      local.reject err if err
+      time = info?['Profile-EXIF']?['Date Time Original'] or null
+      if time
+        time = time.replace /^(\d\d\d\d):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)/, '$1-$2-$3 $4:$5:$6'
+        time = new Date time
+      local.resolve time
+    local.promise
+
+  deferred = Q.defer()
+  ok = (times) ->
+    time = times.sort().pop()
+    entry.time = time
+    deferred.resolve()
+  fail = (err) ->
+    throw err
 
   promises = (parser image for image in entry.images or [])
-  Q.all promises
+  Q.all(promises).then ok, fail
 
-
+  deferred.promise
 
 Importer =
   import: (entry, basepath, callback) ->
@@ -113,8 +125,9 @@ Importer =
 
     eventuallyResolveImages(entry).then(->
       eventuallySetDateFromImages(entry).then(->
+        # console.dir [entry, arguments, callback instanceof Function]
         callback null if callback instanceof Function
-      )
+      ).end()
     ).end()
     return
 

@@ -85,11 +85,17 @@ describe 'Importer', ->
 
       spies.findit.add file1
       spies.findit.add file2
-
+      filecounter = 0
       spies.identify = chai.spy 'specific-identify', (callback) ->
+        if ++filecounter is 1
+          date = "2010:10:10 10:10:10"
+        else if filecounter is 2
+          date = "2011:11:11 11:11:11"
+
         expect(arguments).to.have.length 1
         returns =
-          hello: 'Glenn'
+          "Profile-EXIF":
+            "Date Time Original": date
         callback null, returns
 
       entry = new Entry().tap ->
@@ -97,6 +103,8 @@ describe 'Importer', ->
       Importer.import entry, null, (err) ->
         expect(err).to.be.null
         spies.identify.should.have.been.called.exactly 2 # times
+        expect(entry.time).to.not.be.null
+        entry.time.toString().should.equal new Date("2010-10-10T10:10:10+0200").toString()
         done()
 
 
