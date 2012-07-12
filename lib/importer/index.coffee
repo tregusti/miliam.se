@@ -166,6 +166,20 @@ eventuallyGenerateImages = (entry) ->
 
   Q.all promises
 
+eventuallyMoveImages = (entry) ->
+  fs = require 'fs'
+  files = if entry.images?.length > 0
+            image.original for image in entry.images
+          else
+            []
+
+  mover = (file) ->
+    from = "/tmp/data/create/" + file
+    to = Path.join entry.basepath, file
+    Q.ninvoke fs, 'rename', from, to
+
+  Q.all (mover file for file in files)
+
 
 Importer =
   import: (entry, basepath, callback) ->
@@ -183,6 +197,8 @@ Importer =
         eventuallyGenerateImages(entry)
       .then ->
         eventuallySerializeEntry(entry)
+      .then ->
+        eventuallyMoveImages(entry)
       .then ->
         callback null if callback instanceof Function
       .end()

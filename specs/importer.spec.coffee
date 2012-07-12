@@ -26,12 +26,7 @@ describe 'Importer', ->
 
   entry = null
 
-  spies =
-    gm: null
-    findit: null
-    mkdirp: null
-    gm_identify: null
-    gm_save: null
+  spies = {}
 
   beforeEach ->
     entry = new Entry().tap ->
@@ -42,7 +37,8 @@ describe 'Importer', ->
     spies.gm_save = chai.spy 'gm-save', (path, cb) -> cb null
     spies.gm_resize = (w, h) -> gmObject
     spies.mkdirp = chai.spy 'mkdirp', (path, cb) -> cb null
-    spies.writeFile = chai.spy 'writeFile', (path, data, cb) -> cb null
+    spies.writeFile = chai.spy 'fs-writeFile', (path, data, cb) -> cb null
+    spies.rename = chai.spy 'fs-rename', (from, to, cb) -> cb null
     spies.findit =
       find: ->
         EventEmitter = require('events').EventEmitter
@@ -61,6 +57,7 @@ describe 'Importer', ->
     mockery.registerMock 'findit', spies.findit
     mockery.registerMock 'fs',
       writeFile: spies.writeFile
+      rename: spies.rename
 
 
     # Lazy props to make refs overridable in specs
@@ -160,17 +157,36 @@ describe 'Importer', ->
         base = '/tmp/data/2012/06/06/miliam/miliam1'
         expect(spies.gm_save.__spy.calls[0][0]).to.equal base + ".w320.jpg"
         expect(spies.gm_save.__spy.calls[1][0]).to.equal base + ".w640.jpg"
-        expect(spies.gm_save.__spy.calls[2][0]).to.equal base + ".w950.jpg"
+        expect(spies.gm_save.__spy.calls[2][0]).to.equal base + ".w950.jpg" # TODO: 960.
 
         base = '/tmp/data/2012/06/06/miliam/miliam2'
         expect(spies.gm_save.__spy.calls[3][0]).to.equal base + ".w320.jpg"
         expect(spies.gm_save.__spy.calls[4][0]).to.equal base + ".w640.jpg"
-        expect(spies.gm_save.__spy.calls[5][0]).to.equal base + ".w950.jpg"
+        expect(spies.gm_save.__spy.calls[5][0]).to.equal base + ".w950.jpg" # TODO: 960.
 
         done()
 
     it "should update entry with new image paths"
-    it "should move original image"
+
+
+    it "should move original image", (done) ->
+      file1 = "#{createDirectory}/cutie.jpg"
+      spies.findit.add file1
+
+      entry.time = new Date("2012-06-06T19:31:00+0200")
+      entry.title = "Cutie pie"
+
+      Importer.import entry, null, (err) ->
+        expect(err).to.be.null
+        spies.rename.should.have.been.called.once
+
+        expect(spies.rename.__spy.calls[0][0]).to.equal Path.join createDirectory, 'cutie.jpg'
+        expect(spies.rename.__spy.calls[0][1]).to.equal '/tmp/data/2012/06/06/cutie-pie/cutie.jpg'
+
+        done()
+
+
+
 
     it "should write meta data into info.txt", (done) ->
       entry.time = new Date("2012-06-06T19:31:00+0200")
