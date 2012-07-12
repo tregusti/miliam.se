@@ -8,6 +8,8 @@ util = require 'util'
 
 NotFoundError = require './lib/errors/notfound'
 
+config = require './lib/config'
+
 routingLog = require('./lib/log') 'Routing'
 
 prod = process.env.NODE_ENV is 'production'
@@ -89,4 +91,4 @@ app.get "/", routes.index
 app.get "/*", (req, res) -> throw new NotFoundError
 
 http.createServer(app).listen app.get("port"), ->
-  console.log "Express server listening on port " + app.get("port")
+  console.log "miliam.se started on port #{app.get("port")} in #{config.get('env')} environment"
