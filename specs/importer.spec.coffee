@@ -42,6 +42,7 @@ describe 'Importer', ->
     spies.gm_save = chai.spy 'gm-save', (path, cb) -> cb null
     spies.gm_resize = (w, h) -> gmObject
     spies.mkdirp = chai.spy 'mkdirp', (path, cb) -> cb null
+    spies.writeFile = chai.spy 'writeFile', (path, data, cb) -> cb null
     spies.findit =
       find: ->
         EventEmitter = require('events').EventEmitter
@@ -58,6 +59,9 @@ describe 'Importer', ->
     mockery.registerAllowable 'slug'
     mockery.registerMock 'mkdirp', spies.mkdirp
     mockery.registerMock 'findit', spies.findit
+    mockery.registerMock 'fs',
+      writeFile: spies.writeFile
+
 
     # Lazy props to make refs overridable in specs
     gmObject = {}
@@ -167,7 +171,17 @@ describe 'Importer', ->
 
     it "should update entry with new image paths"
     it "should move original image"
-    it "should write meta data into info.txt"
+
+    it "should write meta data into info.txt", (done) ->
+      entry.time = new Date("2012-06-06T19:31:00+0200")
+      entry.title = "I am a boy"
+
+      Importer.import entry, null, (err) ->
+        expect(err).to.be.null
+        spies.writeFile.should.have.been.called.once
+        expect(spies.writeFile.__spy.calls[0][0]).to.equal '/tmp/data/2012/06/06/i-am-a-boy/info.txt'
+        expect(spies.writeFile.__spy.calls[0][1]).to.equal entry.serialize()
+        done()
 
 
 ###

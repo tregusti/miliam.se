@@ -137,7 +137,10 @@ eventuallySerializeEntry = (entry) ->
   mkdirp = require 'mkdirp'
   mkdirp entry.basepath, (err) ->
     throw err if err
-    deferred.resolve()
+
+    require('fs').writeFile Path.join(entry.basepath, 'info.txt'), entry.serialize(), (err) ->
+      throw err if err
+      deferred.resolve()
 
   deferred.promise
 
