@@ -152,9 +152,10 @@ eventuallyGenerateImages = (entry) ->
 
   generate = (image, size) ->
     promises = (for size in [320, 640, 960]
-      out = Path.join entry.basepath, image.original.replace /\.jpg$/, ".w#{size}.jpg"
-      proxy = gm(image.original).resize(size, size)
-      Q.ninvoke proxy, 'write', out
+      from = Path.join __dirname, '../../data/create', image.original
+      to = Path.join entry.basepath, image.original.replace /\.jpg$/, ".w#{size}.jpg"
+      proxy = gm(from).resize(size, size)
+      Q.ncall proxy.write, proxy, to
     )
 
     Q.all promises
