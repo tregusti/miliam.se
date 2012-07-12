@@ -1,6 +1,6 @@
 {
   "name": "miliam",
-  "version": "0.1-pre",
+  "version": "0.1.0-pre",
   "private": true,
   "scripts": {
     "start": "jake start",
