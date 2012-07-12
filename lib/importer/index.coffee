@@ -134,9 +134,6 @@ eventuallySerializeEntry = (entry) ->
   deferred = Q.defer()
   deferred.reject new Error("No date time available for entry") unless entry.time
 
-  # Update base path with new data
-  entry.basepath = Path.join '/tmp', 'data', entry.datePath, entry.slug
-
   mkdirp = require 'mkdirp'
   mkdirp entry.basepath, (err) ->
     throw err if err
@@ -145,15 +142,46 @@ eventuallySerializeEntry = (entry) ->
   deferred.promise
 
 
+eventuallyGenerateImages = (entry) ->
+  deferred = Q.defer()
+
+  gm = require 'gm'
+
+  generate = (image, size) ->
+    promises = (for size in [320, 640, 950]
+      out = Path.join entry.basepath, image.original.replace /\.jpg$/, ".w#{size}.jpg"
+      proxy = gm(image.original).resize(size, size)
+      Q.ninvoke proxy, 'write', out
+    )
+
+    Q.all promises
+
+  promises =  if entry.images and entry.images.length > 0
+                (generate image for image in entry.images)
+              else
+                []
+
+  Q.all promises
+
+
 Importer =
   import: (entry, basepath, callback) ->
     # Ensure we got an entry to import
     throw new ArgumentError 'entry', entry unless entry instanceof Entry
 
     eventuallyResolveImages(entry)
-      .then(-> eventuallySetDateFromImages(entry))
-      .then(-> eventuallySerializeEntry(entry))
-      .then(-> callback null if callback instanceof Function)
+      .then ->
+        eventuallySetDateFromImages(entry)
+      .then ->
+
+        # Update base path with new data
+        entry.basepath = Path.join '/tmp', 'data', entry.datePath, entry.slug
+
+        eventuallyGenerateImages(entry)
+      .then ->
+        eventuallySerializeEntry(entry)
+      .then ->
+        callback null if callback instanceof Function
       .end()
 
 

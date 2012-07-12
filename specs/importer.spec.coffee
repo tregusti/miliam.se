@@ -10,6 +10,7 @@ spyfs = require './helpers/spy-fs'
 
 Importer = require '../lib/importer'
 Entry = require '../lib/entry'
+Path = require 'path'
 
 Object::tap = (f) ->
   f.call @
@@ -29,14 +30,17 @@ describe 'Importer', ->
     gm: null
     findit: null
     mkdirp: null
-    identify: null
+    gm_identify: null
+    gm_save: null
 
   beforeEach ->
     entry = new Entry().tap ->
        @time = new Date
        @basepath = createDirectory
 
-    spies.identify = chai.spy 'identify', (cb) -> cb null, { exif: true }
+    spies.gm_identify = chai.spy 'gm-identify', (cb) -> cb null, { exif: true }
+    spies.gm_save = chai.spy 'gm-save', (path, cb) -> cb null
+    spies.gm_resize = (w, h) -> gmObject
     spies.mkdirp = chai.spy 'mkdirp', (path, cb) -> cb null
     spies.findit =
       find: ->
@@ -54,9 +58,16 @@ describe 'Importer', ->
     mockery.registerAllowable 'slug'
     mockery.registerMock 'mkdirp', spies.mkdirp
     mockery.registerMock 'findit', spies.findit
+
+    # Lazy props to make refs overridable in specs
+    gmObject = {}
+    Object.defineProperty gmObject, 'identify', get: -> spies.gm_identify
+    Object.defineProperty gmObject, 'write',    get: -> spies.gm_save
+    Object.defineProperty gmObject, 'resize',   get: -> spies.gm_resize
+
     mockery.registerMock 'gm', (file) ->
       expect(file).to.match /\.jpg$/
-      identify: spies.identify
+      gmObject
 
     mockery.enable()
 
@@ -82,7 +93,7 @@ describe 'Importer', ->
     it "should not read date from image when specified in info.txt", (done) ->
       Importer.import entry, null, (err) ->
         expect(err).to.be.null
-        spies.identify.should.not.have.been.called
+        spies.gm_identify.should.not.have.been.called
         done()
 
 
@@ -95,7 +106,7 @@ describe 'Importer', ->
       spies.findit.add file1
       spies.findit.add file2
       filecounter = 0
-      spies.identify = chai.spy 'specific-identify', (callback) ->
+      spies.gm_identify = chai.spy 'specific-identify', (callback) ->
         if ++filecounter is 1
           date = "2010:10:10 10:10:10"
         else if filecounter is 2
@@ -111,7 +122,7 @@ describe 'Importer', ->
 
       Importer.import entry, null, (err) ->
         expect(err).to.be.null
-        spies.identify.should.have.been.called.exactly 2 # times
+        spies.gm_identify.should.have.been.called.exactly 2 # times
         expect(entry.time).to.not.be.null
         entry.time.toString().should.equal new Date("2010-10-10T10:10:10+0200").toString()
         done()
@@ -128,7 +139,32 @@ describe 'Importer', ->
 
 
 
-    it "should generate images in new folder"
+    it "should generate images in new folder", (done) ->
+      file1 = "#{createDirectory}/miliam1.jpg"
+      file2 = "#{createDirectory}/miliam2.jpg"
+
+      spies.findit.add file1
+      spies.findit.add file2
+
+      entry.time = new Date("2012-06-06T19:31:00+0200")
+      entry.title = "Miliam"
+
+      Importer.import entry, null, (err) ->
+        expect(err).to.be.null
+        spies.gm_save.should.have.been.called.exactly 6 # times
+
+        base = '/tmp/data/2012/06/06/miliam/miliam1'
+        expect(spies.gm_save.__spy.calls[0][0]).to.equal base + ".w320.jpg"
+        expect(spies.gm_save.__spy.calls[1][0]).to.equal base + ".w640.jpg"
+        expect(spies.gm_save.__spy.calls[2][0]).to.equal base + ".w950.jpg"
+
+        base = '/tmp/data/2012/06/06/miliam/miliam2'
+        expect(spies.gm_save.__spy.calls[3][0]).to.equal base + ".w320.jpg"
+        expect(spies.gm_save.__spy.calls[4][0]).to.equal base + ".w640.jpg"
+        expect(spies.gm_save.__spy.calls[5][0]).to.equal base + ".w950.jpg"
+
+        done()
+
     it "should update entry with new image paths"
     it "should move original image"
     it "should write meta data into info.txt"
