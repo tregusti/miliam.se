@@ -2,6 +2,8 @@ fs = require 'fs'
 child = require 'child_process'
 require 'colors'
 
+Entry = require './lib/entry'
+
 invoke = (tasks) ->
   tasks.forEach (task) ->
     console.log "Invoking #{task.blue}:"
