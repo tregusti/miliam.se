@@ -1,78 +1,10 @@
-# cp = require 'child_process'
 Path = require 'path'
-# util = require 'util'
-#
-# sprintf = require('sprintf').sprintf
 Q = require 'q'
-#
+config = require '../config'
+
 Entry = require '../entry'
 ArgumentError = require '../errors/argument'
-
 log = require('../log') 'Importer'
-
-# generateImage = (path, size) ->
-#   out = path.replace /\.jpg$/, ".w#{size}.jpg"
-#   cmd = "/usr/local/bin/gm convert
-#           -size #{size}x#{size}
-#           #{path}
-#           -resize #{size}x#{size}
-#           #{out} && echo '#{out}'"
-#   # create promise and return it
-#   # see: https://github.com/kriskowal/q/#adapting-node
-#   Q.ninvoke cp, 'exec', cmd
-#
-# generateImages = (original) ->
-#   deferred = Q.defer()
-#
-#   ok = (paths) ->
-#     # Why is the next line needed when running for real? Remove and add spec!
-#     # Every other line seems to be a blank line.
-#     paths = (path.trim() for path in paths when path.trim())
-#     deferred.resolve
-#       original: original
-#       w320: paths[0]
-#       w640: paths[1]
-#       w1024: paths[2]
-#
-#   fail = (err) ->
-#     deferred.reject err
-#
-#   Q.all([
-#     generateImage(original, 320),
-#     generateImage(original, 640),
-#     generateImage(original, 1024)
-#   ]).then ok, fail
-#
-#   deferred.promise
-#
-# moveImages = (entry, to) ->
-#   deferred = Q.defer()
-#
-#   ok = (errs) ->
-#     for err in errs when err
-#       log.error "Error moving image: #{err.message}"
-#       return deferred.reject(err)
-#     deferred.resolve()
-#     log.info "Image files move ok"
-#
-#   fail = (err) ->
-#     log.error "Error moving image: #{err.message}"
-#     deferred.reject err
-#
-#   fs = require 'fs'
-#   imgs = []
-#   imgs.push path for size, path of imgset for imgset in entry.images
-#
-#   filename = (old) ->
-#     base = Path.basename(img)
-#     base = base.replace /\.jpg$/, '.original.jpg' unless /\.w\d+\.jpg$/.test base
-#     Path.join to, base
-#
-#   Q
-#     .all(Q.ninvoke fs, 'rename', img, filename(img) for img in imgs)
-#     .then(ok, fail)
-#
-#   deferred.promise
 
 eventuallyResolveImages = (entry) ->
   from = Path.resolve entry.basepath
@@ -147,12 +79,11 @@ eventuallySerializeEntry = (entry) ->
 
 eventuallyGenerateImages = (entry) ->
   deferred = Q.defer()
-
   gm = require 'gm'
 
   generate = (image, size) ->
     promises = (for size in [320, 640, 960]
-      from = Path.join __dirname, '../../data/create', image.original
+      from = Path.join config.get('paths:create'), image.original
       to = Path.join entry.basepath, image.original.replace /\.jpg$/, ".w#{size}.jpg"
       proxy = gm(from).resize(size, size)
       Q.ncall proxy.write, proxy, to
@@ -175,7 +106,7 @@ eventuallyMoveImages = (entry) ->
             []
 
   mover = (file) ->
-    from = "/tmp/data/create/" + file
+    from = Path.join config.get('paths:create'), file
     to = Path.join entry.basepath, file
     Q.ninvoke fs, 'rename', from, to
 
