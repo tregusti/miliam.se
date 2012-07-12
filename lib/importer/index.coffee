@@ -151,7 +151,7 @@ eventuallyGenerateImages = (entry) ->
   gm = require 'gm'
 
   generate = (image, size) ->
-    promises = (for size in [320, 640, 950]
+    promises = (for size in [320, 640, 960]
       out = Path.join entry.basepath, image.original.replace /\.jpg$/, ".w#{size}.jpg"
       proxy = gm(image.original).resize(size, size)
       Q.ninvoke proxy, 'write', out

@@ -157,12 +157,12 @@ describe 'Importer', ->
         base = '/tmp/data/2012/06/06/miliam/miliam1'
         expect(spies.gm_save.__spy.calls[0][0]).to.equal base + ".w320.jpg"
         expect(spies.gm_save.__spy.calls[1][0]).to.equal base + ".w640.jpg"
-        expect(spies.gm_save.__spy.calls[2][0]).to.equal base + ".w950.jpg" # TODO: 960.
+        expect(spies.gm_save.__spy.calls[2][0]).to.equal base + ".w960.jpg"
 
         base = '/tmp/data/2012/06/06/miliam/miliam2'
         expect(spies.gm_save.__spy.calls[3][0]).to.equal base + ".w320.jpg"
         expect(spies.gm_save.__spy.calls[4][0]).to.equal base + ".w640.jpg"
-        expect(spies.gm_save.__spy.calls[5][0]).to.equal base + ".w950.jpg" # TODO: 960.
+        expect(spies.gm_save.__spy.calls[5][0]).to.equal base + ".w960.jpg"
 
         done()
 
