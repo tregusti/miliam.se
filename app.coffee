@@ -12,7 +12,7 @@ config = require './lib/config'
 
 routingLog = require('./lib/log') 'Routing'
 
-prod = process.env.NODE_ENV is 'production'
+prod = config.get('env') is 'production'
 
 stylusMiddleware = ->
   compile = (str, path) ->
@@ -47,7 +47,7 @@ errorHandler = (err, req, res, next) ->
 
 app = express()
 app.configure ->
-  app.set "port", process.env.PORT or 3000
+  app.set "port", config.get 'port'
   app.set "views", __dirname + "/views"
   app.set "view engine", "jade"
   app.use express.favicon()
