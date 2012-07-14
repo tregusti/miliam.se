@@ -1,4 +1,5 @@
 nconf = require 'nconf'
+Path = require 'path'
 
 nconf.use 'memory'
 
@@ -8,6 +9,7 @@ nconf.defaults
   paths:
     create: '/tmp/data/create'
     data:   '/tmp/data'
+    log:    Path.join(__dirname, '..', '..', 'log')
 
 nconf.file file: '../config.json'
 

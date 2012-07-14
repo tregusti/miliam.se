@@ -1,8 +1,10 @@
 Path = require 'path'
 winston = require 'winston'
+config = require './config'
+
 # eyes = require('eyes').inspector stream: null
 
-LOG_LOCATION = Path.resolve Path.join __dirname, '..', '..', 'log'
+LOG_LOCATION = config.get 'paths:log'
 
 consoleTransport = new winston.transports.Console
   colorize: true
