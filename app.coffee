@@ -68,7 +68,7 @@ require('./lib/age').attach app
 
 app.locals.use (req, res) ->
   res.locals.data2www = (path) ->
-    datapath = Path.join __dirname, 'data'
+    datapath = config.get 'paths:data'
     path = Path.resolve path
     if path.substr(0, datapath.length) is not datapath
       throw new Error 'Path not inside data path'
