@@ -1,27 +1,18 @@
-nconf = require 'nconf'
+module.exports = nconf = require 'nconf'
 Path = require 'path'
 
-nconf.use 'memory'
-
-nconf.defaults
-  env: 'test'
-  port: 4000
-  paths:
-    create: '/tmp/data/create'
-    data:   '/tmp/data'
-    log:    Path.join(__dirname, '..', '..', 'log')
-
-nconf.file file: '../config.json'
-
-# Port
-nconf.set 'port', process.env.PORT || nconf.get 'port'
-
-# Environment
 env = if process.env.NODE_ENV and process.env.NODE_ENV.match /^(development|production|test)$/
         process.env.NODE_ENV
       else
-        nconf.get 'env'
+        "test"
+
+APPDIR = Path.resolve Path.join __dirname, '..'
+
+nconf.use 'memory',
+  loadFrom: [
+    "#{APPDIR}/config/all.json",
+    "#{APPDIR}/config/#{env}.json"
+  ]
+
 nconf.set 'env', env
 process.env.NODE_ENV = env
-
-module.exports = nconf

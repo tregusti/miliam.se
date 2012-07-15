@@ -1,0 +1,7 @@
+{
+  "paths": {
+    "data":   "/tmp/data",
+    "create": "/tmp/create",
+    "log":    "/tmp/log"
+  }
+}
