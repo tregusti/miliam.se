@@ -1,6 +1,5 @@
 Path = require 'path'
 Q = require 'q'
-config = require '../config'
 
 Entry = require '../entry'
 ArgumentError = require '../errors/argument'

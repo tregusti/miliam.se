@@ -5,11 +5,11 @@ stylus = require 'stylus'
 nib = require 'nib'
 util = require 'util'
 
+require './setup'
+
 NotFoundError = require './lib/errors/notfound'
 routes = require "./routes"
 routingLog = require('./lib/log') 'Routing'
-
-config = require './lib/config'
 
 prod = config.get('env') is 'production'
 

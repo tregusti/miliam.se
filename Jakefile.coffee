@@ -2,6 +2,8 @@ fs = require 'fs'
 child = require 'child_process'
 require 'colors'
 
+require './setup'
+
 Entry = require './lib/entry'
 
 invoke = (tasks) ->
@@ -42,6 +44,8 @@ runSpecs = (params, reporter, done) ->
       --timeout 200
       --recursive
       --compilers coffee:coffee-script
+      --require coffee-script
+      --require specs/_setup.coffee
       #{params || ''}
       --reporter #{reporter || 'dot'}
       specs
