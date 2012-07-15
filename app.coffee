@@ -1,16 +1,15 @@
 Path = require "path"
 express = require "express"
-routes = require "./routes"
 http = require "http"
 stylus = require 'stylus'
 nib = require 'nib'
 util = require 'util'
 
 NotFoundError = require './lib/errors/notfound'
+routes = require "./routes"
+routingLog = require('./lib/log') 'Routing'
 
 config = require './lib/config'
-
-routingLog = require('./lib/log') 'Routing'
 
 prod = config.get('env') is 'production'
 
