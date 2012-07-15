@@ -2,15 +2,11 @@ Path = require 'path'
 winston = require 'winston'
 config = require './config'
 
-# eyes = require('eyes').inspector stream: null
-
-LOG_LOCATION = config.get 'paths:log'
-
 consoleTransport = new winston.transports.Console
   colorize: true
 
 fileTransport = new winston.transports.File
-  filename: Path.join(LOG_LOCATION, 'application.log')
+  filename: config.get 'paths:log'
 
 module.exports = (prefix) ->
   throw new Error "No prefix specified for logger" unless prefix?

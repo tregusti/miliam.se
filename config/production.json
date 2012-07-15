@@ -1,3 +1,6 @@
 {
-  "port":     6100
+  "port":     6100,
+  "paths": {
+    "log":    "../../log/production.log"
+  }
 }
