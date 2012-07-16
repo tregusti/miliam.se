@@ -9,7 +9,7 @@ require './setup'
 
 NotFoundError = require './lib/errors/notfound'
 routes = require "./routes"
-routingLog = require('./lib/log') 'Routing'
+log = require('./lib/log') ''
 
 prod = config.get('env') is 'production'
 
@@ -34,12 +34,12 @@ errorHandler = (err, req, res, next) ->
   # through these "error-handling" middleware
   # allowing you to respond however you like
   if err instanceof NotFoundError
-    routingLog.warn "404: #{req.url} REFERRER: #{req.headers.referer or null}"
+    log.warn "404: #{req.url} REFERRER: #{req.headers.referer or null}"
     res.render '404.jade',
       title: '404 bebisar borta'
       status: 404
   else
-    routingLog.warn "500: #{req.url} REFERRER: #{req.headers.referer or null} ERROR: #{JSON.stringify err}"
+    log.warn "500: #{req.url} REFERRER: #{req.headers.referer or null} ERROR: #{JSON.stringify err}"
     res.render '500.jade',
       status: 500
       title: 'Nu blev det fel'
@@ -90,4 +90,4 @@ app.get "/", routes.index
 app.get "/*", (req, res) -> throw new NotFoundError
 
 http.createServer(app).listen app.get("port"), ->
-  console.log "miliam.se started on port #{app.get("port")} in #{config.get('env')} environment"
+  log.info "miliam.se started on port #{app.get("port")} in #{config.get('env')} environment"
