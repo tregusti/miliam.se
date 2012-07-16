@@ -280,6 +280,11 @@ describe 'Entry', ->
       entry.serialize().should.not.contain "image: image3"
       entry.serialize().should.not.contain "image: image\n"
 
+    it "should not serialize image data for generated images", ->
+      entry.serialize().should.not.contain "image: image1.w320"
+      entry.serialize().should.not.contain "image: image1.w640"
+      entry.serialize().should.not.contain "image: image1.w1024"
+
     it "should remove 'original' if present", ->
       entry.images[0].original = "image3.original.jpg"
       entry.serialize().should.contain "image: image3\n"
