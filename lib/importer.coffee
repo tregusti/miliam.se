@@ -59,19 +59,28 @@ eventuallySetDateFromImages = (entry) ->
   # end return promise
   deferred.promise
 
+eventuallyCreateFolder = (entry) ->
+  deferred = Q.defer()
 
+  basepath = Path.join config.get('paths:data'), entry.datePath, entry.slug
+
+  mkdirp = require 'mkdirp'
+  mkdirp basepath, (err) ->
+    throw err if err
+
+    entry.basepath = basepath
+    deferred.resolve()
+
+  deferred
 
 eventuallySerializeEntry = (entry) ->
   deferred = Q.defer()
+
   deferred.reject new Error("No date time available for entry") unless entry.time
 
-  mkdirp = require 'mkdirp'
-  mkdirp entry.basepath, (err) ->
+  require('fs').writeFile Path.join(entry.basepath, 'info.txt'), entry.serialize(), (err) ->
     throw err if err
-
-    require('fs').writeFile Path.join(entry.basepath, 'info.txt'), entry.serialize(), (err) ->
-      throw err if err
-      deferred.resolve()
+    deferred.resolve()
 
   deferred.promise
 
@@ -121,10 +130,8 @@ Importer =
       .then ->
         eventuallySetDateFromImages(entry)
       .then ->
-
-        # Update base path with new data
-        entry.basepath = Path.join '/tmp', 'data', entry.datePath, entry.slug
-
+        eventuallyCreateFolder(entry)
+      .then ->
         eventuallyGenerateImages(entry)
       .then ->
         eventuallySerializeEntry(entry)

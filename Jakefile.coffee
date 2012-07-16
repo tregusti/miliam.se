@@ -1,5 +1,6 @@
 fs = require 'fs'
 child = require 'child_process'
+Path = require 'path'
 require 'colors'
 
 require './setup'
@@ -82,7 +83,7 @@ desc 'Import if needed'
 task 'import', ->
   basepath = __dirname + "/data"
   Importer = require './lib/importer'
-  Entry.load basepath + '/create', (err, entry) ->
+  Entry.load config.get('paths:create'), (err, entry) ->
     throw err if err
 
     Importer.import entry, basepath, (err) ->
