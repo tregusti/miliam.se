@@ -8,16 +8,6 @@ Guard = require("./guard")
 
 log = require('./log') 'Entry'
 
-# getImageDate = (path, callback) ->
-#   gm(path).identify (err, identity) ->
-#     date = identity?['Profile-EXIF']?['Date Time Original'] || null
-#     # graphicsmagick uses bad format for dates: YYYY:MM:DD HH:MM:SS
-#     # date separator should be '-', not ':'
-#     if date
-#       date = date.replace /^(\d\d\d\d):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)/, '$1-$2-$3 $4:$5:$6'
-#       date = new Date date
-#     callback date
-
 class Entry
   constructor: ->
     @basepath = null
