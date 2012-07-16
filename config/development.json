@@ -1,6 +1,8 @@
 {
-  "port":     3000,
-  "paths": {
-    "log":    "../../log/development.log"
-  }
+  "log": {
+    "location": "../log/development.log",
+    "console": true,
+    "file": true
+  },
+  "port": 3000
 }

@@ -1,6 +1,8 @@
 {
   "port":     6100,
-  "paths": {
-    "log":    "../../log/production.log"
+  "log": {
+    "location": "../log/production.log",
+    "console": false,
+    "file": true
   }
 }

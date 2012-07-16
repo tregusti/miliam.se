@@ -1,7 +1,11 @@
 {
   "paths": {
     "data":   "/tmp/data",
-    "create": "/tmp/create",
-    "log":    "/tmp/miliam.se.test.log"
+    "create": "/tmp/create"
+  },
+  "log": {
+    "location": "../log/test.log",
+    "console": false,
+    "file": true
   }
 }
