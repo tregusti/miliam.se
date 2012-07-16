@@ -2,6 +2,8 @@ fs = require 'fs'
 child = require 'child_process'
 require 'colors'
 
+require './setup'
+
 Entry = require './lib/entry'
 
 invoke = (tasks) ->
@@ -9,8 +11,10 @@ invoke = (tasks) ->
     console.log "Invoking #{task.blue}:"
     jake.Task[task].invoke()
 
-spawn = (cmd, args, done) ->
-  cmd = child.spawn cmd, args
+spawn = (cmd, args, env, done) ->
+  env = CoffeeScript.helpers.merge {}, env or {}
+  env = CoffeeScript.helpers.merge process.env, env
+  cmd = child.spawn cmd, args, env: env
   cmd.stdout.on 'data', (data) -> process.stdout.write data
   cmd.stderr.on 'data', (data) -> process.stderr.write data
   cmd.on 'exit', done if done?
@@ -25,27 +29,33 @@ task 'default', ->
     console.log stdout
 
 # RUNNER
-desc "Start up the server"
-task "start", ->
-  spawn "#{__dirname}/node_modules/coffee-script/bin/coffee", ["#{__dirname}/app.coffee"]
-
-namespace 'start', ->
-  desc "Start a self-resarting development server"
+namespace 'server', ->
+  desc "Start up the server in development mode"
   task 'dev', ->
-    spawn "supervisor", "-e js\|jade\|coffee -w routes,views,. app.coffee".split " "
+    spawn "supervisor", "-e js\|jade\|coffee -w routes,views,. app.coffee".split(" "),
+      NODE_ENV: 'development'
+
+  desc "Start up the server in production mode"
+  task 'prod', ->
+    spawn "#{__dirname}/node_modules/coffee-script/bin/coffee", ["#{__dirname}/app.coffee"],
+      NODE_ENV: 'production'
 
 
 # SPECS
 runSpecs = (params, reporter, done) ->
+  env =
+    NODE_ENV: 'test'
   spawn "#{__dirname}/node_modules/mocha/bin/mocha", "
       --colors
       --timeout 200
       --recursive
       --compilers coffee:coffee-script
+      --require coffee-script
+      --require setup.coffee
       #{params || ''}
       --reporter #{reporter || 'dot'}
       specs
-  ".trim().split(/\s+/), done
+  ".trim().split(/\s+/), env, done
 
 desc 'Run all specs'
 task 'specs', (params) ->

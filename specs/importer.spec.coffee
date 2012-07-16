@@ -22,7 +22,7 @@ Object::tap = (f) ->
 
 
 describe 'Importer', ->
-  createDirectory = '/tmp/data/create'
+  createDirectory = config.get 'paths:create'
 
   entry = null
 
@@ -133,16 +133,16 @@ describe 'Importer', ->
     it "should create folder based on date and title", (done) ->
       entry.title = 'Wonderboy'
       entry.time = new Date('2012-02-28T13:13:13+0100')
-      Importer.import entry, '/tmp/data', (err) ->
+      Importer.import entry, config.get('paths:data'), (err) ->
         spies.mkdirp.should.have.been.called.once
-        spies.mkdirp.__spy.calls[0][0].should.equal '/tmp/data/2012/02/28/wonderboy'
+        spies.mkdirp.__spy.calls[0][0].should.equal Path.join config.get('paths:data'), '2012/02/28/wonderboy'
         done()
 
 
 
     it "should generate images in new folder", (done) ->
-      file1 = "#{createDirectory}/miliam1.jpg"
-      file2 = "#{createDirectory}/miliam2.jpg"
+      file1 = "#{config.get 'paths:create'}/miliam1.jpg"
+      file2 = "#{config.get 'paths:create'}/miliam2.jpg"
 
       spies.findit.add file1
       spies.findit.add file2
@@ -154,12 +154,12 @@ describe 'Importer', ->
         expect(err).to.be.null
         spies.gm_save.should.have.been.called.exactly 6 # times
 
-        base = '/tmp/data/2012/06/06/miliam/miliam1'
+        base = Path.join config.get('paths:data'), '2012/06/06/miliam/miliam1'
         expect(spies.gm_save.__spy.calls[0][0]).to.equal base + ".w320.jpg"
         expect(spies.gm_save.__spy.calls[1][0]).to.equal base + ".w640.jpg"
         expect(spies.gm_save.__spy.calls[2][0]).to.equal base + ".w960.jpg"
 
-        base = '/tmp/data/2012/06/06/miliam/miliam2'
+        base = Path.join config.get('paths:data'), '2012/06/06/miliam/miliam2'
         expect(spies.gm_save.__spy.calls[3][0]).to.equal base + ".w320.jpg"
         expect(spies.gm_save.__spy.calls[4][0]).to.equal base + ".w640.jpg"
         expect(spies.gm_save.__spy.calls[5][0]).to.equal base + ".w960.jpg"
@@ -170,7 +170,7 @@ describe 'Importer', ->
 
 
     it "should move original image", (done) ->
-      file1 = "#{createDirectory}/cutie.jpg"
+      file1 = "#{config.get('paths:create')}/cutie.jpg"
       spies.findit.add file1
 
       entry.time = new Date("2012-06-06T19:31:00+0200")
@@ -180,8 +180,8 @@ describe 'Importer', ->
         expect(err).to.be.null
         spies.rename.should.have.been.called.once
 
-        expect(spies.rename.__spy.calls[0][0]).to.equal Path.join createDirectory, 'cutie.jpg'
-        expect(spies.rename.__spy.calls[0][1]).to.equal '/tmp/data/2012/06/06/cutie-pie/cutie.jpg'
+        expect(spies.rename.__spy.calls[0][0]).to.equal Path.join config.get('paths:create'), 'cutie.jpg'
+        expect(spies.rename.__spy.calls[0][1]).to.equal Path.join config.get('paths:data'), '2012/06/06/cutie-pie/cutie.jpg'
 
         done()
 
@@ -195,6 +195,6 @@ describe 'Importer', ->
       Importer.import entry, null, (err) ->
         expect(err).to.be.null
         spies.writeFile.should.have.been.called.once
-        expect(spies.writeFile.__spy.calls[0][0]).to.equal '/tmp/data/2012/06/06/i-am-a-boy/info.txt'
+        expect(spies.writeFile.__spy.calls[0][0]).to.equal config.get('paths:data') + '/2012/06/06/i-am-a-boy/info.txt'
         expect(spies.writeFile.__spy.calls[0][1]).to.equal entry.serialize()
         done()

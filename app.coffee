@@ -1,16 +1,17 @@
 Path = require "path"
 express = require "express"
-routes = require "./routes"
 http = require "http"
 stylus = require 'stylus'
 nib = require 'nib'
 util = require 'util'
 
+require './setup'
+
 NotFoundError = require './lib/errors/notfound'
+routes = require "./routes"
+log = require('./lib/log') ''
 
-routingLog = require('./lib/log') 'Routing'
-
-prod = process.env.NODE_ENV is 'production'
+prod = config.get('env') is 'production'
 
 stylusMiddleware = ->
   compile = (str, path) ->
@@ -33,19 +34,19 @@ errorHandler = (err, req, res, next) ->
   # through these "error-handling" middleware
   # allowing you to respond however you like
   if err instanceof NotFoundError
-    routingLog.warn "404: #{req.url} REFERRER: #{req.headers.referer or null}"
+    log.warn "404: #{req.url} REFERRER: #{req.headers.referer or null}"
     res.render '404.jade',
       title: '404 bebisar borta'
       status: 404
   else
-    routingLog.warn "500: #{req.url} REFERRER: #{req.headers.referer or null} ERROR: #{JSON.stringify err}"
+    log.warn "500: #{req.url} REFERRER: #{req.headers.referer or null} ERROR: #{JSON.stringify err}"
     res.render '500.jade',
       status: 500
       title: 'Nu blev det fel'
 
 app = express()
 app.configure ->
-  app.set "port", process.env.PORT or 3000
+  app.set "port", config.get 'port'
   app.set "views", __dirname + "/views"
   app.set "view engine", "jade"
   app.use express.favicon()
@@ -66,7 +67,7 @@ require('./lib/age').attach app
 
 app.locals.use (req, res) ->
   res.locals.data2www = (path) ->
-    datapath = Path.join __dirname, 'data'
+    datapath = config.get 'paths:data'
     path = Path.resolve path
     if path.substr(0, datapath.length) is not datapath
       throw new Error 'Path not inside data path'
@@ -89,4 +90,4 @@ app.get "/", routes.index
 app.get "/*", (req, res) -> throw new NotFoundError
 
 http.createServer(app).listen app.get("port"), ->
-  console.log "Express server listening on port " + app.get("port")
+  log.info "miliam.se started on port #{app.get("port")} in #{config.get('env')} environment"
