@@ -5,7 +5,7 @@ Entry = require '../lib/entry'
 EntryList = require '../lib/entry-list'
 NotFoundError = require '../lib/errors/notfound'
 
-datapath = Path.join __dirname, '..', 'data'
+datapath = config.get 'paths:data'
 
 exports.list = (req, res, next) ->
   [year, month, date] = req.params
@@ -26,5 +26,5 @@ exports.entry = (req, res, next) ->
     res.render "entry", entry
 
 exports.entryImage = (req, res) ->
-  middleware = express.static __dirname + "/../data"
+  middleware = express.static config.get 'paths:data'
   middleware req, res
