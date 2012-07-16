@@ -71,7 +71,7 @@ eventuallyCreateFolder = (entry) ->
     entry.basepath = basepath
     deferred.resolve()
 
-  deferred
+  deferred.promise
 
 eventuallySerializeEntry = (entry) ->
   deferred = Q.defer()

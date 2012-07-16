@@ -34,12 +34,12 @@ describe 'Importer', ->
        @time = new Date
        @basepath = createDirectory
 
-    spies.gm_identify = chai.spy 'gm-identify', (cb) -> cb null, { exif: true }
-    spies.gm_save = chai.spy 'gm-save', (path, cb) -> cb null
+    spies.gm_identify = chai.spy 'gm-identify', (cb) -> setTimeout (-> cb null, { exif: true }), 10
+    spies.gm_save = chai.spy 'gm-save', (path, cb) -> setTimeout (-> cb null), 10
     spies.gm_resize = (w, h) -> gmObject
-    spies.mkdirp = chai.spy 'mkdirp', (path, cb) -> cb null
-    spies.writeFile = chai.spy 'fs-writeFile', (path, data, cb) -> cb null
-    spies.rename = chai.spy 'fs-rename', (from, to, cb) -> cb null
+    spies.mkdirp = chai.spy 'mkdirp', (path, cb) -> setTimeout (-> cb null), 10
+    spies.writeFile = chai.spy 'fs-writeFile', (path, data, cb) -> setTimeout (-> cb null), 10
+    spies.rename = chai.spy 'fs-rename', (from, to, cb) -> setTimeout (-> cb null), 10
     spies.findit =
       find: ->
         EventEmitter = require('events').EventEmitter
