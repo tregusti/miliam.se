@@ -29,17 +29,16 @@ task 'default', ->
     console.log stdout
 
 # RUNNER
-desc "Start up the server"
-task "start", ->
-  # process.env.NODE_ENV = 'development'
-  spawn "#{__dirname}/node_modules/coffee-script/bin/coffee", ["#{__dirname}/app.coffee"],
-    NODE_ENV: 'development'
-
-
-namespace 'start', ->
-  desc "Start a self-restarting development server"
+namespace 'server', ->
+  desc "Start up the server in development mode"
   task 'dev', ->
-    spawn "supervisor", "-e js\|jade\|coffee -w routes,views,. app.coffee".split " "
+    spawn "supervisor", "-e js\|jade\|coffee -w routes,views,. app.coffee".split(" "),
+      NODE_ENV: 'development'
+
+  desc "Start up the server in production mode"
+  task 'prod', ->
+    spawn "#{__dirname}/node_modules/coffee-script/bin/coffee", ["#{__dirname}/app.coffee"],
+      NODE_ENV: 'production'
 
 
 # SPECS
