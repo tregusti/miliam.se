@@ -1,9 +1,9 @@
 Path = require 'path'
 Q = require 'q'
 
-Entry = require '../entry'
-ArgumentError = require '../errors/argument'
-log = require('../log') 'Importer'
+Entry = require './entry'
+ArgumentError = require './errors/argument'
+log = require('./log') 'Importer'
 
 eventuallyResolveImages = (entry) ->
   from = Path.resolve entry.basepath
