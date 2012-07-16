@@ -257,7 +257,10 @@ describe 'Entry', ->
         w320:     "image2.w320.jpg"
         w640:     "image2.w640.jpg"
         w1024:    "image2.w1024.jpg"
-
+    
+    it "requires a title"
+      
+    
     it "should respond to serialize", ->
       entry.should.respondTo 'serialize'
       entry.serialize.should.have.length 0
