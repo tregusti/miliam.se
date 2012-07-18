@@ -81,10 +81,9 @@ namespace 'specs', ->
 # IMPORT
 desc 'Import if needed'
 task 'import', ->
-  basepath = __dirname + "/data"
   Importer = require './lib/importer'
   Entry.load config.get('paths:create'), (err, entry) ->
     throw err if err
 
-    Importer.import entry, basepath, (err) ->
+    Importer.import entry, config.get('paths:data'), (err) ->
       throw err if err
