@@ -167,8 +167,7 @@ describe 'Importer', ->
 
         done()
 
-    it "should update entry with new image paths"
-
+    it 'should make width 320 for portrait images too'
 
     it "should move original image", (done) ->
       file1 = "#{createDirectory}/cutie.jpg"
