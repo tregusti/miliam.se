@@ -180,7 +180,7 @@ describe 'Importer', ->
         expect(err).to.be.null
         spies.rename.should.have.been.called.once
 
-        expect(spies.rename.__spy.calls[0][0]).to.equal Path.join createDirectory, 'cutie.jpg'
+        expect(spies.rename.__spy.calls[0][0]).to.equal file1
         expect(spies.rename.__spy.calls[0][1]).to.equal Path.join dataDirectory, '2012/06/06/cutie-pie/cutie.jpg'
 
         done()
