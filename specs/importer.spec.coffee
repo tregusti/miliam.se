@@ -194,7 +194,20 @@ describe 'Importer', ->
 
       Importer.import entry, null, (err) ->
         expect(err).to.be.null
-        spies.writeFile.should.have.been.called.once
+        spies.writeFile.should.have.been.called.twice
         expect(spies.writeFile.__spy.calls[0][0]).to.equal dataDirectory + '/2012/06/06/i-am-a-boy/info.txt'
         expect(spies.writeFile.__spy.calls[0][1]).to.equal entry.serialize()
+        done()
+
+
+
+    it "should write a template info.txt when import was successful", (done) ->
+      entry.time = new Date("2012-06-06T19:31:00+0200")
+      entry.title = "Whatever"
+
+      Importer.import entry, null, (err) ->
+        expect(err).to.be.null
+        spies.writeFile.should.have.been.called.twice
+        expect(spies.writeFile.__spy.calls[1][0]).to.equal createDirectory + '/info.txt'
+        expect(spies.writeFile.__spy.calls[1][1]).to.equal "title: Ändra mig\n\nLite exempeltext. Brödtexten börjar 2 radbrytningar efter title etc ovanför."
         done()
