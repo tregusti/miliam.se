@@ -99,24 +99,19 @@ eventuallyGenerateImages = (entry) ->
   log.debug 'Begin generating sized images'
   gm = require 'gm'
 
-  generate = (image) ->
-    Q.when (for size in [320, 640, 960]
-      from = Path.join config.get('paths:create'), image.original
-      to = Path.join entry.basepath, image.original.replace /\.jpg$/, ".w#{size}.jpg"
+  promise = Q.resolve()
 
-      local = Q.defer()
-      gm(from).thumb size, size, to, 70, (err) ->
-        local.reject err if err
-        local.resolve()
-      local.promise
-    )
+  if entry.images?.length > 0
+    for image in entry.images
+      for size in [320, 640, 960]
+        do (size)->
+          from = Path.join config.get('paths:create'), image.original
+          to = Path.join entry.basepath, image.original.replace /\.jpg$/, ".w#{size}.jpg"
+          gmo = gm from
+          promise = promise.then ->
+            Q.ncall gmo.thumb, gmo, size, size, to, 70
 
-  promises =  if entry.images and entry.images.length > 0
-                (generate image for image in entry.images)
-              else
-                []
-
-  Q.all promises
+  promise
 
 eventuallyMoveImages = (entry) ->
   log.debug 'Begin moving original images to data structure'
@@ -164,5 +159,6 @@ Importer =
       .fail (err) ->
         log.error 'Entry import error: ' + util.inspect err
         callback err
+      .end()
 
 module.exports = Importer
