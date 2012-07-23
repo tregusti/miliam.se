@@ -57,6 +57,7 @@ eventuallySetDateFromImages = (entry) ->
 
   Q.all(promises).then (times) ->
     if time = times.sort().pop() # Get earliest date available
+      log.debug "Found time in images: #{time}"
       entry.time = time
       deferred.resolve()
     else
@@ -96,18 +97,19 @@ eventuallySerializeEntry = (entry) ->
 
 eventuallyGenerateImages = (entry) ->
   log.debug 'Begin generating sized images'
-  deferred = Q.defer()
   gm = require 'gm'
 
-  generate = (image, size) ->
-    promises = (for size in [320, 640, 960]
+  generate = (image) ->
+    Q.when (for size in [320, 640, 960]
       from = Path.join config.get('paths:create'), image.original
       to = Path.join entry.basepath, image.original.replace /\.jpg$/, ".w#{size}.jpg"
-      proxy = gm(from).resize(size, size)
-      Q.ncall proxy.write, proxy, to
-    )
 
-    Q.all promises
+      local = Q.defer()
+      gm(from).thumb size, size, to, 70, (err) ->
+        local.reject err if err
+        local.resolve()
+      local.promise
+    )
 
   promises =  if entry.images and entry.images.length > 0
                 (generate image for image in entry.images)

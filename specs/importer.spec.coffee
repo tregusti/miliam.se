@@ -11,6 +11,7 @@ spyfs = require './helpers/spy-fs'
 Importer = require '../lib/importer'
 Entry = require '../lib/entry'
 Path = require 'path'
+util = require 'util'
 
 Object::tap = (f) ->
   f.call @
@@ -34,13 +35,12 @@ describe 'Importer', ->
        @time = new Date
        @basepath = createDirectory
 
-    spies.gm_identify = chai.spy 'gm-identify', (cb) -> setTimeout (-> cb null, { exif: true }), 10
-    spies.gm_save = chai.spy 'gm-save', (path, cb) -> setTimeout (-> cb null), 10
-    spies.gm_resize = (w, h) -> gmObject
-    spies.mkdirp = chai.spy 'mkdirp', (path, cb) -> setTimeout (-> cb null), 10
-    spies.writeFile = chai.spy 'fs-writeFile', (path, data, cb) -> setTimeout (-> cb null), 10
-    spies.rename = chai.spy 'fs-rename', (from, to, cb) -> setTimeout (-> cb null), 10
-    spies.findit =
+    spies.gm_identify = chai.spy 'gm-identify',   (cb)                      -> setTimeout (-> cb null, { exif : true }), 10
+    spies.gm_thumb    = chai.spy 'gm-thumb',      (w, h, out, quality, cb)  -> setTimeout (-> cb null), 10
+    spies.mkdirp      = chai.spy 'mkdirp',        (path, cb)                -> setTimeout (-> cb null), 10
+    spies.writeFile   = chai.spy 'fs-writeFile',  (path, data, cb)          -> setTimeout (-> cb null), 10
+    spies.rename      = chai.spy 'fs-rename',     (from, to, cb)            -> setTimeout (-> cb null), 10
+    spies.findit      =
       find: ->
         EventEmitter = require('events').EventEmitter
         ee = new EventEmitter
@@ -64,8 +64,7 @@ describe 'Importer', ->
     # Lazy props to make refs overridable in specs
     gmObject = {}
     Object.defineProperty gmObject, 'identify', get: -> spies.gm_identify
-    Object.defineProperty gmObject, 'write',    get: -> spies.gm_save
-    Object.defineProperty gmObject, 'resize',   get: -> spies.gm_resize
+    Object.defineProperty gmObject, 'thumb',    get: -> spies.gm_thumb
 
     mockery.registerMock 'gm', (file) ->
       expect(file).to.match /\.jpg$/
@@ -101,6 +100,7 @@ describe 'Importer', ->
 
 
     it "should import earliest image capture date if not specified in info.txt", (done) ->
+      debugger
       # These are the files we want to have in the dir
       file1 = "#{createDirectory}/miliam1.jpg"
       file2 = "#{createDirectory}/miliam2.jpg"
@@ -153,21 +153,29 @@ describe 'Importer', ->
 
       Importer.import entry, null, (err) ->
         expect(err).to.be.null
-        spies.gm_save.should.have.been.called.exactly 6 # times
 
+        # Expect correct quality
+        expect(spies.gm_thumb.__spy.calls[i][3]).to.equal 70 for i in [0..5]
+
+        # Expect correct sizes
+        expect(spies.gm_thumb.__spy.calls[i][0]).to.equal 320 for i in [0..5] by 3
+        expect(spies.gm_thumb.__spy.calls[i+1][0]).to.equal 640 for i in [0..5] by 3
+        expect(spies.gm_thumb.__spy.calls[i+2][0]).to.equal 960 for i in [0..5] by 3
+
+        # expect correct output file
         base = Path.join dataDirectory, '2012/06/06/miliam/miliam1'
-        expect(spies.gm_save.__spy.calls[0][0]).to.equal base + ".w320.jpg"
-        expect(spies.gm_save.__spy.calls[1][0]).to.equal base + ".w640.jpg"
-        expect(spies.gm_save.__spy.calls[2][0]).to.equal base + ".w960.jpg"
+        expect(spies.gm_thumb.__spy.calls[0][2]).to.equal base + ".w320.jpg"
+        expect(spies.gm_thumb.__spy.calls[1][2]).to.equal base + ".w640.jpg"
+        expect(spies.gm_thumb.__spy.calls[2][2]).to.equal base + ".w960.jpg"
 
         base = Path.join dataDirectory, '2012/06/06/miliam/miliam2'
-        expect(spies.gm_save.__spy.calls[3][0]).to.equal base + ".w320.jpg"
-        expect(spies.gm_save.__spy.calls[4][0]).to.equal base + ".w640.jpg"
-        expect(spies.gm_save.__spy.calls[5][0]).to.equal base + ".w960.jpg"
+        expect(spies.gm_thumb.__spy.calls[3][2]).to.equal base + ".w320.jpg"
+        expect(spies.gm_thumb.__spy.calls[4][2]).to.equal base + ".w640.jpg"
+        expect(spies.gm_thumb.__spy.calls[5][2]).to.equal base + ".w960.jpg"
 
         done()
 
-    it 'should make width 320 for portrait images too'
+
 
     it "should move original image", (done) ->
       file1 = "#{createDirectory}/cutie.jpg"
