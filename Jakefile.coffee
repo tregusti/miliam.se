@@ -43,39 +43,49 @@ namespace 'server', ->
 
 
 # SPECS
-runSpecs = (params, reporter, done) ->
+runSpecs = (params, grep, reporter, done) ->
+  params ||= ''
+  grep = if grep then "--grep #{grep}" else ''
   env =
     NODE_ENV: 'test'
-  spawn "#{__dirname}/node_modules/mocha/bin/mocha", "
+  args = "
       --colors
       --timeout 200
       --recursive
       --compilers coffee:coffee-script
       --require coffee-script
       --require setup.coffee
-      #{params || ''}
+      #{grep}
+      #{params}
       --reporter #{reporter || 'dot'}
       specs
-  ".trim().split(/\s+/), env, done
+  ".trim()
+  spawn "#{__dirname}/node_modules/mocha/bin/mocha", args.split(/\s+/), env, done
 
 desc 'Run all specs'
-task 'specs', (params) ->
-  runSpecs()
+task 'specs', ->
+  task = jake.Task['specs:compact']
+  task.invoke.apply task, arguments
 
 namespace 'specs', ->
+  task 'compact', (grep) ->
+    runSpecs null, grep
+
   desc 'Run all specs and pretty print'
-  task 'pretty', -> runSpecs null, 'spec'
+  task 'pretty', (grep) ->
+    runSpecs null, grep, 'spec'
 
   desc 'Run specs with debugger'
-  task 'debug', ->
+  task 'debug', (grep) ->
     console.log "Running specs and start node-inspector".blue
-    runSpecs '--debug-brk', null, ->
+    runSpecs "--debug-brk", grep, null, ->
       console.log "\nSpecs done, kill inspector".blue
       insp.kill()
     insp = spawn 'node-inspector'
 
   desc 'Continously run specs watching for file changes'
-  task 'watch', -> runSpecs "--watch"
+  task 'watch', (grep) ->
+    runSpecs "--watch", grep
 
 
 # IMPORT
