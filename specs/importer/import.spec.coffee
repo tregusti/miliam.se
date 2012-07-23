@@ -5,11 +5,11 @@ expect = chai.expect
 mockery = require 'mockery'
 fs = require 'fs'
 
-ArgumentError = require '../lib/errors/argument'
-spyfs = require './helpers/spy-fs'
+ArgumentError = require '../../lib/errors/argument'
+spyfs = require './../helpers/spy-fs'
 
-Importer = require '../lib/importer'
-Entry = require '../lib/entry'
+Importer = require '../../lib/importer'
+Entry = require '../../lib/entry'
 Path = require 'path'
 util = require 'util'
 
