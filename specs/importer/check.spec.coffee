@@ -16,11 +16,13 @@ Importer = require '../../lib/importer'
 
 describe "Importer", ->
 
-  spies = new Object
+  spies   = new Object
   _import = Importer.import
+  _load   = Entry.load
 
   beforeEach ->
     Importer.import   = chai.spy 'Importer.import'
+    Entry.load        = chai.spy 'Entry.load', (path, cb) -> setTimeout (-> cb null, new Entry), 10
     # spies.mkdirp    = chai.spy 'mkdirp',        (path, cb)                -> setTimeout (-> cb null), 10
     # spies.writeFile = chai.spy 'fs-writeFile',  (path, data, cb)          -> setTimeout (-> cb null), 10
     spies.findit      =
@@ -50,6 +52,7 @@ describe "Importer", ->
 
   afterEach ->
     Importer.import = _import
+    Entry.load      = _load
     mockery.deregisterAll()
     mockery.disable()
 
@@ -83,4 +86,11 @@ describe "Importer", ->
       Importer.check (err, entry) ->
         expect(err).to.be.an.instanceof InvalidStateError
         expect(entry).to.be.null
+        done()
+
+    it "should load up an entry from path", (done) ->
+      spies.findit.dir config.get('paths:create') + '/ok'
+      Importer.check (err, entry) ->
+        Entry.load.should.have.been.called.once
+        expect(Entry.load.__spy.calls[0][0]).to.equal config.get('paths:create')
         done()

@@ -188,7 +188,7 @@ Importer =
     checkForOkFolder()
       .then (dir) ->
         log.info "Checker says ok"
-        callback null, new Entry
+        Entry.load config.get('paths:create'), callback
       .fail (err) ->
         log.error "Checker rejects: #{err.message}"
         callback err, null
