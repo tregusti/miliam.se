@@ -4,6 +4,7 @@ Q = require 'q'
 
 Entry = require './entry'
 ArgumentError = require './errors/argument'
+InvalidStateError = require './errors/invalidstate'
 log = require('./log') 'Importer'
 
 TEMPLATE = "
@@ -12,6 +13,7 @@ title: Ändra mig\n
 Lite exempeltext. Brödtexten börjar 2 radbrytningar efter title etc ovanför.
 "
 
+# IMPORT
 
 eventuallyResolveImages = (entry) ->
   log.debug 'Begin finding images for entry'
@@ -135,6 +137,27 @@ eventuallyWriteTemplate = ->
   Q.ncall fs.writeFile, fs, path, TEMPLATE
 
 
+
+# CHECK
+
+checkForOkFolder = ->
+  deferred = Q.defer()
+
+  exists = null
+  finder = require('findit').find config.get 'paths:create'
+  finder.on 'directory', (dir, stat) ->
+    exists = dir if /^ok$/i.test Path.basename(dir)
+  finder.on 'end', ->
+    if exists
+      deferred.resolve exists
+    else
+      deferred.reject new InvalidStateError("No 'ok' folder present")
+
+  deferred.promise
+
+
+
+
 Importer =
   import: (entry, basepath, callback) ->
     log.info 'Begin importing entry'
@@ -159,6 +182,16 @@ Importer =
       .fail (err) ->
         log.error 'Entry import error: ' + util.inspect err
         callback err
+      .end()
+
+  check: (callback) ->
+    checkForOkFolder()
+      .then (dir) ->
+        log.info "Checker says ok"
+        callback null, new Entry
+      .fail (err) ->
+        log.error "Checker rejects: #{err.message}"
+        callback err, null
       .end()
 
 module.exports = Importer
