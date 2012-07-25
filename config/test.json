@@ -6,6 +6,6 @@
   "log": {
     "location": "../log/test.log",
     "console": false,
-    "file": true
+    "file": false
   }
 }
