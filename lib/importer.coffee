@@ -188,10 +188,10 @@ Importer =
     checkForOkFolder()
       .then (dir) ->
         log.info "Checker says ok"
-        Entry.load config.get('paths:create'), callback
+        callback null
       .fail (err) ->
         log.error "Checker rejects: #{err.message}"
-        callback err, null
+        callback err
       .end()
 
 module.exports = Importer

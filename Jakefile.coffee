@@ -1,11 +1,11 @@
-fs = require 'fs'
-child = require 'child_process'
-Path = require 'path'
 require 'colors'
-
 require './setup'
 
-Entry = require './lib/entry'
+fs       = require 'fs'
+child    = require 'child_process'
+Path     = require 'path'
+Entry    = require './lib/entry'
+Importer = require './lib/importer'
 
 invoke = (tasks) ->
   tasks.forEach (task) ->
@@ -91,9 +91,25 @@ namespace 'specs', ->
 # IMPORT
 desc 'Import if needed'
 task 'import', ->
-  Importer = require './lib/importer'
-  Entry.load config.get('paths:create'), (err, entry) ->
-    throw err if err
+  jake.Task['import:check'].invoke (err) ->
+    return console.error err.message.red if err
 
-    Importer.import entry, config.get('paths:data'), (err) ->
-      throw err if err
+    Entry.load config.get('paths:create'), (err, entry) ->
+      return console.error err.message.red if err
+
+      Importer.import entry, config.get('paths:data'), (err) ->
+        return console.error err.message.red if err
+
+        console.info "Import ok!".green
+
+namespace 'import', ->
+  desc 'Check if import state is ok'
+  task 'check', (callback) ->
+    Importer.check (err) ->
+      if callback instanceof Function
+        callback err
+      else
+        if err
+          console.error "Error: #{err.message}".red
+        else
+          console.info 'OK!'.green
