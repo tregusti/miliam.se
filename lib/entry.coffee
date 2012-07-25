@@ -51,7 +51,7 @@ Object.defineProperty Entry::, 'humanTime',
   enumerable: true,
   get: ->
     return null unless @time
-    sprintf "%2d:%2d", @time.getHours(), @time.getMinutes()
+    sprintf "%02d:%02d", @time.getHours(), @time.getMinutes()
 
 Object.defineProperty Entry::, 'humanDate',
   enumerable: true,
