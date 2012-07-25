@@ -100,7 +100,6 @@ describe 'Importer', ->
 
 
     it "should import earliest image capture date if not specified in info.txt", (done) ->
-      debugger
       # These are the files we want to have in the dir
       file1 = "#{createDirectory}/miliam1.jpg"
       file2 = "#{createDirectory}/miliam2.jpg"
