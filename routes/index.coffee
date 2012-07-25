@@ -17,7 +17,7 @@ exports.list = (req, res, next) ->
     else
       res.render "list",
         title: ''
-        entries: entries
+        entries: entries or []
 
 exports.entry = (req, res, next) ->
   [year, month, date, slug] = req.params

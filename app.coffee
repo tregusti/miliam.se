@@ -39,7 +39,7 @@ errorHandler = (err, req, res, next) ->
       title: '404 bebisar borta'
       status: 404
   else
-    log.warn "500: #{req.url} REFERRER: #{req.headers.referer or null} ERROR: #{JSON.stringify err}"
+    log.warn "500: #{req.url} REFERRER: #{req.headers.referer or null} ERROR: #{JSON.stringify err}\n#{util.inspect err.stack}"
     res.render '500.jade',
       status: 500
       title: 'Nu blev det fel'

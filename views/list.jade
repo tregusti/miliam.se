@@ -6,8 +6,9 @@ block content
       header
         a(href=data2www(entry.basepath))
           h1= entry.title
-      each image in entry.images
-        img(src=data2www(image.w320), alt=entry.title)
+      if entry.images && entry.images.length > 0
+        each image in entry.images
+          img(src=data2www(image.w320), alt=entry.title)
       footer
         time(pubdate)
           = entry.humanDate
