@@ -104,18 +104,18 @@ describe 'Entry', ->
         describe 'human time', ->
           entry = null
           before (done) ->
-            spy = spyfs.on '/tmp/human-time/info.txt', 'date: 2012-06-06\ntime: 10:14'
+            spy = spyfs.on '/tmp/human-time/info.txt', 'date: 2012-06-06\ntime: 3:14'
             Entry.load Path.dirname(spy.path), (err, _entry) ->
               entry = _entry
               done()
           it 'has a pretty date prop', ->
             entry.should.have.property 'humanDate', "6 jun 2012"
-          it 'has a pretty date prop', ->
-            entry.should.have.property 'humanTime', "10:14"
+          it 'has a zero padded pretty time prop', ->
+            entry.should.have.property 'humanTime', "03:14"
           it 'is readonly', ->
             entry.humanTime = 'nope'
             entry.humanDate = 'nope'
-            entry.should.have.property 'humanTime', "10:14"
+            entry.should.have.property 'humanTime', "03:14"
             entry.should.have.property 'humanDate', "6 jun 2012"
 
 
@@ -257,10 +257,10 @@ describe 'Entry', ->
         w320:     "image2.w320.jpg"
         w640:     "image2.w640.jpg"
         w1024:    "image2.w1024.jpg"
-    
+
     it "requires a title"
-      
-    
+
+
     it "should respond to serialize", ->
       entry.should.respondTo 'serialize'
       entry.serialize.should.have.length 0
