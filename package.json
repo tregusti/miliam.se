@@ -25,7 +25,7 @@
     "colors": "*",
     "mocha": "1.x",
     "chai": "*",
-    "chai-spies": "*",
+    "chai-spies": "https://github.com/tregusti/chai-spies/tarball/master",
     "jake": "~0.3.7",
     "mockery": "~1.1.2"
   }
