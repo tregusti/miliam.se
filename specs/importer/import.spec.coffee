@@ -35,11 +35,12 @@ describe 'Importer', ->
        @time = new Date
        @basepath = createDirectory
 
-    spies.gm_identify = chai.spy 'gm-identify',   (cb)                      -> setTimeout (-> cb null, { exif : true }), 10
-    spies.gm_thumb    = chai.spy 'gm-thumb',      (w, h, out, quality, cb)  -> setTimeout (-> cb null), 10
+    spies.gm_identify = chai.spy 'gm.identify',   (cb)                      -> setTimeout (-> cb null, { exif : true }), 10
+    spies.gm_thumb    = chai.spy 'gm.thumb',      (w, h, out, quality, cb)  -> setTimeout (-> cb null), 10
     spies.mkdirp      = chai.spy 'mkdirp',        (path, cb)                -> setTimeout (-> cb null), 10
-    spies.writeFile   = chai.spy 'fs-writeFile',  (path, data, cb)          -> setTimeout (-> cb null), 10
-    spies.rename      = chai.spy 'fs-rename',     (from, to, cb)            -> setTimeout (-> cb null), 10
+    spies.writeFile   = chai.spy 'fs.writeFile',  (path, data, cb)          -> setTimeout (-> cb null), 10
+    spies.rename      = chai.spy 'fs.rename',     (from, to, cb)            -> setTimeout (-> cb null), 10
+    spies.rmdir       = chai.spy 'fs.rmdir',      (path, cb)                -> setTimeout (-> cb null), 10
     spies.findit      =
       find: ->
         EventEmitter = require('events').EventEmitter
@@ -57,8 +58,9 @@ describe 'Importer', ->
     mockery.registerMock 'mkdirp', spies.mkdirp
     mockery.registerMock 'findit', spies.findit
     mockery.registerMock 'fs',
-      writeFile: spies.writeFile
-      rename: spies.rename
+      writeFile:  spies.writeFile
+      rename:     spies.rename
+      rmdir:      spies.rmdir
 
 
     # Lazy props to make refs overridable in specs
@@ -217,4 +219,13 @@ describe 'Importer', ->
         spies.writeFile.should.have.been.called.twice
         expect(spies.writeFile.__spy.calls[1][0]).to.equal createDirectory + '/info.txt'
         expect(spies.writeFile.__spy.calls[1][1]).to.equal "title: Ändra mig\n\nLite exempeltext. Brödtexten börjar 2 radbrytningar efter title etc ovanför."
+        done()
+
+
+    it "should remove 'ok' folder after import", (done) ->
+      entry.title = 'Lige meget'
+      entry.time = new Date('2012-02-28T14:14:14+0100')
+      Importer.import entry, dataDirectory, (err) ->
+        spies.rmdir.should.have.been.called.once
+        spies.rmdir.__spy.calls[0][0].should.equal Path.join createDirectory, 'ok'
         done()

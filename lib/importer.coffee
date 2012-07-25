@@ -128,11 +128,19 @@ eventuallyMoveImages = (entry) ->
 
   Q.all (mover file for file in files)
 
+eventuallyRemoveOkFolder = ->
+  log.debug 'Begin removing ok folder'
+  path = Path.join config.get('paths:create'), 'ok'
+  fs = require 'fs'
+  Q.ncall fs.rmdir, fs, path
+
+
 eventuallyWriteTemplate = ->
   log.debug 'Begin writing template file to create structure'
   path = Path.join config.get('paths:create'), 'info.txt'
   fs = require 'fs'
   Q.ncall fs.writeFile, fs, path, TEMPLATE
+
 
 
 Importer =
@@ -150,6 +158,7 @@ Importer =
       .then( eventuallyGenerateImages    .bind null, entry )
       .then( eventuallySerializeEntry    .bind null, entry )
       .then( eventuallyMoveImages        .bind null, entry )
+      .then( eventuallyRemoveOkFolder                      )
       .then( eventuallyWriteTemplate                       )
 
       .then ->
@@ -159,6 +168,7 @@ Importer =
       .fail (err) ->
         log.error 'Entry import error: ' + util.inspect err
         callback err
+        
       .end()
 
 module.exports = Importer
