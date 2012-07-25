@@ -18,7 +18,7 @@ spawn = (cmd, args, env, done) ->
   cmd = child.spawn cmd, args, env: env
   cmd.stdout.on 'data', (data) -> process.stdout.write data
   cmd.stderr.on 'data', (data) -> process.stderr.write data
-  cmd.on 'exit', done if done?
+  cmd.on 'exit', done if done
   cmd
 
 
@@ -60,7 +60,9 @@ runSpecs = (params, grep, reporter, done) ->
       --reporter #{reporter || 'dot'}
       specs
   ".trim()
-  spawn "#{__dirname}/node_modules/mocha/bin/mocha", args.split(/\s+/), env, done
+  spawn "#{__dirname}/node_modules/mocha/bin/mocha", args.split(/\s+/), env, (code, signal) ->
+    done code, signal if done
+    fail code if code
 
 desc 'Run all specs'
 task 'specs', ->
