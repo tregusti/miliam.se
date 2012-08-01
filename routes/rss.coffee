@@ -13,6 +13,7 @@ loadXML = (cb) ->
       description:  "En berättelse om ett barns uppväxt"
       feed_url:     "http://miliam.se/rss.xml"
       site_url:     "http://miliam.se"
+      image_url:    "http://miliam.se/favicon.png"
 
     for entry in entries
       feed.item
