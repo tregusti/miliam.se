@@ -28,3 +28,5 @@ exports.entry = (req, res, next) ->
 exports.entryImage = (req, res) ->
   middleware = express.static config.get 'paths:data'
   middleware req, res
+
+exports.rss = require './rss'
