@@ -35,6 +35,7 @@ describe 'Importer', ->
        @time = new Date
        @basepath = createDirectory
 
+    spies.gm_orient   = chai.spy 'gm.autoOrient',                           -> this
     spies.gm_identify = chai.spy 'gm.identify',   (cb)                      -> setTimeout (-> cb null, { exif : true }), 10
     spies.gm_thumb    = chai.spy 'gm.thumb',      (w, h, out, quality, cb)  -> setTimeout (-> cb null), 10
     spies.mkdirp      = chai.spy 'mkdirp',        (path, cb)                -> setTimeout (-> cb null), 10
@@ -65,8 +66,9 @@ describe 'Importer', ->
 
     # Lazy props to make refs overridable in specs
     gmObject = {}
-    Object.defineProperty gmObject, 'identify', get: -> spies.gm_identify
-    Object.defineProperty gmObject, 'thumb',    get: -> spies.gm_thumb
+    Object.defineProperty gmObject, 'identify',   get: -> spies.gm_identify
+    Object.defineProperty gmObject, 'thumb',      get: -> spies.gm_thumb
+    Object.defineProperty gmObject, 'autoOrient', get: -> spies.gm_orient
 
     mockery.registerMock 'gm', (file) ->
       expect(file).to.match /\.jpg$/
@@ -154,6 +156,9 @@ describe 'Importer', ->
 
       Importer.import entry, null, (err) ->
         expect(err).to.be.null
+
+        # Auto orient image according to EXIF data
+        expect(spies.gm_orient).to.have.been.called.exactly 6 # times
 
         # Expect correct quality
         expect(spies.gm_thumb.__spy.calls[i][3]).to.equal 70 for i in [0..5]
