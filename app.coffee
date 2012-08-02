@@ -86,6 +86,7 @@ app.get ///^
   $///, routes.list
 app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)$/, routes.entry
 app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)\/.*?\.w(320|640|1024)\.jpg$/, routes.entryImage
+app.get "/rss.xml", routes.rss
 app.get "/", routes.index
 app.get "/*", (req, res) -> throw new NotFoundError
 

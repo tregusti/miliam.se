@@ -236,6 +236,25 @@ describe 'Entry', ->
       entry.title = "ABCabcÅÄÖÉ"
       entry.slug.should.equal 'abcabcaaoe'
 
+  # PATH
+
+  describe "#path property", ->
+    it "should exist and be null", ->
+      new Entry().should.have.property 'path', null
+
+    it "ends in a slug", ->
+      entry = new Entry().tap ->
+        @title = "Miliam är först"
+        @time  = new Date 2012, 11, 9
+      entry.path.should.match /miliam-ar-forst$/
+
+    it "combines date and slug", ->
+      entry = new Entry().tap ->
+        @title = "Miliam är först"
+        @time  = new Date 2012, 11, 9
+      entry.path.should.equal '/2012/12/09/miliam-ar-forst'
+
+
 
   # SERIALIZATION
 
