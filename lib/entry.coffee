@@ -41,6 +41,12 @@ Object.defineProperty Entry::, 'datePath',
     return null unless @time
     return sprintf '%04d/%02d/%02d', @time.getFullYear(), @time.getMonth() + 1, @time.getDate()
 
+Object.defineProperty Entry::, 'path',
+  enumerable: true,
+  get: ->
+    return null unless @time and @datePath
+    return "/#{@datePath}/#{@slug}"
+
 Object.defineProperty Entry::, 'slug',
   enumerable: true,
   get: ->
