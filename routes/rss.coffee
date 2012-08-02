@@ -19,7 +19,7 @@ loadXML = (cb) ->
       feed.item
         title:        entry.title
         description:  entry.html
-        url:          "http://miliam.se/2012/something/#{entry.slug}"
+        url:          "http://miliam.se#{entry.path}"
         date:         entry.time.toString()
 
     cb feed.xml(true)
