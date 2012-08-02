@@ -5,7 +5,9 @@ EntryList = require '../lib/entry-list'
 datapath = config.get('paths:data')
 
 loadXML = (cb) ->
-  EntryList.load datapath, {}, (err, entries) ->
+  options =
+    limit: 20
+  EntryList.load datapath, options, (err, entries) ->
     throw err if err
 
     feed = new RSS

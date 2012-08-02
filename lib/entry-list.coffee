@@ -8,8 +8,8 @@ Entry = require './entry'
 NotFoundError = require './errors/notfound'
 ArgumentError = require './errors/argument'
 
-loadNextEntry = (entries, paths, done) ->
-  if paths.length is 0
+loadNextEntry = (entries, paths, limit, done) ->
+  if paths.length is 0 or limit is 0
     done()
   else
     path = paths.shift()
@@ -18,12 +18,14 @@ loadNextEntry = (entries, paths, done) ->
         done err
       else
         entries.push entry
-        loadNextEntry entries, paths, done
+        loadNextEntry entries, paths, limit - 1, done
 
 
 load = (path, options, callback) ->
   # If no options specified, shift arguments
   [options, callback] = [{}, options] if options instanceof Function
+
+  options.limit ||= -1 # Default to -1, equalling unlimited
 
   # Error handling
   return callback new ArgumentError('path'), null unless path
@@ -38,7 +40,7 @@ load = (path, options, callback) ->
 
     entries = []
 
-    loadNextEntry entries, paths, (err) ->
+    loadNextEntry entries, paths, options.limit, (err) ->
       if err
         callback err, null
       else

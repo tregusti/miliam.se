@@ -90,3 +90,11 @@ describe 'EntryList', ->
         entries[1].should.have.property 'basepath', '/tmp/2012/06/06/cccc'
         entries[0].should.have.property 'basepath', '/tmp/2012/06/06/dddd'
         done()
+
+    it "limits the amount of entries when specified", (done) ->
+      cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
+      options =
+        limit: 2
+      EntryList.load '/tmp', options, (err, entries) ->
+        entries.should.have.length 2
+        done()
