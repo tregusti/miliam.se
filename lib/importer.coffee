@@ -109,7 +109,7 @@ eventuallyGenerateImages = (entry) ->
         do (size)->
           from = Path.join config.get('paths:create'), image.original
           to = Path.join entry.basepath, image.original.replace /\.jpg$/, ".w#{size}.jpg"
-          gmo = gm from
+          gmo = gm(from).autoOrient()
           promise = promise.then ->
             Q.ncall gmo.thumb, gmo, size, size, to, 70
 
