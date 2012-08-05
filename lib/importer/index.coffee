@@ -2,10 +2,10 @@ Path = require 'path'
 util = require 'util'
 Q = require 'q'
 
-Entry = require './entry'
-ArgumentError = require './errors/argument'
-InvalidStateError = require './errors/invalidstate'
-log = require('./log') 'Importer'
+Entry = require '../entry'
+ArgumentError = require '../errors/argument'
+InvalidStateError = require '../errors/invalidstate'
+log = require('../log') 'Importer'
 
 TEMPLATE = "
 title: Ändra mig\n
@@ -99,21 +99,15 @@ eventuallySerializeEntry = (entry) ->
 
 eventuallyGenerateImages = (entry) ->
   log.debug 'Begin generating sized images'
-  gm = require 'gm'
+  Generator = require "./image-generator"
 
-  promise = Q.resolve()
-
+  promises = []
   if entry.images?.length > 0
     for image in entry.images
-      for size in [320, 640, 960]
-        do (size)->
-          from = Path.join config.get('paths:create'), image.original
-          to = Path.join entry.basepath, image.original.replace /\.jpg$/, ".w#{size}.jpg"
-          gmo = gm(from).autoOrient()
-          promise = promise.then ->
-            Q.ncall gmo.thumb, gmo, size, size, to, 70
+      from    = Path.join config.get('paths:create'), image.original
+      promises.push Q.ncall Generator.generate, null, from, entry.basepath
 
-  promise
+  Q.all promises
 
 eventuallyMoveImages = (entry) ->
   log.debug 'Begin moving original images to data structure'
