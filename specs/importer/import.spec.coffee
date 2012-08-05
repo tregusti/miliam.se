@@ -7,11 +7,13 @@ fs = require 'fs'
 
 ArgumentError = require '../../lib/errors/argument'
 spyfs = require './../helpers/spy-fs'
+Generator = require "../../lib/importer/image-generator"
 
 Importer = require '../../lib/importer'
 Entry = require '../../lib/entry'
 Path = require 'path'
 util = require 'util'
+
 
 Object::tap = (f) ->
   f.call @
@@ -29,19 +31,19 @@ describe 'Importer', ->
   entry = null
 
   spies = {}
+  originals = {}
 
   beforeEach ->
     entry = new Entry().tap ->
        @time = new Date
        @basepath = createDirectory
 
-    spies.gm_orient   = chai.spy 'gm.autoOrient',                           -> this
-    spies.gm_identify = chai.spy 'gm.identify',   (cb)                      -> setTimeout (-> cb null, { exif : true }), 10
-    spies.gm_thumb    = chai.spy 'gm.thumb',      (w, h, out, quality, cb)  -> setTimeout (-> cb null), 10
-    spies.mkdirp      = chai.spy 'mkdirp',        (path, cb)                -> setTimeout (-> cb null), 10
-    spies.writeFile   = chai.spy 'fs.writeFile',  (path, data, cb)          -> setTimeout (-> cb null), 10
-    spies.rename      = chai.spy 'fs.rename',     (from, to, cb)            -> setTimeout (-> cb null), 10
-    spies.rmdir       = chai.spy 'fs.rmdir',      (path, cb)                -> setTimeout (-> cb null), 10
+    spies.imggen      = chai.spy 'image-generator', (path, outpath, cb)       -> setTimeout (-> cb null), 10
+    spies.gm_identify = chai.spy 'gm.identify',     (cb)                      -> setTimeout (-> cb null, { exif : true }), 10
+    spies.mkdirp      = chai.spy 'mkdirp',          (path, cb)                -> setTimeout (-> cb null), 10
+    spies.writeFile   = chai.spy 'fs.writeFile',    (path, data, cb)          -> setTimeout (-> cb null), 10
+    spies.rename      = chai.spy 'fs.rename',       (from, to, cb)            -> setTimeout (-> cb null), 10
+    spies.rmdir       = chai.spy 'fs.rmdir',        (path, cb)                -> setTimeout (-> cb null), 10
     spies.findit      =
       find: ->
         EventEmitter = require('events').EventEmitter
@@ -54,8 +56,15 @@ describe 'Importer', ->
       _files: []
       add: (file) -> @_files.push file
       name: 'findit'
+
+    originals.imggen = Generator.generate
+    Generator.generate = spies.imggen
+
+
     mockery.registerAllowable 'events'
     mockery.registerAllowable 'slug'
+    mockery.registerMock './image-generator',
+      generate: spies.imggen
     mockery.registerMock 'mkdirp', spies.mkdirp
     mockery.registerMock 'findit', spies.findit
     mockery.registerMock 'fs',
@@ -67,8 +76,6 @@ describe 'Importer', ->
     # Lazy props to make refs overridable in specs
     gmObject = {}
     Object.defineProperty gmObject, 'identify',   get: -> spies.gm_identify
-    Object.defineProperty gmObject, 'thumb',      get: -> spies.gm_thumb
-    Object.defineProperty gmObject, 'autoOrient', get: -> spies.gm_orient
 
     mockery.registerMock 'gm', (file) ->
       expect(file).to.match /\.jpg$/
@@ -77,6 +84,8 @@ describe 'Importer', ->
     mockery.enable()
 
   afterEach ->
+    Generator.generate = originals.imggen
+
     mockery.deregisterAll()
     mockery.disable()
     # spyfs.off()
@@ -143,41 +152,18 @@ describe 'Importer', ->
         done()
 
 
+    it "should invoke image generator", (done) ->
+      # TODO: Remove this timeout. Way too long.
+      @timeout 500
 
-    it "should generate images in new folder", (done) ->
-      file1 = "#{createDirectory}/miliam1.jpg"
-      file2 = "#{createDirectory}/miliam2.jpg"
+      spies.findit.add file = "#{createDirectory}/miliam1.jpg"
 
-      spies.findit.add file1
-      spies.findit.add file2
+      entry.title = 'Oh boy'
+      Importer.import entry, dataDirectory, (err) ->
+        spies.imggen.should.have.been.called.once
 
-      entry.time = new Date("2012-06-06T19:31:00+0200")
-      entry.title = "Miliam"
-
-      Importer.import entry, null, (err) ->
-        expect(err).to.be.null
-
-        # Auto orient image according to EXIF data
-        expect(spies.gm_orient).to.have.been.called.exactly 6 # times
-
-        # Expect correct quality
-        expect(spies.gm_thumb.__spy.calls[i][3]).to.equal 70 for i in [0..5]
-
-        # Expect correct sizes
-        expect(spies.gm_thumb.__spy.calls[i][0]).to.equal 320 for i in [0..5] by 3
-        expect(spies.gm_thumb.__spy.calls[i+1][0]).to.equal 640 for i in [0..5] by 3
-        expect(spies.gm_thumb.__spy.calls[i+2][0]).to.equal 960 for i in [0..5] by 3
-
-        # expect correct output file
-        base = Path.join dataDirectory, '2012/06/06/miliam/miliam1'
-        expect(spies.gm_thumb.__spy.calls[0][2]).to.equal base + ".w320.jpg"
-        expect(spies.gm_thumb.__spy.calls[1][2]).to.equal base + ".w640.jpg"
-        expect(spies.gm_thumb.__spy.calls[2][2]).to.equal base + ".w960.jpg"
-
-        base = Path.join dataDirectory, '2012/06/06/miliam/miliam2'
-        expect(spies.gm_thumb.__spy.calls[3][2]).to.equal base + ".w320.jpg"
-        expect(spies.gm_thumb.__spy.calls[4][2]).to.equal base + ".w640.jpg"
-        expect(spies.gm_thumb.__spy.calls[5][2]).to.equal base + ".w960.jpg"
+        spies.imggen.__spy.calls[0][0].should.equal file
+        spies.imggen.__spy.calls[0][1].should.equal entry.basepath
 
         done()
 
