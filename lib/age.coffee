@@ -1,6 +1,6 @@
 require 'date-utils'
 
-BIRTH = '2012-06-06 00:00:00'
+BIRTH = '2012-06-07 00:00:00'
 
 pluralize = (entity, count) ->
   switch entity
@@ -10,6 +10,10 @@ pluralize = (entity, count) ->
       if count > 1 then 'månader' else 'månad'
     when 'dag'
       if count > 1 then 'dagar' else 'dag'
+
+days_between = (d1, d2) ->
+  t = d1.clone().valueOf() - d2.clone().valueOf()
+  Math.abs(t) / 86400000
 
 since = (date) ->
   # resets
@@ -24,7 +28,7 @@ since = (date) ->
   months++ while date.isBefore now.clone().addMonths(-months - 1).addDays(1)
   date = date.addMonths months
 
-  days = date.getDaysBetween now.clone()
+  days = days_between date, now
 
   a = []
   if years
@@ -35,9 +39,10 @@ since = (date) ->
     entity = pluralize 'månad', months
     a.push "#{months} #{entity}"
 
+  days = days | 0 # math floor
   if days
     entity = pluralize 'dag', days
-    a.push "#{days} #{entity}"
+    a.push "#{days } #{entity}"
 
   s = a.shift()
   s += ", #{a.shift()}" while a.length > 1
