@@ -50,7 +50,8 @@ describe 'Age', ->
         Age.since(d).should.equal '3 år och 1 månad'
 
   it 'should have a birth property', ->
-    Age.should.have.property 'birth', '2012-06-06 19:30:00'
+    # Don't use real birth time. ppl only care about the day
+    Age.should.have.property 'birth', '2012-06-06 00:00:00'
 
   describe 'attach method', ->
     it 'should exist', ->

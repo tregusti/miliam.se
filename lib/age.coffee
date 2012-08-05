@@ -1,6 +1,6 @@
 require 'date-utils'
 
-BIRTH = '2012-06-06 19:30:00'
+BIRTH = '2012-06-06 00:00:00'
 
 pluralize = (entity, count) ->
   switch entity
