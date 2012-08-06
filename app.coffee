@@ -66,7 +66,7 @@ require('./lib/age').attach app
 
 app.locals.use (req, res) ->
 
-  res.locals.analytics = config.get('env') is 'production'
+  res.locals.analytics = config.get('analytics')
 
   res.locals.data2www = (path) ->
     datapath = config.get 'paths:data'
