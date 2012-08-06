@@ -19,6 +19,8 @@ since = (date) ->
   # resets
   years = months = 0
   now = new Date
+  
+  # skall räkna uppåt från startdatum istället för nedåt från slutdatum.
 
   # years
   years++ while date.isBefore now.clone().addYears(-years - 1).addDays(1)
