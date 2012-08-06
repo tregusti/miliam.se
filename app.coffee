@@ -11,9 +11,8 @@ NotFoundError = require './lib/errors/notfound'
 routes = require "./routes"
 log = require('./lib/log') ''
 
-prod = config.get('env') is 'production'
-
 stylusMiddleware = ->
+  prod = config.get('env') is 'production'
   compile = (str, path) ->
     stylus(str)
       .set("filename", path)
@@ -66,6 +65,9 @@ app.configure "development", ->
 require('./lib/age').attach app
 
 app.locals.use (req, res) ->
+
+  res.locals.analytics = config.get('env') is 'production'
+
   res.locals.data2www = (path) ->
     datapath = config.get 'paths:data'
     path = Path.resolve path
