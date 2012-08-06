@@ -17,10 +17,15 @@ html
 
     meta(name="description", content=description)
     meta(property="og:title", content=title || "Miliam Jorde")
-
+    
     //- FB stuff
     script(src="/fb.js")
     meta(property="fb:admins", content="623506486,591318200")
+    meta(property="og:url", content="http://miliam.se" + path)
+    
+    //- gplus url
+    link(rel="canonical", href="http://miliam.se" + path)
+    
   body
     hgroup#head
       a(href="/")
