@@ -207,6 +207,11 @@ describe 'Entry', ->
         withText '*** bold text *** [Link title](http://www.google.com)', (entry) ->
           entry.description.should.equal 'bold text Link title'
           done()
+      it "should truncate at 200 chars", (done) ->
+        s = new Array(210).join 'x' # 209 long string
+        withText s, (entry) ->
+          entry.description.should.have.length 200
+          done()
 
 
 

@@ -42,6 +42,7 @@ Object.defineProperty Entry::, 'description',
     return null unless t
     t = t.replace /<.+?>/g, '' # html
     t = t.trim().replace /\s\s/g, ' ' # white space
+    t[0..199]
 
 Object.defineProperty Entry::, 'datePath',
   enumerable: true,
