@@ -191,6 +191,24 @@ describe 'Entry', ->
           entry.html.should.contain '<p>Paragraph 3'
 
 
+    describe "#description", ->
+      withText = (s, cb) ->
+        spy = spyfs.on '/tmp/body-vs-description/info.txt', "title:hej\n\n#{s}"
+        Entry.load spy.dirname, (err, entry) -> cb entry
+
+      it 'should have a description property', ->
+        new Entry().should.have.property 'description'
+      it 'description property should be readonly', ->
+        entry = new Entry
+        entry.text = "Text"
+        entry.description = "nope"
+        entry.description.should.not.equal 'nope'
+      it "should strip html", (done) ->
+        withText '*** bold text *** [Link title](http://www.google.com)', (entry) ->
+          entry.description.should.equal 'bold text Link title'
+          done()
+
+
 
   it 'should lookup the timezone from askgeo for images (postponed, build npm package)'
 
