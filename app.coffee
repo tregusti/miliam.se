@@ -69,6 +69,7 @@ app.locals.use (req, res) ->
   res.locals.analytics = config.get('analytics')
   res.locals.description = 'En pojkes uppväxt i bilder'
   res.locals.path = '/'
+  res.locals.title = ''
 
   # Sharing
   res.locals.show_fblike = config.get('sharing:facebook')

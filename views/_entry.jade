@@ -1,0 +1,29 @@
+article.entry
+  header
+    h1= entry.title
+  if entry.images
+    each image in entry.images
+      img(src=data2www(image.w320), alt=entry.title)
+  footer
+    if show_fblike
+      div(
+        class="fb-like",
+        data-send="false",
+        data-layout="button_count",
+        data-width="90",
+        data-show-faces="false",
+        data-font="arial"
+        )
+    if show_plusone
+      div(
+        class="g-plusone",
+        data-size="medium"
+        data-expandTo="top"
+        data-annotation="bubble"
+        )
+    time(pubdate)
+      = entry.humanDate
+      = " "
+      = entry.humanTime
+  section.body
+    != entry.html
