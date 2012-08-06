@@ -4,7 +4,7 @@ html
     title
       if title
         = title
-        = " | Miliam Jorde"
+        = " ● Miliam Jorde"
       else
         = "Miliam Jorde"
     link(rel='stylesheet', href='/app.css')
@@ -12,6 +12,20 @@ html
     link(rel='icon', type='image/x-icon', href='/favicon.png')
     link(rel="alternate", type="application/rss+xml", title="Miliam Jorde", href="/rss.xml")
     meta(name="viewport", content="device-width,initial-scale=1")
+    if analytics
+      script(src="/analytics.js")
+
+    meta(name="description", content=description)
+    meta(property="og:title", content=title || "Miliam Jorde")
+
+    //- FB stuff
+    script(src="/fb.js")
+    meta(property="fb:admins", content="623506486,591318200")
+    meta(property="og:url", content=url)
+
+    //- gplus url
+    link(rel="canonical", href=url)
+
   body
     hgroup#head
       a(href="/")
@@ -26,3 +40,6 @@ html
     footer#footer
       aside#about.
         Liam är son till Sigyn och Glenn Jorde
+
+    //- Google plus stuff
+    script(src="/plusone.js")

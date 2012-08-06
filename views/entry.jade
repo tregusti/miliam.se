@@ -1,15 +1,4 @@
 extends layout
 
 block content
-  article
-    header
-      h1= title
-    each image in images
-      img(src=data2www(image.w320), alt=title)
-    footer
-      time(pubdate)
-        = humanDate
-        = " "
-        = humanTime
-    section.body
-      != html
+  include _entry

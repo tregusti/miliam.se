@@ -1,7 +1,12 @@
 {
-  "port":     3000,
+  "analytics" : false,
+  "sharing"   : {
+    "facebook": true,
+    "plusone" : true
+  },
+  "port" : 3000,
   "paths": {
-    "data":   "../data",
+    "data"  : "../data",
     "create": "../create"
   },
   "log": {

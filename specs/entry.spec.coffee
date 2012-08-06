@@ -191,6 +191,29 @@ describe 'Entry', ->
           entry.html.should.contain '<p>Paragraph 3'
 
 
+    describe "#description", ->
+      withText = (s, cb) ->
+        spy = spyfs.on '/tmp/body-vs-description/info.txt', "title:hej\n\n#{s}"
+        Entry.load spy.dirname, (err, entry) -> cb entry
+
+      it 'should have a description property', ->
+        new Entry().should.have.property 'description'
+      it 'description property should be readonly', ->
+        entry = new Entry
+        entry.text = "Text"
+        entry.description = "nope"
+        entry.description.should.not.equal 'nope'
+      it "should strip html", (done) ->
+        withText '*** bold text *** [Link title](http://www.google.com)', (entry) ->
+          entry.description.should.equal 'bold text Link title'
+          done()
+      it "should truncate at 200 chars", (done) ->
+        s = new Array(210).join 'x' # 209 long string
+        withText s, (entry) ->
+          entry.description.should.have.length 200
+          done()
+
+
 
   it 'should lookup the timezone from askgeo for images (postponed, build npm package)'
 
@@ -254,6 +277,15 @@ describe 'Entry', ->
         @time  = new Date 2012, 11, 9
       entry.path.should.equal '/2012/12/09/miliam-ar-forst'
 
+  describe "#url property", ->
+    it "should exist and be null", ->
+      new Entry().should.have.property 'url', null
+
+    it "combines host and path", ->
+      entry = new Entry().tap ->
+        @title = "Miliam är först"
+        @time  = new Date 2012, 11, 9
+      entry.url.should.equal 'http://miliam.se/2012/12/09/miliam-ar-forst'
 
 
   # SERIALIZATION

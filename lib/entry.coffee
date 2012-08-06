@@ -35,6 +35,15 @@ Object.defineProperty Entry::, 'html',
     return null unless @text
     marked @text
 
+Object.defineProperty Entry::, 'description',
+  enumerable: true,
+  get: ->
+    t = @html
+    return null unless t
+    t = t.replace /<.+?>/g, '' # html
+    t = t.trim().replace /\s\s/g, ' ' # white space
+    t[0..199]
+
 Object.defineProperty Entry::, 'datePath',
   enumerable: true,
   get: ->
@@ -46,6 +55,12 @@ Object.defineProperty Entry::, 'path',
   get: ->
     return null unless @time and @datePath
     return "/#{@datePath}/#{@slug}"
+
+Object.defineProperty Entry::, 'url',
+  enumerable: true,
+  get: ->
+    return null unless @path
+    return "http://miliam.se#{@path}"
 
 Object.defineProperty Entry::, 'slug',
   enumerable: true,
