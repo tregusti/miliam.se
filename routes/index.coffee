@@ -23,7 +23,10 @@ exports.entry = (req, res, next) ->
   [year, month, date, slug] = req.params
   entry = Entry.load Path.join(datapath, year, month, date, slug), (err, entry) ->
     throw err if err
-    res.render "entry", entry
+    res.render "entry",
+      entry : entry
+      url   : entry.url
+      title : entry.title
 
 exports.entryImage = (req, res) ->
   middleware = express.static config.get 'paths:data'

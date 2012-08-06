@@ -277,6 +277,15 @@ describe 'Entry', ->
         @time  = new Date 2012, 11, 9
       entry.path.should.equal '/2012/12/09/miliam-ar-forst'
 
+  describe "#url property", ->
+    it "should exist and be null", ->
+      new Entry().should.have.property 'url', null
+
+    it "combines host and path", ->
+      entry = new Entry().tap ->
+        @title = "Miliam är först"
+        @time  = new Date 2012, 11, 9
+      entry.url.should.equal 'http://miliam.se/2012/12/09/miliam-ar-forst'
 
 
   # SERIALIZATION

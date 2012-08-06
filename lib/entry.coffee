@@ -56,6 +56,12 @@ Object.defineProperty Entry::, 'path',
     return null unless @time and @datePath
     return "/#{@datePath}/#{@slug}"
 
+Object.defineProperty Entry::, 'url',
+  enumerable: true,
+  get: ->
+    return null unless @path
+    return "http://miliam.se#{@path}"
+
 Object.defineProperty Entry::, 'slug',
   enumerable: true,
   get: ->
