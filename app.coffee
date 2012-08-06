@@ -67,8 +67,11 @@ require('./lib/age').attach app
 app.locals.use (req, res) ->
 
   res.locals.analytics = config.get('analytics')
-  res.locals.fblike = config.get('facebook:like')
   res.locals.description = 'En pojkes uppväxt i bilder'
+
+  # Sharing
+  res.locals.show_fblike = config.get('sharing:facebook')
+  res.locals.show_plusone = config.get('sharing:plusone')
 
   res.locals.data2www = (path) ->
     datapath = config.get 'paths:data'

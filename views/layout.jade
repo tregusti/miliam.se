@@ -15,10 +15,11 @@ html
     if analytics
       script(src="/analytics.js")
 
-    //- FB stuff
     meta(name="description", content=description)
-    script(src="/fb.js")
     meta(property="og:title", content=title || "Miliam Jorde")
+
+    //- FB stuff
+    script(src="/fb.js")
     meta(property="fb:admins", content="623506486,591318200")
   body
     hgroup#head
@@ -34,3 +35,6 @@ html
     footer#footer
       aside#about.
         Liam är son till Sigyn och Glenn Jorde
+
+    //- Google plus stuff
+    script(src="/plusone.js")
