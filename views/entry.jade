@@ -1,24 +1,24 @@
 extends layout
 
 block content
-  article
+  article.entry
     header
       h1= title
     each image in images
       img(src=data2www(image.w320), alt=title)
     footer
+      if fblike
+        div(
+          class="fb-like",
+          data-send="false",
+          data-layout="button_count",
+          data-width="150",
+          data-show-faces="false",
+          data-font="arial"
+          )
       time(pubdate)
         = humanDate
         = " "
         = humanTime
     section.body
       != html
-      if fblike
-        div(
-          class="fb-like",
-          data-send="false",
-          data-layout="button_count",
-          data-width="450",
-          data-show-faces="false",
-          data-font="arial"
-          )
