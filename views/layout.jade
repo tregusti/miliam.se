@@ -12,8 +12,6 @@ html
     link(rel='icon', type='image/x-icon', href='/favicon.png')
     link(rel="alternate", type="application/rss+xml", title="Miliam Jorde", href="/rss.xml")
     meta(name="viewport", content="device-width,initial-scale=1")
-    if analytics
-      script(src="/analytics.js")
 
     meta(name="description", content=description)
     meta(property="og:title", content=title || "Miliam Jorde")
@@ -25,6 +23,22 @@ html
 
     //- gplus url
     link(rel="canonical", href=url)
+
+
+    //- Google Analytics
+    if analytics
+      //- See: http://ralphvanderpauw.com/analytics/error-pages-google-analytics-update/
+      script
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-33898970-1']);
+        _gaq.push(['_trackPageview']);
+      block analytics
+      script
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
 
   body
     hgroup#head
