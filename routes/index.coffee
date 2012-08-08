@@ -37,7 +37,7 @@ exports.entryImage = (req, res) ->
 exports.rss = require './rss'
 
 exports.about = (req, res, next) ->
-  path = Path.join config.get('paths:data'), 'pages', 'about.md'
+  path = Path.join config.get('paths:data'), 'pages', 'om.md'
   fs.readFile path, 'utf8', (err, data) ->
     return next() if err
     res.render 'page',

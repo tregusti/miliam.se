@@ -20,6 +20,21 @@ smallwhitetext()
   color: white
   text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
 
+link(color, underlined=false)
+  color: color
+  text-decoration: none
+  if underlined
+    border-bottom: 1px solid green
+
+  &:hover
+  &:active
+  &:focus
+    if underlined
+      border-bottom: 3px double green
+    else
+      border-bottom: 1px solid green
+
+
 body
   font: 15px/1.4 Georgia
   width: 320px
@@ -48,14 +63,7 @@ body
       float: right
 
   a
-    color: textcolor
-    text-decoration: none
-    font-weight: bold
-
-    &:hover
-    &:active
-    &:focus
-      border-bottom: 1px solid green
+    link: textcolor
 
   table
     border-collapse: collapse
@@ -66,9 +74,8 @@ body
       text-align: left
       &:after
         // Add a nice indicator
-        margin: 0 10px 0 5px
-        font-size: 70%
-        content: '❯'
+        content: '∷'
+        font-size: 120%
         color: green
         position: relative
         top: -1px
@@ -122,7 +129,15 @@ body
 
     p
       margin: 1em 0
-
+    h1 + p,
+    h2 + p,
+    h3 + p,
+    h4 + p,
+    h5 + p,
+    h6 + p
+      margin-top: 0
+    a
+      link: black, true
 
     &.page
       h1
@@ -141,6 +156,13 @@ body
         margin: 1em 0 .5em 0
         font: 18px/1.4 headline
         text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
+
+      h3
+        color: darken(textcolor, 20%)
+        margin: 1em 0 .2em 0
+        font: 18px/1.4 headline
+        text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
+        font-variant: small-caps
 
 
     &.entry
@@ -183,15 +205,6 @@ body
       section
         text-align: justify
 
-        a
-          color: black
-          text-decoration: none
-          border-bottom: 1px solid green
-
-          &:hover
-          &:active
-          &:focus
-            border-bottom: 3px double green
 
 #footer
   margin: 10px 0
