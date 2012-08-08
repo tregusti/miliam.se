@@ -28,39 +28,65 @@ body
   background: url('/bg.jpg') fixed
 
 #navigation
+  box-sizing: border-box
   background: rgba(255, 255, 255, .6)
   border-bottom: 5px solid green
-  padding: 10px 0 25px 0
+  padding: 10px 10px 25px 10px
   width: 320px
   display: block
   color: #888
   font-family: headline
   font-size: 13px
 
+  ul
+    overflow: hidden
+    margin-bottom: 10px
+
+    li.latest
+      float: left
+    li.about
+      display: none
+      float: right
+
+  a
+    color: textcolor
+    text-decoration: none
+    font-weight: bold
+
+    &:hover
+    &:active
+    &:focus
+      border-bottom: 1px solid green
+
   table
-    margin: 0 auto
     border-collapse: collapse
     text-align: center
+    width: 100%
     th
+      // Align year to the left edge
       text-align: left
       &:after
+        // Add a nice indicator
         margin: 0 10px 0 5px
         font-size: 70%
         content: '❯'
         color: green
         position: relative
         top: -1px
+      a
+        // Only a since all years are linked. Remove outer
+        // padding so it aligns with the rest of the page
+        // content
+        padding-left: 0
     a, span
-      padding: 2px 5px
-    a
-      color: textcolor
-      text-decoration: none
-      font-weight: bold
+      // White space in links is good
+      padding: 2px 4px
+    td:last-child
+      a, span
+        // Remove outer padding so it aligns with the rest
+        // of the page content
+        padding-right: 0
 
-      &:hover
-      &:active
-      &:focus
-        border-bottom: 1px solid green
 
 
 #head
