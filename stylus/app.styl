@@ -27,13 +27,41 @@ body
   color: textcolor
   background: url('/bg.jpg') fixed
 
-  &:before
-    content: ''
-    background: rgba(255, 255, 255, .6)
-    border-bottom: 5px solid green
-    height: 15px
-    width: 320px
-    display: block
+#navigation
+  background: rgba(255, 255, 255, .6)
+  border-bottom: 5px solid green
+  padding: 10px 0 25px 0
+  width: 320px
+  display: block
+  color: #888
+  font-family: headline
+  font-size: 13px
+
+  table
+    margin: 0 auto
+    border-collapse: collapse
+    text-align: center
+    th
+      text-align: left
+      &:after
+        margin: 0 10px 0 5px
+        font-size: 70%
+        content: '❯'
+        color: green
+        position: relative
+        top: -1px
+    a, span
+      padding: 2px 5px
+    a
+      color: textcolor
+      text-decoration: none
+      font-weight: bold
+
+      &:hover
+      &:active
+      &:focus
+        border-bottom: 1px solid green
+
 
 #head
   color: white
@@ -119,3 +147,8 @@ body
 
   aside
     padding: padding
+
+#fb-root
+  display: none
+  // This is only used as a placeholder, not for showing anything, so hide it.
+  // http://stackoverflow.com/questions/8856211/horizontal-scrollbar-in-firefox-caused-by-fb-root

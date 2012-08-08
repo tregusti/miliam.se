@@ -24,7 +24,6 @@ html
     //- gplus url
     link(rel="canonical", href=url)
 
-
     //- Google Analytics
     if analytics
       //- See: http://ralphvanderpauw.com/analytics/error-pages-google-analytics-update/
@@ -41,6 +40,7 @@ html
         })();
 
   body
+    include navigation
     hgroup#head
       a(href="/")
         h1 Miliam Jorde
@@ -57,3 +57,7 @@ html
 
     //- Google plus stuff
     script(src="/plusone.js")
+
+    //- App stuff
+    script(src="/js/jquery.js")
+    script(src="/js/app.js")

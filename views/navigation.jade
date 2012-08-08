@@ -1,0 +1,12 @@
+nav#navigation
+  table
+    each months, year in navigation
+      tr
+        th
+          a(href="/#{year}")= year
+        each month in months
+          td
+            if month.link
+              a(href=month.path, title="#{month.long} #{year}")= month.short
+            else
+              span= month.short

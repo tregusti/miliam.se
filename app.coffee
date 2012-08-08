@@ -70,6 +70,7 @@ app.locals.use (req, res) ->
   res.locals.description = 'En pojkes uppväxt i bilder'
   res.locals.url = 'http://miliam.se/'
   res.locals.title = ''
+  res.locals.navigation = require './lib/navigation'
 
   # Sharing
   res.locals.show_fblike = config.get('sharing:facebook')
