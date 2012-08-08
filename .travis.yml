@@ -2,3 +2,6 @@ language: node_js
 script: ./node_modules/jake/bin/cli.js specs
 node_js:
   - 0.6
+branches:
+  only:
+    - public
