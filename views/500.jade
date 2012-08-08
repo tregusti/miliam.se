@@ -1,7 +1,11 @@
 extends layout
 
+block analytics
+  script
+    _gaq.push(['_trackEvent', 'Error', '500', 'page: ' + document.location.pathname + document.location.search + ' ref: ' + document.referrer, true]);
+
 block content
-  article#error500
+  article.entry#error500
     header
       h1 Oj, oj, oj
     section.body

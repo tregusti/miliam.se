@@ -66,7 +66,26 @@ Object.defineProperty Entry::, 'slug',
   enumerable: true,
   get: ->
     return null unless @title
-    require('slug') @title.toLowerCase()
+    ###
+    These are the chars that node-slug module doesn't replace.
+    See: https://github.com/dodo/node-slug/blob/0aeba61e4df3708c40f9ea859e6b90bbab4c5813/src/slug.coffee#L87
+    and  https://github.com/dodo/node-slug/blob/0aeba61e4df3708c40f9ea859e6b90bbab4c5813/test/slug.test.coffee#L17
+    ###
+    re = /// [
+      \*
+      \+
+      \.
+      \(
+      \)
+      \\
+      !
+      :
+      @
+      '
+      "
+      ~
+    ] ///g
+    require('slug') @title.toLowerCase().replace re, ''
 
 Object.defineProperty Entry::, 'humanTime',
   enumerable: true,

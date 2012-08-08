@@ -1,7 +1,11 @@
 extends layout
 
+block analytics
+  script
+    _gaq.push(['_trackEvent', 'Error', '404', 'page: ' + document.location.pathname + document.location.search + ' ref: ' + document.referrer, true]);
+
 block content
-  article#error404
+  article.entry#error404
     header
       h1 Bebisen finns inte
     section.body

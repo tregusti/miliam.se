@@ -66,10 +66,12 @@ require('./lib/age').attach app
 
 app.locals.use (req, res) ->
 
-  res.locals.analytics = config.get('analytics')
+  res.locals.analytics   = config.get('analytics')
   res.locals.description = 'En pojkes uppväxt i bilder'
-  res.locals.url = 'http://miliam.se/'
-  res.locals.title = ''
+  res.locals.url         = 'http://miliam.se/'
+  res.locals.title       = ''
+  res.locals.navigation  = require('./lib/navigation')
+  res.locals.keywords    = require('./lib/keywords').join ', '
 
   # Sharing
   res.locals.show_fblike = config.get('sharing:facebook')
@@ -96,8 +98,9 @@ app.get ///^
 app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)$/, routes.entry
 app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)\/.*?\.w(320|640|1024)\.jpg$/, routes.entryImage
 app.get "/rss.xml", routes.rss
+app.get "/om", routes.about
 app.get "/", routes.index
-app.get "/*", (req, res) -> throw new NotFoundError
+app.get "/*", (req, res) -> throw new NotFoundError req.url
 
 http.createServer(app).listen app.get("port"), ->
   log.info "miliam.se started on port #{app.get("port")} in #{config.get('env')} environment"

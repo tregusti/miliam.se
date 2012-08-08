@@ -259,6 +259,13 @@ describe 'Entry', ->
       entry.title = "ABCabcÅÄÖÉ"
       entry.slug.should.equal 'abcabcaaoe'
 
+    it "should remove some extra chars from title", ->
+      # Allowed in node-slug module. I don't allow them.
+      for char in ['*', '+', '~', '.', '(', ')', '\'', '"', '!', ':', '@']
+        entry = new Entry
+        entry.title = "pre #{char} post"
+        entry.slug.should.equal 'pre-post'
+
   # PATH
 
   describe "#path property", ->
