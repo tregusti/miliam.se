@@ -66,11 +66,12 @@ require('./lib/age').attach app
 
 app.locals.use (req, res) ->
 
-  res.locals.analytics = config.get('analytics')
+  res.locals.analytics   = config.get('analytics')
   res.locals.description = 'En pojkes uppväxt i bilder'
-  res.locals.url = 'http://miliam.se/'
-  res.locals.title = ''
-  res.locals.navigation = require './lib/navigation'
+  res.locals.url         = 'http://miliam.se/'
+  res.locals.title       = ''
+  res.locals.navigation  = require('./lib/navigation')
+  res.locals.keywords    = require('./lib/keywords').join ', '
 
   # Sharing
   res.locals.show_fblike = config.get('sharing:facebook')
