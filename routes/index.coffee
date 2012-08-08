@@ -1,5 +1,7 @@
 Path = require 'path'
 express = require 'express'
+fs = require 'fs'
+marked = require 'marked'
 
 Entry = require '../lib/entry'
 EntryList = require '../lib/entry-list'
@@ -33,3 +35,10 @@ exports.entryImage = (req, res) ->
   middleware req, res
 
 exports.rss = require './rss'
+
+exports.about = (req, res, next) ->
+  path = Path.join config.get('paths:data'), 'pages', 'om.md'
+  fs.readFile path, 'utf8', (err, data) ->
+    return next() if err
+    res.render 'page',
+      content: marked data
