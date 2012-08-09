@@ -2,21 +2,17 @@
   box-sizing: border-box
   background: rgba(255, 255, 255, .6)
   border-bottom: 5px solid green
-  padding: 10px 10px 25px 10px
-  width: 320px
+  padding: padding padding 25px padding
+  width: 100%
   display: block
   color: #888
   font-family: headline
   font-size: 13px
+  overflow: hidden
 
   ul
     overflow: hidden
     margin-bottom: 10px
-
-    li.latest
-      float: left
-    li.about
-      float: right
 
   a
     link: textcolor
@@ -49,3 +45,26 @@
         // of the page content
         padding-right: 0
 
+// NARROW
+@media screen and (max-width: 659px) // normal-width -1 TODO!
+
+  #navigation
+    li.latest
+      float: left
+    li.about
+      float: right
+
+// NORMAL
+@media screen and (min-width: 660px) // normal-width TODO!
+
+  left-width = 150px
+  #navigation
+    ul
+      float: left
+      width: left-width
+      li
+        line-height: 1.8
+
+    table
+      float: right
+      width: normal-width - left-width - 2 * padding - 10px
