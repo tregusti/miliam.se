@@ -1,0 +1,89 @@
+#content
+  margin: 0 3px 10px 3px
+
+  article
+    position: relative
+    padding: allpadding
+    background: rgba(255, 255, 255, .6)
+    margin-top: 30px
+    border-radius: 10px
+    &:first-child
+      margin-top: 0
+
+    p
+      margin: 1em 0
+    h1 + p,
+    h2 + p,
+    h3 + p,
+    h4 + p,
+    h5 + p,
+    h6 + p
+      margin-top: 0
+    a
+      link: black, true
+
+    &.page
+      h1
+        color: darken(textcolor, 20%)
+        margin: 5px 0
+        font: 20px/1.4 headline
+        text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
+        &:after
+          content: ' '
+          border-bottom: 2px solid rgba(green, .5)
+          display: block
+          margin-top: -6px
+
+      h2
+        color: darken(textcolor, 20%)
+        margin: 1em 0 .5em 0
+        font: 18px/1.4 headline
+        text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
+
+      h3
+        color: darken(textcolor, 20%)
+        margin: 1em 0 .2em 0
+        font: 18px/1.4 headline
+        text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
+        font-variant: small-caps
+
+
+    &.entry
+      padding: allpadding
+      background: rgba(255, 255, 255, .6)
+      margin-top: 30px
+      border-radius: 10px
+      &:first-child
+        margin-top: 0
+
+      header
+        margin: 5px 0
+        border-bottom: 2px solid rgba(green, .5)
+
+        a
+          text-decoration: none
+        h1
+          color: darken(textcolor, 20%)
+          font: 20px/1.4 headline
+          margin-bottom: -6px
+          text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
+
+      img
+        width: 320px
+        margin: 10px -11px 0 -11px
+        box-shadow: 0 0 5px rgba(0, 0, 0, .6)
+      footer
+        .fb-like
+          width: 100px // see: https://developers.facebook.com/docs/reference/plugins/like/
+          float: left
+        .g-plusone
+          width: 100px // see: https://developers.google.com/+/plugins/+1button/#button-sizes
+          float: left
+        time
+          float: right
+          text-align: right
+          display: block
+          smalltext()
+
+      section
+        text-align: justify
