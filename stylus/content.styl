@@ -96,6 +96,8 @@
           box-shadow: 0 0 5px rgba(0, 0, 0, .6)
 
       @media wide
+        header
+          margin-bottom: padding
         footer
           position: absolute
           top: 8px
@@ -107,11 +109,26 @@
           margin-right: 300px
 
         section.body
-          width: 310px
+          width: narrowWidth
           float: left
+
+          // On a row of it's own
+          &:nth-child(odd) //:last-child not needed. it's always last
+            // Make it full width. Not nice. but better than the alternatives
+            width: 100%
+
+          // To thr right of an image
+          &:nth-child(even)
+            > :first-child
+              // Kill the top margin
+              margin-top: 0
 
         img
           float: left
-          
-          &:nth-child(odd)
+          margin-bottom: padding
+
+
+          // First item on each row
+          &:nth-child(even)
+            // add some spacing to the next item
             margin-right: padding
