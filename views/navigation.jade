@@ -11,6 +11,10 @@ nav#navigation
         each month in months
           td
             if month.link
-              a(href=month.path, title="#{month.long} #{year}")= month.short
+              a(href=month.path, title="#{month.long} #{year}", class="month")
+                = month.short
+                span.long= month.long.substr(1, 2)
             else
-              span= month.short
+              span.month
+                = month.short
+                span.long= month.long.substr(1, 2)

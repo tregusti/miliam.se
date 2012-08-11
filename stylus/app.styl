@@ -10,6 +10,12 @@ textcolor = #444
 brown = rgb(195, 134, 113)
 green = rgb(172, 230, 0)
 
+narrowWidth = 320px
+normalWidth = 664px
+
+narrow = "screen and (max-width: " + (normalWidth + 19) + ")"
+wide   = "screen and (min-width: " + (normalWidth + 20) + ")"
+
 smalltext()
   font-size: 12px
   line-height: 1.4
@@ -41,174 +47,28 @@ body
   margin: auto
   color: textcolor
   background: url('/bg.jpg') fixed
+  @media wide
+    width: normalWidth
 
-#navigation
-  box-sizing: border-box
-  background: rgba(255, 255, 255, .6)
-  border-bottom: 5px solid green
-  padding: 10px 10px 25px 10px
-  width: 320px
-  display: block
-  color: #888
-  font-family: headline
-  font-size: 13px
-
-  ul
-    overflow: hidden
-    margin-bottom: 10px
-
-    li.latest
-      float: left
-    li.about
-      float: right
+#update-warning
+  red = red
+  border: 2px solid red
+  color: #444
+  background: lighten(red, 70%)
+  padding: 10px 20px
+  margin: 10px 0 20px 0
 
   a
-    link: textcolor
+    color: darken(red, 20%)
+    text-decoration: underline
 
-  table
-    border-collapse: collapse
-    text-align: center
-    width: 100%
-    th
-      // Align year to the left edge
-      text-align: left
-      &:after
-        // Add a nice indicator
-        content: '∷'
-        font-size: 120%
-        color: green
-        position: relative
-        top: -1px
-      a
-        // Only a since all years are linked. Remove outer
-        // padding so it aligns with the rest of the page
-        // content
-        padding-left: 0
-    a, span
-      // White space in links is good
-      padding: 2px 4px
-    td:last-child
-      a, span
-        // Remove outer padding so it aligns with the rest
-        // of the page content
-        padding-right: 0
-
-
-
-#head
-  color: white
-  padding: allpadding
-  overflow: hidden
-  margin: 10px
-
-  a
-    color: inherit
-    text-decoration: none
-
-  h1
-    text-shadow: 1px 2px 0 rgba(0, 0, 0, .2)
-    font-size: 40px
-    letter-spacing: -1px
-    font-family: headline
-  h2
-    float: right
-    smallwhitetext()
-    margin-top: -10px
-
-
-#content
-  margin: 0 3px 10px 3px
-
-  article
-    padding: allpadding
-    background: rgba(255, 255, 255, .6)
-    margin-top: 30px
-    border-radius: 10px
-    &:first-child
-      margin-top: 0
-
-    p
-      margin: 1em 0
-    h1 + p,
-    h2 + p,
-    h3 + p,
-    h4 + p,
-    h5 + p,
-    h6 + p
-      margin-top: 0
-    a
-      link: black, true
-
-    &.page
-      h1
-        color: darken(textcolor, 20%)
-        margin: 5px 0
-        font: 20px/1.4 headline
-        text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
-        &:after
-          content: ' '
-          border-bottom: 2px solid rgba(green, .5)
-          display: block
-          margin-top: -6px
-
-      h2
-        color: darken(textcolor, 20%)
-        margin: 1em 0 .5em 0
-        font: 18px/1.4 headline
-        text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
-
-      h3
-        color: darken(textcolor, 20%)
-        margin: 1em 0 .2em 0
-        font: 18px/1.4 headline
-        text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
-        font-variant: small-caps
-
-
-    &.entry
-      padding: allpadding
-      background: rgba(255, 255, 255, .6)
-      margin-top: 30px
-      border-radius: 10px
-      &:first-child
-        margin-top: 0
-
-      header
-        margin: 5px 0
-        border-bottom: 2px solid rgba(green, .5)
-
-        a
-          text-decoration: none
-        h1
-          color: darken(textcolor, 20%)
-          font: 20px/1.4 headline
-          margin-bottom: -6px
-          text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
-
-      img
-        width: 320px
-        margin: 10px -11px 0 -11px
-        box-shadow: 0 0 5px rgba(0, 0, 0, .6)
-      footer
-        .fb-like
-          width: 100px // see: https://developers.facebook.com/docs/reference/plugins/like/
-          float: left
-        .g-plusone
-          width: 100px // see: https://developers.google.com/+/plugins/+1button/#button-sizes
-          float: left
-        time
-          float: right
-          text-align: right
-          display: block
-          smalltext()
-
-      section
-        text-align: justify
-
+@import 'navigation'
+@import 'head'
+@import 'content'
 
 #footer
   margin: 10px 0
-  width: 320px
+  width: narrowWidth
   smallwhitetext()
 
   aside

@@ -1,0 +1,74 @@
+#navigation
+  box-sizing: border-box
+  background: rgba(255, 255, 255, .6)
+  .m-no-rgba &
+    background: rgb(255, 255, 255)
+  border-bottom: 5px solid green
+  padding: padding padding 25px padding
+  width: 100%
+  display: block
+  color: #888
+  font-family: headline
+  font-size: 13px
+  overflow: hidden
+
+  ul
+    overflow: hidden
+    margin-bottom: 10px
+
+  a
+    link: textcolor
+
+  span.long
+    display: none
+
+  li.latest
+    float: left
+  li.about
+    float: right
+
+  table
+    border-collapse: collapse
+    text-align: center
+    width: 100%
+    th
+      // Align year to the left edge
+      text-align: left
+      &:after
+        // Add a nice indicator
+        content: '∷'
+        font-size: 120%
+        color: green
+        position: relative
+        top: -1px
+      a
+        // Only a since all years are linked. Remove outer
+        // padding so it aligns with the rest of the page
+        // content
+        padding-left: 0
+    a, span
+      &.month
+        // White space in links is good
+        padding: 2px 4px
+    td:last-child
+      a, span
+        // Remove outer padding so it aligns with the rest
+        // of the page content
+        padding-right: 0
+
+  @media wide
+    left-width = 150px
+    span.long
+      display: inline
+      padding: 0
+
+    ul
+      float: left
+      width: left-width
+      li[class] // add attr selector to increase the specificity
+        line-height: 1.8
+        float: none
+
+    table
+      float: right
+      width: normalWidth - left-width - 2 * padding - 10px

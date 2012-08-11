@@ -1,6 +1,6 @@
 {
   "name": "miliam",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
     "start": "./node_modules/jake/bin/cli.js start",
@@ -9,7 +9,7 @@
   "dependencies": {
     "express": "3.0.0beta3",
     "jade": "0.26.x",
-    "stylus": "0.27.x",
+    "stylus": "git://github.com/LearnBoost/stylus.git#42d89a5e919c6196a3525c00fb22edeafc88fff3",
     "nib": "0.5.x",
     "sprintf": "*",
     "marked": "0.2.x",
