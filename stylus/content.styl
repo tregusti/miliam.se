@@ -1,6 +1,7 @@
 #content
-  @media narrow
-    margin: 0 3px 10px 3px
+  margin: 0 3px 10px 3px
+  @media wide
+    margin: 0
 
   article
     position: relative
@@ -89,11 +90,10 @@
       section
         text-align: justify
 
-      @media narrow
-        img
-          width: narrowWidth
-          margin: 10px -11px 0 -11px
-          box-shadow: 0 0 5px rgba(0, 0, 0, .6)
+      img
+        width: narrowWidth
+        margin: 10px -11px 0 -11px
+        box-shadow: 0 0 5px rgba(0, 0, 0, .6)
 
       @media wide
         header
@@ -125,7 +125,7 @@
 
         img
           float: left
-          margin-bottom: padding
+          margin: 0 0 padding 0
 
 
           // First item on each row
