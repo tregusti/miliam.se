@@ -68,10 +68,6 @@
           margin-bottom: -6px
           text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
 
-      img
-        width: 320px
-        margin: 10px -11px 0 -11px
-        box-shadow: 0 0 5px rgba(0, 0, 0, .6)
       footer
         .fb-like
           width: 100px // see: https://developers.facebook.com/docs/reference/plugins/like/
@@ -88,12 +84,24 @@
       section
         text-align: justify
 
+// NARROW
+@media screen and (max-width: 659px) // normal-width -1 TODO!
+
+  #content
+    img
+      width: 320px
+      margin: 10px -11px 0 -11px
+      box-shadow: 0 0 5px rgba(0, 0, 0, .6)
+
+
 @media screen and (min-width: 660px) // normal-width TODO!
   #content
-    time
+    footer
       position: absolute
-      top: 15px
+      top: 8px
       right: 10px
 
+      time
+        padding-top: 5px
     h1
-      margin-right: 250px
+      margin-right: 300px
