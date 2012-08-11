@@ -1,5 +1,6 @@
 #content
-  margin: 0 3px 10px 3px
+  @media narrow
+    margin: 0 3px 10px 3px
 
   article
     position: relative
@@ -21,6 +22,8 @@
       margin-top: 0
     a
       link: black, true
+
+
 
     &.page
       h1
@@ -55,6 +58,8 @@
       border-radius: 10px
       &:first-child
         margin-top: 0
+      @media wide
+        overflow: hidden
 
       header
         margin: 5px 0
@@ -84,24 +89,29 @@
       section
         text-align: justify
 
-// NARROW
-@media screen and (max-width: 659px) // normal-width -1 TODO!
+      @media narrow
+        img
+          width: narrowWidth
+          margin: 10px -11px 0 -11px
+          box-shadow: 0 0 5px rgba(0, 0, 0, .6)
 
-  #content
-    img
-      width: 320px
-      margin: 10px -11px 0 -11px
-      box-shadow: 0 0 5px rgba(0, 0, 0, .6)
+      @media wide
+        footer
+          position: absolute
+          top: 8px
+          right: 10px
 
+          time
+            padding-top: 5px
+        h1
+          margin-right: 300px
 
-@media screen and (min-width: 660px) // normal-width TODO!
-  #content
-    footer
-      position: absolute
-      top: 8px
-      right: 10px
+        section.body
+          width: 310px
+          float: left
 
-      time
-        padding-top: 5px
-    h1
-      margin-right: 300px
+        img
+          float: left
+          
+          &:nth-child(odd)
+            margin-right: padding

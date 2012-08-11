@@ -14,16 +14,13 @@
     letter-spacing: -1px
     font-family: headline
   h2
-    float: right
     smallwhitetext()
-    margin-top: -10px
-
-
-
-@media screen and (min-width: 660px) // normal-width TODO!
-  #head
-    h1, h2
-      float: none
-      display: inline-block
-    h2
+    @media narrow
+      float: right
+      margin-top: -10px
+    @media wide
       margin-left: 10px
+
+  @media wide
+    h1, h2
+      display: inline-block

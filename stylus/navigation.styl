@@ -17,6 +17,15 @@
   a
     link: textcolor
 
+  @media narrow
+    span.long
+      display: none
+
+    li.latest
+      float: left
+    li.about
+      float: right
+
   table
     border-collapse: collapse
     text-align: center
@@ -45,23 +54,8 @@
         // of the page content
         padding-right: 0
 
-// NARROW
-@media screen and (max-width: 659px) // normal-width -1 TODO!
-
-  #navigation
-    span.long
-      display: none
-
-    li.latest
-      float: left
-    li.about
-      float: right
-
-// NORMAL
-@media screen and (min-width: 660px) // normal-width TODO!
-
-  left-width = 150px
-  #navigation
+  @media wide
+    left-width = 150px
     span.long
       display: inline
       padding: 0
@@ -74,4 +68,4 @@
 
     table
       float: right
-      width: normal-width - left-width - 2 * padding - 10px
+      width: normalWidth - left-width - 2 * padding - 10px
