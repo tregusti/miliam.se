@@ -50,6 +50,18 @@ body
   @media wide
     width: normalWidth
 
+#update-warning
+  red = red
+  border: 2px solid red
+  color: #444
+  background: lighten(red, 70%)
+  padding: 10px 20px
+  margin: 10px 0 20px 0
+
+  a
+    color: darken(red, 20%)
+    text-decoration: underline
+
 @import 'navigation'
 @import 'head'
 @import 'content'
