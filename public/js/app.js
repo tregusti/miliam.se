@@ -1,5 +1,13 @@
 ;(function(window, document, $, undefined) {
 
+  function trackEvent(category, action, label, data) {
+    if (typeof _gaq != 'undefined') {
+      var a = ['_trackEvent']
+      a = a.concat(arguments)
+      _gaq.push.apply(_gaq, a)
+    }
+  }
+
   function scrollDown() {
     var nav = $('#navigation'),
         h = nav.outerHeight() - 20
@@ -11,10 +19,20 @@
     }
   }
 
-  function update(content) {
-    var elm = $('<div id="update-warning">');
-    elm.html(content);
-    $(document.body).prepend(elm);
+  function update(subject) {
+    var content = null;
+
+    if (subject === 'windows') {
+      content = 'Du har en mycket gammal version av Windows. Detta gör att du inte kan uppgradera din webbläsare, Internet Explorer. Detta gör att denna sida inte upplevs och ser ut så bra som den skulle kunna göra.<br><br>Utöver detta är du också utsatt för onödigt stora <a href="http://news.cnet.com/8301-1009_3-20063220-83.html" target="_blank">säkerhetsrisker</a>.<br><br>Du borde verkligen överväga att <a href="http://www.microsoft.com/windows">uppgradera</a>.';
+    } else if (subject === 'ie') {
+      content = 'Du har en gammal version av din webbläsare, Internet Explorer. För att uppleva många olika webbplatser, inklusive denna, mycket bättre och säkrare så borde du <a href="http://windows.microsoft.com/sv-SE/windows7/Update-Internet-Explorer" target="_blank">uppgradera</a> kostnadfritt.';
+    }
+    if (content) {
+      trackEvent('Update warning', subject, navigator.userAgent);
+      var elm = $('<div id="update-warning">');
+      elm.html(content);
+      $(document.body).prepend(elm);
+    }
   }
 
   $(function() {
@@ -24,10 +42,10 @@
       var m = navigator.userAgent.match(/Windows NT (\d+)/);
       if (m && m[1] < 6) {
         // XP or less
-        update('Du har en mycket gammal version av Windows. Detta gör att du inte kan uppgradera din webbläsare, Internet Explorer. Detta gör att denna sida inte upplevs och ser ut så bra som den skulle kunna göra.<br><br>Utöver detta är du också utsatt för onödigt stora <a href="http://news.cnet.com/8301-1009_3-20063220-83.html" target="_blank">säkerhetsrisker</a>.<br><br>Du borde verkligen överväga att <a href="http://www.microsoft.com/windows">uppgradera</a>.');
+        update('windows');
       } else {
         // just update ie
-        update('Du har en gammal version av din webbläsare, Internet Explorer. För att uppleva många olika webbplatser, inklusive denna, mycket bättre och säkrare så borde du <a href="http://windows.microsoft.com/sv-SE/windows7/Update-Internet-Explorer" target="_blank">uppgradera</a> kostnadfritt.');
+        update('ie');
       }
     } else {
       scrollDown()
