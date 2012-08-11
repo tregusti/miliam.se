@@ -7,6 +7,8 @@ html
         = " ● Miliam Jorde"
       else
         = "Miliam Jorde"
+
+    meta(http-equiv="X-UA-Compatible", content="IE=Edge")
     link(rel='stylesheet', href='/app.css')
     link(rel='shortcut icon', type='image/x-icon', href='/favicon.ico')
     link(rel='icon', type='image/x-icon', href='/favicon.png')
@@ -16,6 +18,7 @@ html
     meta(name="description", content=description)
     meta(name="keywords", content=keywords)
     meta(property="og:title", content=title || "Miliam Jorde")
+    script(src="/modernizr.js")
 
     //- FB stuff
     script(src="/fb.js")

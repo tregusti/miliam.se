@@ -1,6 +1,8 @@
 #navigation
   box-sizing: border-box
   background: rgba(255, 255, 255, .6)
+  .m-no-rgba &
+    background: rgb(255, 255, 255)
   border-bottom: 5px solid green
   padding: padding padding 25px padding
   width: 100%
@@ -17,14 +19,13 @@
   a
     link: textcolor
 
-  @media narrow
-    span.long
-      display: none
+  span.long
+    display: none
 
-    li.latest
-      float: left
-    li.about
-      float: right
+  li.latest
+    float: left
+  li.about
+    float: right
 
   table
     border-collapse: collapse
@@ -46,8 +47,9 @@
         // content
         padding-left: 0
     a, span
-      // White space in links is good
-      padding: 2px 4px
+      &.month
+        // White space in links is good
+        padding: 2px 4px
     td:last-child
       a, span
         // Remove outer padding so it aligns with the rest
@@ -63,8 +65,9 @@
     ul
       float: left
       width: left-width
-      li
+      li[class] // add attr selector to increase the specificity
         line-height: 1.8
+        float: none
 
     table
       float: right
