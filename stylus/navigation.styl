@@ -19,14 +19,13 @@
   a
     link: textcolor
 
-  @media narrow
-    span.long
-      display: none
+  span.long
+    display: none
 
-    li.latest
-      float: left
-    li.about
-      float: right
+  li.latest
+    float: left
+  li.about
+    float: right
 
   table
     border-collapse: collapse
@@ -48,8 +47,9 @@
         // content
         padding-left: 0
     a, span
-      // White space in links is good
-      padding: 2px 4px
+      &.month
+        // White space in links is good
+        padding: 2px 4px
     td:last-child
       a, span
         // Remove outer padding so it aligns with the rest
@@ -67,6 +67,7 @@
       width: left-width
       li
         line-height: 1.8
+        float: none
 
     table
       float: right
