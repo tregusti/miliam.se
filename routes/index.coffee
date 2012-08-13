@@ -12,14 +12,14 @@ datapath = config.get 'paths:data'
 exports.list = (req, res, next) ->
   [year, month, date] = req.params
   opts = year: year, month: month, date: date
-  EntryList.load datapath, opts, (err, entries) ->
+  EntryList.load datapath, opts, (err, list) ->
 
     if err
       next new NotFoundError req.path
     else
       res.render "list",
-        title: ''
-        entries: entries or []
+        title: list.title
+        entries: list.entries
 
 exports.entry = (req, res, next) ->
   [year, month, date, slug] = req.params
