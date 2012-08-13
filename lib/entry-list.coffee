@@ -63,7 +63,7 @@ EntryList.load = (path, options, callback) ->
         callback err, null
       else
         el = new EntryList options.year, options.month, options.date
-        callback null, el.tap ->
-          @entries = entries
+        el.entries = entries
+        callback null, el
 
 module.exports = EntryList
