@@ -19,9 +19,9 @@ class EntryList
         if year
           s = "#{year}"
           if month
-            s = "#{months[month]} #{s}"
+            s = "#{months[month|0]} #{s}"
             if date
-              s = "#{date} #{s}".toLowerCase()
+              s = "#{date|0} #{s}".toLowerCase()
         s
 
 
