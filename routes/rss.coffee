@@ -7,7 +7,7 @@ datapath = config.get('paths:data')
 loadXML = (cb) ->
   options =
     limit: 20
-  EntryList.load datapath, options, (err, entries) ->
+  EntryList.load datapath, options, (err, list) ->
     throw err if err
 
     feed = new RSS
@@ -17,7 +17,7 @@ loadXML = (cb) ->
       site_url:     "http://miliam.se"
       image_url:    "http://miliam.se/favicon.png"
 
-    for entry in entries
+    for entry in list.entries
       feed.item
         title:        entry.title
         description:  entry.html
