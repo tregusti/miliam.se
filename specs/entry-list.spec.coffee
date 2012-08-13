@@ -47,6 +47,32 @@ describe 'EntryList', ->
       # unstub file reads
       spyfs.off()
 
+    it "should be be an EntryList", (done) ->
+      cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
+      EntryList.load '/tmp', (err, list) ->
+        list.should.be.an.instanceof EntryList
+        done()
+
+    describe "#title property", ->
+      it "should be read only", ->
+        el = new EntryList
+        el.should.have.property 'title', ''
+        el.title = 'nope'
+        el.should.have.property 'title', ''
+
+      it "reflects the year", ->
+        el = new EntryList 2012
+        el.should.have.property 'title', '2012'
+
+      it "reflects the year and month", ->
+        el = new EntryList 2012, 8
+        el.should.have.property 'title', 'Augusti 2012'
+
+      it "reflects the year, month and date", ->
+        el = new EntryList 2012, 8, 12
+        el.should.have.property 'title', '12 augusti 2012'
+
+
     describe "#entries property", ->
 
       it 'loads all entries in reversed chronological order', (done) ->
