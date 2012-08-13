@@ -83,6 +83,16 @@ describe 'EntryList', ->
 
     describe "#entries property", ->
 
+      it "invokes constructor with year, month and date", (done) ->
+        cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
+        opts =
+          year: 2011
+          month: 2
+          date: 9
+        EntryList.load '/tmp', opts, (err, list) ->
+          list.title.should.equal "9 februari 2011"
+          done()
+
       it 'loads all entries in reversed chronological order', (done) ->
         # stub shell script
         cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')

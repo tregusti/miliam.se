@@ -62,7 +62,8 @@ EntryList.load = (path, options, callback) ->
       if err
         callback err, null
       else
-        callback null, new EntryList().tap ->
+        el = new EntryList options.year, options.month, options.date
+        callback null, el.tap ->
           @entries = entries
 
 module.exports = EntryList
