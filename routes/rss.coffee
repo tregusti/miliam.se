@@ -29,4 +29,5 @@ loadXML = (cb) ->
 
 module.exports = (req, res) ->
   loadXML (xml) ->
+    res.set 'Content-Type', 'application/rss+xml; charset=utf-8'
     res.send 200, xml
