@@ -44,6 +44,7 @@ load = (path, options, callback) ->
       if err
         callback err, null
       else
-        callback null, entries
+        callback null,
+          entries: entries
 
 module.exports.load = load

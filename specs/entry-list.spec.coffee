@@ -47,54 +47,56 @@ describe 'EntryList', ->
       # unstub file reads
       spyfs.off()
 
-    it 'loads all entries in reversed chronological order', (done) ->
-      # stub shell script
-      cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
-      EntryList.load '/tmp', (err, entries) ->
-        expect(entries).to.not.be.undefined
-        cp.exec.should.have.been.called.once
-        entries.should.have.length 4
-        entries[3].should.have.property 'basepath', '/tmp/2011/12/24/aaaa'
-        entries[2].should.have.property 'basepath', '/tmp/2012/04/13/bbbb'
-        entries[1].should.have.property 'basepath', '/tmp/2012/06/06/cccc'
-        entries[0].should.have.property 'basepath', '/tmp/2012/06/06/dddd'
-        done()
+    describe "#entries property", ->
 
-    it 'loads all entries with the same date', (done) ->
-      # stub shell script
-      cp.exec = chai.spy (str, callback) ->
-        result = paths.slice(2).join('\n') if /2012\/06\/06/.test str
-        callback null, result or ''
-      options =
-        year: '2012'
-        month: '06'
-        date: '06'
-      EntryList.load '/tmp', options, (err, entries) ->
-        expect(entries).to.not.be.undefined
-        entries.should.have.length 2
-        entries[1].should.have.property 'basepath', '/tmp/2012/06/06/cccc'
-        entries[0].should.have.property 'basepath', '/tmp/2012/06/06/dddd'
-        done()
+      it 'loads all entries in reversed chronological order', (done) ->
+        # stub shell script
+        cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
+        EntryList.load '/tmp', (err, list) ->
+          expect(list.entries).to.not.be.undefined
+          cp.exec.should.have.been.called.once
+          list.entries.should.have.length 4
+          list.entries[3].should.have.property 'basepath', '/tmp/2011/12/24/aaaa'
+          list.entries[2].should.have.property 'basepath', '/tmp/2012/04/13/bbbb'
+          list.entries[1].should.have.property 'basepath', '/tmp/2012/06/06/cccc'
+          list.entries[0].should.have.property 'basepath', '/tmp/2012/06/06/dddd'
+          done()
 
-    it 'loads all entries with the same year', (done) ->
-      # stub shell script
-      cp.exec = chai.spy (str, callback) ->
-        result = paths.slice(1).join('\n') if /2012/.test str
-        callback null, result or ''
-      options =
-        year: '2012'
-      EntryList.load '/tmp', options, (err, entries) ->
-        expect(entries).to.not.be.undefined
-        entries.should.have.length 3
-        entries[2].should.have.property 'basepath', '/tmp/2012/04/13/bbbb'
-        entries[1].should.have.property 'basepath', '/tmp/2012/06/06/cccc'
-        entries[0].should.have.property 'basepath', '/tmp/2012/06/06/dddd'
-        done()
+      it 'loads all entries with the same date', (done) ->
+        # stub shell script
+        cp.exec = chai.spy (str, callback) ->
+          result = paths.slice(2).join('\n') if /2012\/06\/06/.test str
+          callback null, result or ''
+        options =
+          year: '2012'
+          month: '06'
+          date: '06'
+        EntryList.load '/tmp', options, (err, list) ->
+          expect(list.entries).to.not.be.undefined
+          list.entries.should.have.length 2
+          list.entries[1].should.have.property 'basepath', '/tmp/2012/06/06/cccc'
+          list.entries[0].should.have.property 'basepath', '/tmp/2012/06/06/dddd'
+          done()
 
-    it "limits the amount of entries when specified", (done) ->
-      cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
-      options =
-        limit: 2
-      EntryList.load '/tmp', options, (err, entries) ->
-        entries.should.have.length 2
-        done()
+      it 'loads all entries with the same year', (done) ->
+        # stub shell script
+        cp.exec = chai.spy (str, callback) ->
+          result = paths.slice(1).join('\n') if /2012/.test str
+          callback null, result or ''
+        options =
+          year: '2012'
+        EntryList.load '/tmp', options, (err, list) ->
+          expect(list.entries).to.not.be.undefined
+          list.entries.should.have.length 3
+          list.entries[2].should.have.property 'basepath', '/tmp/2012/04/13/bbbb'
+          list.entries[1].should.have.property 'basepath', '/tmp/2012/06/06/cccc'
+          list.entries[0].should.have.property 'basepath', '/tmp/2012/06/06/dddd'
+          done()
+
+      it "limits the amount of entries when specified", (done) ->
+        cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
+        options =
+          limit: 2
+        EntryList.load '/tmp', options, (err, list) ->
+          list.entries.should.have.length 2
+          done()
