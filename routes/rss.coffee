@@ -1,8 +1,7 @@
-RSS = require 'rss'
-
+RSS       = require 'rss'
 EntryList = require '../lib/entry-list'
-
-datapath = config.get('paths:data')
+data2www  = require '../lib/data2www'
+datapath  = config.get('paths:data')
 
 loadXML = (cb) ->
   options =
@@ -18,10 +17,16 @@ loadXML = (cb) ->
       image_url:    "http://miliam.se/favicon.png"
 
     for entry in list.entries
+      imgs =  unless entry.images
+                []
+              else
+                console.dir entry.images
+                "<img src='http://miliam.se#{data2www image.w640}?ref=feed'>" for image in entry.images
+
       feed.item
         title:        entry.title
-        description:  entry.html
-        url:          "http://miliam.se#{entry.path}"
+        description:  "#{imgs.join ''}#{entry.html}"
+        url:          entry.url
         date:         entry.time.toString()
 
     cb feed.xml(true)
