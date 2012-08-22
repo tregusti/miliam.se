@@ -8,8 +8,8 @@
   if (Modernizr.localstorage) {
     // Check if the user opted out of tracking.
     // Should only be used for development/testing purposes.
-    if (localStorage.trackUser !== undefined)
-      enabled = localStorage.trackUser
+    if (localStorage.tracking !== 'prevent')
+      enabled = !localStorage.tracking
   }
 
   window._gaq = window._gaq || [];
@@ -31,8 +31,22 @@
     }
   }
 
+  function enableTracking() {
+    if (Modernizr.localstorage) {
+      delete localStorage.tracking
+    }
+  }
+
+  function disableTracking() {
+    if (Modernizr.localstorage) {
+      localStorage.tracking = 'prevent'
+    }
+  }
+
   window.Track = {
-    event: trackEvent
+    event   : trackEvent,
+    enable  : enableTracking,
+    disable : disableTracking
   }
 
 })(this, jQuery);

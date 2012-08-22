@@ -1,0 +1,36 @@
+extends layout
+
+block content
+  article.page
+    p Skall denna browser påverka statistiken för vilka som besöker miliam.se?
+    form#tracker-form
+      button(type="button", id='track-on') Ja
+      button(type="button", id='track-off') Nej
+    script
+      jQuery(function($) {
+        if (Modernizr.localstorage) {
+
+          function render() {
+            if (localStorage.tracking == 'prevent') {
+              $('#track-on').removeClass("selected")
+              $('#track-off').addClass("selected")
+            } else {
+              $('#track-on').addClass("selected")
+              $('#track-off').removeClass("selected")
+            }
+          }
+
+          $('#track-on').click(function(e) {
+            Track.enable()
+            render()
+          });
+          $('#track-off').click(function(e) {
+            Track.disable()
+            render()
+          });
+          render()
+
+        } else {
+          $('#tracker-form').text("Your browser doesn't support saving this kind of state.");
+        }
+      });

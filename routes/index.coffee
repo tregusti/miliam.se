@@ -36,6 +36,7 @@ exports.entryImage = (req, res) ->
   middleware req, res
 
 exports.rss = require './rss'
+exports.tracker = require './tracker'
 
 exports.about = (req, res, next) ->
   path = Path.join config.get('paths:data'), 'pages', 'om.md'
