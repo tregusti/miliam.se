@@ -5,7 +5,7 @@
   function trackEvent(category, action, label, value) {
     if (typeof _gaq != 'undefined') {
       var a = ['_trackEvent']
-      a = a.concat(arguments)
+      a = a.concat([category, action, label, value])
       _gaq.push.apply(_gaq, a)
     }
   }
