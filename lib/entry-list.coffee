@@ -8,6 +8,24 @@ Entry = require './entry'
 NotFoundError = require './errors/notfound'
 ArgumentError = require './errors/argument'
 
+months = ' Januari Februari Mars April Maj Juni Juli Augusti September Oktober November December'.split ' '
+
+class EntryList
+  constructor: (year=null, month=null, date=null) ->
+    Object.defineProperty @, 'title',
+      enumerable: true
+      get: ->
+        s = ''
+        if year
+          s = "#{year}"
+          if month
+            s = "#{months[month|0]} #{s}"
+            if date
+              s = "#{date|0} #{s}".toLowerCase()
+        s
+
+
+
 loadNextEntry = (entries, paths, limit, done) ->
   if paths.length is 0 or limit is 0
     done()
@@ -21,7 +39,7 @@ loadNextEntry = (entries, paths, limit, done) ->
         loadNextEntry entries, paths, limit - 1, done
 
 
-load = (path, options, callback) ->
+EntryList.load = (path, options, callback) ->
   # If no options specified, shift arguments
   [options, callback] = [{}, options] if options instanceof Function
 
@@ -44,6 +62,8 @@ load = (path, options, callback) ->
       if err
         callback err, null
       else
-        callback null, entries
+        el = new EntryList options.year, options.month, options.date
+        el.entries = entries
+        callback null, el
 
-module.exports.load = load
+module.exports = EntryList

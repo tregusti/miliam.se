@@ -18,7 +18,9 @@ html
     meta(name="description", content=description)
     meta(name="keywords", content=keywords)
     meta(property="og:title", content=title || "Miliam Jorde")
+    meta(property="ga:account", content=analytics || '')
     script(src="/modernizr.js")
+    script(src="/js/jquery.js")
 
     //- FB stuff
     script(src="/fb.js")
@@ -29,19 +31,7 @@ html
     link(rel="canonical", href=url)
 
     //- Google Analytics
-    if analytics
-      //- See: http://ralphvanderpauw.com/analytics/error-pages-google-analytics-update/
-      script
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-33898970-1']);
-        _gaq.push(['_trackPageview']);
-      block analytics
-      script
-        (function() {
-          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
+    script(src="/js/tracker.js")
 
   body
     include navigation
@@ -63,5 +53,4 @@ html
     script(src="/plusone.js")
 
     //- App stuff
-    script(src="/js/jquery.js")
     script(src="/js/app.js")

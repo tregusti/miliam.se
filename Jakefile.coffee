@@ -52,6 +52,7 @@ runSpecs = (params, grep, reporter, done) ->
       --colors
       --timeout 200
       --recursive
+      --growl
       --compilers coffee:coffee-script
       --require coffee-script
       --require setup.coffee

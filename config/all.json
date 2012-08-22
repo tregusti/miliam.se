@@ -1,5 +1,7 @@
 {
-  "analytics" : false,
+  "analytics" : {
+    "enabled" : false
+  },
   "sharing"   : {
     "facebook": true,
     "plusone" : true

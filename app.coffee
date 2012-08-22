@@ -66,7 +66,10 @@ require('./lib/age').attach app
 
 app.locals.use (req, res) ->
 
-  res.locals.analytics   = config.get('analytics')
+  res.locals.analytics   = if config.get('analytics:enabled')
+                             config.get('analytics:id')
+                            else
+                              null
   res.locals.description = 'En pojkes uppväxt i bilder'
   res.locals.url         = 'http://miliam.se/'
   res.locals.title       = ''
@@ -77,12 +80,7 @@ app.locals.use (req, res) ->
   res.locals.show_fblike = config.get('sharing:facebook')
   res.locals.show_plusone = config.get('sharing:plusone')
 
-  res.locals.data2www = (path) ->
-    datapath = config.get 'paths:data'
-    path = Path.resolve path
-    if path.substr(0, datapath.length) is not datapath
-      throw new Error 'Path not inside data path'
-    path.substr datapath.length
+  res.locals.data2www = require './lib/data2www'
 
 
 # routes
@@ -98,6 +96,7 @@ app.get ///^
 app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)$/, routes.entry
 app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)\/.*?\.w(320|640|1024)\.jpg$/, routes.entryImage
 app.get "/rss.xml", routes.rss
+app.get "/tracker", routes.tracker
 app.get "/om", routes.about
 app.get "/", routes.index
 app.get "/*", (req, res) -> throw new NotFoundError req.url
