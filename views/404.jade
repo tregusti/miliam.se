@@ -1,11 +1,10 @@
 extends layout
 
-//- https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiEventTracking
-block analytics
-  script
-    _gaq.push(['_trackEvent', 'Error', '404', 'path: ' + document.location.pathname + document.location.search + ' ref: ' + document.referrer, undefined, true]);
-
 block content
+  script
+    var data = 'path: ' + document.location.pathname + document.location.search + ' ref: ' + document.referrer
+    Track.event('Error', '404', data, true);
+
   article.entry#error404
     header
       h1 Bebisen finns inte
