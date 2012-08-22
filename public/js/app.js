@@ -1,6 +1,8 @@
 ;(function(window, document, $, undefined) {
 
-  function trackEvent(category, action, label, data) {
+
+  // https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiEventTracking
+  function trackEvent(category, action, label, value) {
     if (typeof _gaq != 'undefined') {
       var a = ['_trackEvent']
       a = a.concat(arguments)
