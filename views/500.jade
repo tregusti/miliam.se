@@ -1,8 +1,9 @@
 extends layout
 
+//- https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiEventTracking
 block analytics
   script
-    _gaq.push(['_trackEvent', 'Error', '500', 'page: ' + document.location.pathname + document.location.search + ' ref: ' + document.referrer, true]);
+    _gaq.push(['_trackEvent', 'Error', '500', 'path: ' + document.location.pathname + document.location.search + ' ref: ' + document.referrer, undefined, true]);
 
 block content
   article.entry#error500
