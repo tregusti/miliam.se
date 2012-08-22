@@ -1,13 +1,5 @@
 ;(function(window, document, $, undefined) {
 
-  function trackEvent(category, action, label, data) {
-    if (typeof _gaq != 'undefined') {
-      var a = ['_trackEvent']
-      a = a.concat(arguments)
-      _gaq.push.apply(_gaq, a)
-    }
-  }
-
   function scrollDown() {
     var nav = $('#navigation'),
         h = nav.outerHeight() - 20
@@ -28,7 +20,7 @@
       content = 'Du har en gammal version av din webbläsare, Internet Explorer. För att uppleva många olika webbplatser, inklusive denna, mycket bättre och säkrare så borde du <a href="http://windows.microsoft.com/sv-SE/windows7/Update-Internet-Explorer" target="_blank">uppgradera</a> kostnadfritt.';
     }
     if (content) {
-      trackEvent('Update warning', subject, navigator.userAgent);
+      Track.event('Update warning', subject, navigator.userAgent);
       var elm = $('<div id="update-warning">');
       elm.html(content);
       $(document.body).prepend(elm);
