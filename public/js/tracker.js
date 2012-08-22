@@ -27,7 +27,7 @@
     if (typeof _gaq != 'undefined') {
       var a = ['_trackEvent']
       a = a.concat([category, action, label, undefined, noninteraction])
-      _gaq.push.apply(_gaq, a)
+      _gaq.push.call(_gaq, a)
     }
   }
 
