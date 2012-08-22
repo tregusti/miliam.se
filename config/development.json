@@ -1,8 +1,12 @@
 {
-  "log": {
-    "location": "../log/development.log",
-    "console": true,
-    "file": true
+  "analytics"  : {
+    "enabled"  : true,
+    "id"       : "UA-34270405-1"
   },
-  "port": 3000
+  "log"        : {
+    "location" : "../log/development.log",
+    "console"  : true,
+    "file"     : true
+  },
+  "port"       : 3000
 }

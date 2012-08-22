@@ -1,13 +1,16 @@
 {
-  "analytics": true,
-  "port":     6100,
-  "paths": {
-    "data":   "../Dropbox/miliam.se/data",
-    "create": "../Dropbox/miliam.se/create"
+  "analytics"  : {
+    "enabled"  : true,
+    "id"       : "UA-33898970-1"
   },
-  "log": {
-    "location": "../log/production.log",
-    "console": false,
-    "file": true
+  "port"       : 6100,
+  "paths"      : {
+    "data"     : "../Dropbox/miliam.se/data",
+    "create"   : "../Dropbox/miliam.se/create"
+  },
+  "log"        : {
+    "location" : "../log/production.log",
+    "console"  : false,
+    "file"     : true
   }
 }

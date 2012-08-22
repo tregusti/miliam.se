@@ -66,7 +66,10 @@ require('./lib/age').attach app
 
 app.locals.use (req, res) ->
 
-  res.locals.analytics   = config.get('analytics')
+  res.locals.analytics   = if config.get('analytics:enabled')
+                             config.get('analytics:id')
+                            else
+                              null
   res.locals.description = 'En pojkes uppväxt i bilder'
   res.locals.url         = 'http://miliam.se/'
   res.locals.title       = ''
