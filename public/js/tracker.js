@@ -8,8 +8,7 @@
   if (Modernizr.localstorage) {
     // Check if the user opted out of tracking.
     // Should only be used for development/testing purposes.
-    if (localStorage.tracking !== 'prevent')
-      enabled = !localStorage.tracking
+    enabled = localStorage.tracking !== 'prevent'
   }
 
   window._gaq = window._gaq || [];
