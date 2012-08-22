@@ -34,12 +34,14 @@
   function enableTracking() {
     if (Modernizr.localstorage) {
       delete localStorage.tracking
+      Track.event('Tracking', 'enable', navigator.userAgent)
     }
   }
 
   function disableTracking() {
     if (Modernizr.localstorage) {
       localStorage.tracking = 'prevent'
+      Track.event('Tracking', 'disable', navigator.userAgent)
     }
   }
 
