@@ -17,11 +17,12 @@ class Entry
     @images = null
 
   serialize: ->
+    throw new Error "A title is required" unless @title
     if @time
       date = sprintf "%04d-%02d-%02d", @time.getFullYear(), @time.getMonth()+1, @time.getDate()
       time = sprintf "%02d:%02d:%02d", @time.getHours(), @time.getMinutes(), @time.getSeconds()
     a = []
-    a.push "title: #{@title}" if @title
+    a.push "title: #{@title}"
     a.push "date: #{date}" if date
     a.push "time: #{time}" if time
     a.push "image: #{image.original.match(/^(.*?)(\.original)?\.jpg/)[1]}" for image in @images when image.original if @images

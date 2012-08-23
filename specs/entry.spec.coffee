@@ -316,12 +316,19 @@ describe 'Entry', ->
         w640:     "image2.w640.jpg"
         w1024:    "image2.w1024.jpg"
 
-    it "requires a title"
-
-
     it "should respond to serialize", ->
       entry.should.respondTo 'serialize'
       entry.serialize.should.have.length 0
+
+    it "requires a title", ->
+      delete entry.title
+      expect(entry.serialize).to.throw Error
+      message = ''
+      try
+        entry.serialize()
+      catch error
+        message = error.message
+      message.should.match /title is required/i
 
     it "should not fail when no time is set", ->
       delete entry.time
