@@ -18,8 +18,9 @@ exports.list = (req, res, next) ->
       next new NotFoundError req.path
     else
       res.render "list",
-        title: list.title
-        entries: list.entries
+        title    : list.title
+        subtitle : list.subtitle
+        entries  : list.entries
 
 exports.entry = (req, res, next) ->
   [year, month, date, slug] = req.params

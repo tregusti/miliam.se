@@ -39,9 +39,13 @@ html
       a(href="/")
         h1 Miliam Jorde
         h2
-          = "är nu "
-          span= humanAge
-          = " gammal"
+          if subtitle
+            = subtitle
+          else
+            = "är nu "
+            span= humanAge
+            = " gammal"
+          
     #content
       block content
 

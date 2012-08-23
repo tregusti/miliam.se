@@ -23,6 +23,17 @@ class EntryList
             if date
               s = "#{date|0} #{s}".toLowerCase()
         s
+    Object.defineProperty @, 'subtitle',
+      enumerable: true
+      get: ->
+        s = ''
+        if year
+          s = year
+          if month
+            s = "#{months[month|0]} #{s}".toLowerCase()
+            if date
+              return "den #{date|0} #{s}"
+        if s then "under #{s}" else ""
 
 
 
