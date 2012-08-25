@@ -44,6 +44,7 @@ EntryList.load = (path, options, callback) ->
   [options, callback] = [{}, options] if options instanceof Function
 
   options.limit ||= -1 # Default to -1, equalling unlimited
+  options.offset ?= 0
 
   # Error handling
   return callback new ArgumentError('path'), null unless path
@@ -55,6 +56,7 @@ EntryList.load = (path, options, callback) ->
     list = list.trim() or null
     return callback new NotFoundError path unless list
     paths = list.split('\n').sort().reverse()
+    paths = paths.slice options.offset
 
     entries = []
 

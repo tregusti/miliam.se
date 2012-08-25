@@ -144,3 +144,11 @@ describe 'EntryList', ->
         EntryList.load '/tmp', options, (err, list) ->
           list.entries.should.have.length 2
           done()
+
+      it "offsets the start of the entries list when specified", (done) ->
+        cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
+        options =
+          offset: 1
+        EntryList.load '/tmp', options, (err, list) ->
+          list.entries.should.have.length 3
+          done()
