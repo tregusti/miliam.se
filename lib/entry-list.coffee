@@ -53,7 +53,7 @@ EntryList.load = (path, options, callback) ->
   child.exec "find -L #{path} -name info.txt | sed 's/\\/info.txt//'", (err, list) ->
     # callback err, null if err
     list = list.trim() or null
-    callback new NotFoundError path unless list
+    return callback new NotFoundError path unless list
     paths = list.split('\n').sort().reverse()
 
     entries = []
