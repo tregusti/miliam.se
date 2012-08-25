@@ -35,8 +35,8 @@ exports.entryImage = (req, res) ->
   middleware = express.static config.get 'paths:data'
   middleware req, res
 
-exports.rss = require './rss'
-exports.tracker = require './tracker'
+files = (Path.basename file, '.coffee' for file in fs.readdirSync __dirname)
+exports[name] = require "./#{name}" for name in files when name isnt "index"
 
 exports.about = (req, res, next) ->
   path = Path.join config.get('paths:data'), 'pages', 'om.md'
