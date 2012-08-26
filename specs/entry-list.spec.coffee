@@ -144,6 +144,23 @@ describe 'EntryList', ->
         EntryList.load '/tmp', options, (err, list) ->
           list.entries.should.have.length 2
           done()
+      
+      it "should indicate if more entries are available when results are limited", (done) ->
+        cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
+        options =
+          limit: 2
+        EntryList.load '/tmp', options, (err, list) ->
+          list.should.have.property 'more', true
+          done()
+
+      it "should indicate if no more entries are available when results are limited", (done) ->
+        cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
+        options =
+          limit: 2
+          offset: 2
+        EntryList.load '/tmp', options, (err, list) ->
+          list.should.have.property 'more', false
+          done()
 
       it "offsets the start of the entries list when specified", (done) ->
         cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
