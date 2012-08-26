@@ -9,18 +9,6 @@ NotFoundError = require '../lib/errors/notfound'
 
 datapath = config.get 'paths:data'
 
-exports.list = (req, res, next) ->
-  [year, month, date] = req.params
-  opts = year: year, month: month, date: date
-  EntryList.load datapath, opts, (err, list) ->
-
-    if err
-      next new NotFoundError req.path
-    else
-      res.render "list",
-        title: list.title
-        entries: list.entries
-
 exports.entry = (req, res, next) ->
   [year, month, date, slug] = req.params
   entry = Entry.load Path.join(datapath, year, month, date, slug), (err, entry) ->
