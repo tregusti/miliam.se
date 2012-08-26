@@ -11,9 +11,9 @@
       if (m) {
         var path = m[1];
         currentPage = currentPage !== undefined ? currentPage : m[2] || 1
-        $.get(path + '/p' + ++currentPage).done(function(html) {
-          $('#more').before(html);
-          html && enable(); // Enable if we got data back
+        $.getJSON(path + '/p' + ++currentPage).done(function(json) {
+          $('#more').before(json.html);
+          json.more && enable(); // Enable if there's more to fetch
         })
       }
     }

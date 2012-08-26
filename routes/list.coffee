@@ -3,7 +3,7 @@ NotFoundError = require '../lib/errors/notfound'
 
 module.exports = (req, res, next) ->
   [year, month, date, page] = req.params
-  layout = not req.xhr
+  json = req.xhr
 
   page = page | 0 or 1 # to int and default 1
   limit = config.get 'list:count'
@@ -20,7 +20,14 @@ module.exports = (req, res, next) ->
     if err
       next new NotFoundError req.path
     else
-      layout = if layout then "list" else "list_"
-      res.render layout,
+      view = if json then "list_" else "list"
+      data =
         title: list.title
         entries: list.entries
+      res.render view, data, (err, html) ->
+        if json
+          res.json
+            html: html
+            more: list.more
+        else
+          res.send html
