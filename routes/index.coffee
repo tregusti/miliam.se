@@ -9,11 +9,6 @@ NotFoundError = require '../lib/errors/notfound'
 
 datapath = config.get 'paths:data'
 
-
-exports.entryImage = (req, res) ->
-  middleware = express.static config.get 'paths:data'
-  middleware req, res
-
 files = (Path.basename file, '.coffee' for file in fs.readdirSync __dirname)
 exports[name] = require "./#{name}" for name in files when name isnt "index"
 
