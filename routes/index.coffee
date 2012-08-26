@@ -11,10 +11,3 @@ datapath = config.get 'paths:data'
 
 files = (Path.basename file, '.coffee' for file in fs.readdirSync __dirname)
 exports[name] = require "./#{name}" for name in files when name isnt "index"
-
-exports.about = (req, res, next) ->
-  path = Path.join config.get('paths:data'), 'pages', 'om.md'
-  fs.readFile path, 'utf8', (err, data) ->
-    return next() if err
-    res.render 'page',
-      content: marked data
