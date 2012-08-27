@@ -29,6 +29,8 @@
 
   $(function() {
 
+    More.enable();
+
     if ($.browser.msie && $.browser.version <= 8) {
 
       var m = navigator.userAgent.match(/Windows NT (\d+)/);

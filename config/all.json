@@ -11,6 +11,9 @@
     "data"  : "../data",
     "create": "../create"
   },
+  "list": {
+    "count": 5
+  },
   "log": {
     "location": "../log/"
   }

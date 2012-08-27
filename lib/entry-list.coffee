@@ -27,8 +27,10 @@ class EntryList
 
 
 loadNextEntry = (entries, paths, limit, done) ->
-  if paths.length is 0 or limit is 0
-    done()
+  if paths.length is 0
+    done null, false
+  else if limit is 0
+    done null, true
   else
     path = paths.shift()
     Entry.load path, (err, entry) ->
@@ -44,6 +46,7 @@ EntryList.load = (path, options, callback) ->
   [options, callback] = [{}, options] if options instanceof Function
 
   options.limit ||= -1 # Default to -1, equalling unlimited
+  options.offset ?= 0
 
   # Error handling
   return callback new ArgumentError('path'), null unless path
@@ -55,15 +58,17 @@ EntryList.load = (path, options, callback) ->
     list = list.trim() or null
     return callback new NotFoundError path unless list
     paths = list.split('\n').sort().reverse()
+    paths = paths.slice options.offset
 
     entries = []
 
-    loadNextEntry entries, paths, options.limit, (err) ->
+    loadNextEntry entries, paths, options.limit, (err, more) ->
       if err
         callback err, null
       else
         el = new EntryList options.year, options.month, options.date
         el.entries = entries
+        el.more = more
         callback null, el
 
 module.exports = EntryList

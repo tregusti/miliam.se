@@ -87,10 +87,11 @@ app.locals.use (req, res) ->
 app.get ///^
   (?:                 # no capture (but group because of optionality)
     /(\d\d\d\d)       # year
-      (?:/(\d\d)      # month
-        (?:/(\d\d))?  # optional date
-      )?              # optional month
-    )?                # optional year
+    (?:/(\d\d)        # month
+      (?:/(\d\d))?    # optional date
+    )?                # optional month
+  )?                  # optional year
+  (?:/p([1-9]\d*))?   # optional page
   /?                  # We may have a trailing slash
   $///, routes.list
 app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)$/, routes.entry
