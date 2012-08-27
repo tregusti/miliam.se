@@ -34,11 +34,13 @@ errorHandler = (err, req, res, next) ->
   # allowing you to respond however you like
   if err instanceof NotFoundError
     log.warn "404: #{req.url} REFERRER: #{req.headers.referer or null}"
+    res.status 404
     res.render '404.jade',
       title: '404 bebisar borta'
       status: 404
   else
     log.warn "500: #{req.url} REFERRER: #{req.headers.referer or null} ERROR: #{JSON.stringify err}\n#{util.inspect err.stack}"
+    res.status 500
     res.render '500.jade',
       status: 500
       title: 'Nu blev det fel'
