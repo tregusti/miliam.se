@@ -1,41 +1,5 @@
 ;(function(window, document, $, undefined) {
 
-  var More = (function() {
-
-    var currentPage,
-        re = /^(.*?)(?:\/p([1-9]\d*)\/?)?/;
-
-    function clickHandler() {
-      disable();
-      var m = document.location.pathname.match(re)
-      if (m) {
-        var path = m[1];
-        currentPage = currentPage !== undefined ? currentPage : m[2] || 1
-        $.getJSON(path + '/p' + ++currentPage).done(function(json) {
-          $('#more').before(json.html);
-          json.more && enable(); // Enable if there's more to fetch
-        })
-      }
-    }
-
-    function enable() {
-      $('#more')
-        .addClass('enabled')
-        .on('click', clickHandler);
-    }
-
-    function disable() {
-      $('#more')
-        .removeClass('enabled')
-        .off('click', clickHandler);
-    }
-
-    return {
-      enable: enable
-    }
-
-  })();
-
   function scrollDown() {
     var nav = $('#navigation'),
         h = nav.outerHeight() - 20

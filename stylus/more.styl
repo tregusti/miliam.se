@@ -1,7 +1,13 @@
 #more
   box()
-  font-size: 30px
   text-align: center
+  &:before
+    font-size: 50px
+    display: block
+    content: "⬇"
+    color: green
+    margin-bottom: -10px
   &.enabled
     cursor: pointer
-    color: black
+    &:hover
+      color: black

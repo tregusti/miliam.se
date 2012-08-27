@@ -1,0 +1,39 @@
+;(function(window, $, undefined) {
+
+  var more,
+      currentPage,
+      re = /^(.*?)(?:\/p([1-9]\d*)\/?)?/;
+
+  function clickHandler() {
+    disable();
+    var m = document.location.pathname.match(re)
+    if (m) {
+      var path = m[1];
+      currentPage = currentPage !== undefined ? currentPage : m[2] || 1
+      $.getJSON(path + '/p' + ++currentPage).done(function(json) {
+        more.before(json.html);
+        json.more && enable(); // Enable if there's more to fetch
+      })
+    }
+  }
+
+  function enable() {
+    if (!more)
+      more = $('#more');
+
+    more
+      .addClass('enabled')
+      .on('click', clickHandler);
+  }
+
+  function disable() {
+    more
+      .removeClass('enabled')
+      .off('click', clickHandler);
+  }
+
+  window.More = {
+    enable: enable
+  };
+
+})(this, jQuery);
