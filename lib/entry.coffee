@@ -1,12 +1,12 @@
-fs = require("fs")
+fs   = require("fs")
 Path = require("path")
 
 sprintf = require('sprintf').sprintf
-marked = require 'marked'
+marked  = require 'marked'
 
 Guard = require("./guard")
-
-log = require('./log') 'Entry'
+age   = require("./age")
+log   = require('./log') 'Entry'
 
 class Entry
   constructor: ->
@@ -34,6 +34,18 @@ Object.defineProperty Entry::, 'html',
   get: ->
     return null unless @text
     marked @text
+
+Object.defineProperty Entry::, 'subtitle',
+  enumerable: true,
+  get: ->
+    return null unless @time
+    from = new Date(age.birth)
+    to   = @time
+    s    = age.between from, to
+    if from <= to
+      "#{s} gammal"
+    else
+      "#{s} till födseln"
 
 Object.defineProperty Entry::, 'description',
   enumerable: true,

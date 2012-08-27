@@ -80,6 +80,33 @@ describe 'EntryList', ->
         el = new EntryList 2012, 5, "07"
         el.should.have.property 'title', '7 maj 2012'
 
+    describe "#subtitle property", ->
+      it "should be read only", ->
+        el = new EntryList
+        el.should.have.property 'subtitle', ''
+        el.subtitle = 'nope'
+        el.should.have.property 'subtitle', ''
+
+      it "reflects the year", ->
+        el = new EntryList 2012
+        el.should.have.property 'subtitle', 'under 2012'
+
+      it "reflects the year and month", ->
+        el = new EntryList 2012, 8
+        el.should.have.property 'subtitle', 'under augusti 2012'
+
+      it "reflects the year, month and date", ->
+        el = new EntryList 2012, 8, 12
+        el.should.have.property 'subtitle', 'den 12 augusti 2012'
+
+      it "handles zero padded months", ->
+        el = new EntryList 2012, "07"
+        el.should.have.property 'subtitle', 'under juli 2012'
+
+      it "handles zero padded dates", ->
+        el = new EntryList 2012, 5, "07"
+        el.should.have.property 'subtitle', 'den 7 maj 2012'
+
 
     describe "#entries property", ->
 

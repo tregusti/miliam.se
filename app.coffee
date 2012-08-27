@@ -73,6 +73,7 @@ app.locals.use (req, res) ->
   res.locals.description = 'En pojkes uppväxt i bilder'
   res.locals.url         = 'http://miliam.se/'
   res.locals.title       = ''
+  res.locals.subtitle    = ''
   res.locals.navigation  = require('./lib/navigation')
   res.locals.keywords    = require('./lib/keywords').join ', '
 

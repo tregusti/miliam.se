@@ -243,6 +243,22 @@ describe 'Entry', ->
 
 
 
+  # SUBTITLE
+
+  describe "#subtitle", ->
+    it "should exist", ->
+      new Entry().should.have.property 'subtitle', null
+    it "shows the age in days", ->
+      entry = new Entry
+      entry.time = new Date 2012, 6, 7 # 1012-07-06
+      entry.should.have.property 'subtitle', '1 månad gammal'
+    it "shows the time until birth", ->
+      entry = new Entry
+      entry.time = new Date 2012, 5, 2 # 1012-06-02
+      entry.should.have.property 'subtitle', '5 dagar till födseln'
+
+
+
   # SLUG
 
   describe "#slug property", ->
