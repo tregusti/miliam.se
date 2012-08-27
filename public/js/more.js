@@ -2,7 +2,7 @@
 
   var more,
       currentPage,
-      re = /^(.*?)(?:\/p([1-9]\d*)\/?)?/;
+      re = /^(.*?)(?:\/p([1-9]\d*)\/?)?$/;
 
   function clickHandler() {
     disable();
