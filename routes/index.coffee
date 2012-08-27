@@ -30,6 +30,7 @@ exports.entry = (req, res, next) ->
       entry       : entry
       url         : entry.url
       title       : entry.title
+      subtitle    : entry.subtitle
       description : entry.description
 
 exports.entryImage = (req, res) ->

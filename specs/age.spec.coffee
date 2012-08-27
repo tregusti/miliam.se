@@ -34,7 +34,7 @@ describe 'Age', ->
       start = new Date 2010, 1, 1
       end   = new Date 2012, 7, 2
       Age.between(start, end).should.equal "2 år, 6 månader och 1 dag"
-
+      
 
   describe '#since', ->
     beforeEach ->
