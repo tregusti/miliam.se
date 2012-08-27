@@ -8,7 +8,8 @@
     disable();
     var m = document.location.pathname.match(re)
     if (m) {
-      var path = m[1];
+      // trim away trainling / if any
+      var path = m[1].replace(/\/$/, '');
       currentPage = currentPage !== undefined ? currentPage : m[2] || 1
       $.getJSON(path + '/p' + ++currentPage).done(function(json) {
         more.before(json.html);
