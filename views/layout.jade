@@ -38,13 +38,13 @@ html
     hgroup#head
       a(href="/")
         h1 Miliam Jorde
-        h2
-          if subtitle
-            = subtitle
-          else
-            = "är nu "
-            span= humanAge
-            = " gammal"
+      h2
+        if subtitle
+          = subtitle
+        else
+          = "är nu "
+          span= humanAge
+          = " gammal"
           
     #content
       block content
