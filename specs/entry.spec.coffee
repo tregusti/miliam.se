@@ -243,6 +243,22 @@ describe 'Entry', ->
 
 
 
+  # SUBTITLE
+
+  describe "#subtitle", ->
+    it "should exist", ->
+      new Entry().should.have.property 'subtitle', null
+    it "shows the age in days", ->
+      entry = new Entry
+      entry.time = new Date 2012, 6, 7 # 1012-07-06
+      entry.should.have.property 'subtitle', '1 månad gammal'
+    it "shows the time until birth", ->
+      entry = new Entry
+      entry.time = new Date 2012, 5, 2 # 1012-06-02
+      entry.should.have.property 'subtitle', '5 dagar till födseln'
+
+
+
   # SLUG
 
   describe "#slug property", ->
@@ -316,12 +332,19 @@ describe 'Entry', ->
         w640:     "image2.w640.jpg"
         w1024:    "image2.w1024.jpg"
 
-    it "requires a title"
-
-
     it "should respond to serialize", ->
       entry.should.respondTo 'serialize'
       entry.serialize.should.have.length 0
+
+    it "requires a title", ->
+      delete entry.title
+      expect(entry.serialize).to.throw Error
+      message = ''
+      try
+        entry.serialize()
+      catch error
+        message = error.message
+      message.should.match /title is required/i
 
     it "should not fail when no time is set", ->
       delete entry.time

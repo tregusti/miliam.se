@@ -57,18 +57,6 @@ describe "Importer", ->
         expect(err).to.be.null
         done()
 
-    it "should not give an error if 'OK' folder is present", (done) ->
-      spies.findit.dir config.get('paths:create') + '/OK'
-      Importer.check (err) ->
-        expect(err).to.be.null
-        done()
-
-    it "should not give an error if 'Ok' folder is present", (done) ->
-      spies.findit.dir config.get('paths:create') + '/Ok'
-      Importer.check (err) ->
-        expect(err).to.be.null
-        done()
-
     it "should give an error if 'ok' folder is missing", (done) ->
       Importer.check (err) ->
         expect(err).to.be.an.instanceof InvalidStateError

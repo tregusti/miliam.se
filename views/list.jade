@@ -1,5 +1,6 @@
 extends layout
 
 block content
-  each entry in entries
-    include _entry
+  include list_
+  if more
+    #more Jag vill se mer

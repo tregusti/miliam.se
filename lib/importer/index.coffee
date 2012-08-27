@@ -147,7 +147,7 @@ checkForOkFolder = ->
   exists = null
   finder = require('findit').find config.get 'paths:create'
   finder.on 'directory', (dir, stat) ->
-    exists = dir if /^ok$/i.test Path.basename(dir)
+    exists = dir if Path.basename(dir) is 'ok'
   finder.on 'end', ->
     if exists
       deferred.resolve exists

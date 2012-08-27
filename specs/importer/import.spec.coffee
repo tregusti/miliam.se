@@ -35,8 +35,9 @@ describe 'Importer', ->
 
   beforeEach ->
     entry = new Entry().tap ->
-       @time = new Date
-       @basepath = createDirectory
+      @title = "Title"
+      @time = new Date
+      @basepath = createDirectory
 
     spies.imggen      = chai.spy 'image-generator', (path, outpath, cb)       -> setTimeout (-> cb null), 10
     spies.gm_identify = chai.spy 'gm.identify',     (cb)                      -> setTimeout (-> cb null, { exif : true }), 10

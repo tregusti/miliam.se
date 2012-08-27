@@ -15,20 +15,19 @@ days_between = (d1, d2) ->
   t = d1.clone().valueOf() - d2.clone().valueOf()
   Math.abs(t) / 86400000
 
-since = (date) ->
+between = (start, end) ->
   # resets
   years = months = 0
-  now = new Date
 
   # years
-  years++ while date.isBefore now.clone().addYears(-years - 1).addDays(1)
-  date = date.addYears years
+  years++ while start.isBefore end.clone().addYears(-years - 1).addDays(1)
+  start = start.addYears years
 
   # months
-  months++ while date.isBefore now.clone().addMonths(-months - 1).addDays(1)
-  date = date.addMonths months
+  months++ while start.isBefore end.clone().addMonths(-months - 1).addDays(1)
+  start = start.addMonths months
 
-  days = days_between date, now
+  days = days_between start, end
 
   a = []
   if years
@@ -49,12 +48,17 @@ since = (date) ->
   s += " och #{a.shift()}" if a.length
   s
 
-module.exports.since = since
+since = (date) ->
+  between date, new Date
 
 attach = (app) ->
   app.locals.use (req, res) ->
     res.locals.humanAge = since new Date BIRTH
 
 
-module.exports.birth = BIRTH # should not be exposed
-module.exports.attach = attach
+
+module.exports =
+  between : between
+  since   : since
+  birth   : BIRTH # should not be exposed
+  attach  : attach

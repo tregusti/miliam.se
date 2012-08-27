@@ -7,15 +7,36 @@ expect = chai.expect
 Age = require '../lib/age'
 
 describe 'Age', ->
-  # TODO: Readd these specs
-  return
   it 'should be defined', ->
     expect(Age).to.be.defined
   it 'should have a since method', ->
     Age.should.have.property 'since'
     Age.since.should.be.a 'function'
 
-  describe 'calculation', ->
+
+  describe "#between", ->
+    it "counts whole days", ->
+      start = new Date 2012, 1, 1, 13
+      end   = new Date 2012, 1, 3, 13
+      Age.between(start, end).should.equal "2 dagar"
+
+    it "doesn't count big day fragments", ->
+      start = new Date 2012, 1, 1, 13
+      end   = new Date 2012, 1, 4, 12
+      Age.between(start, end).should.equal "2 dagar"
+
+    it "doesn't count small day fragments", ->
+      start = new Date 2012, 1, 1, 13
+      end   = new Date 2012, 1, 3, 14
+      Age.between(start, end).should.equal "2 dagar"
+
+    it "uses days, months, and years", ->
+      start = new Date 2010, 1, 1
+      end   = new Date 2012, 7, 2
+      Age.between(start, end).should.equal "2 år, 6 månader och 1 dag"
+      
+
+  describe '#since', ->
     beforeEach ->
       @date = new Date
 

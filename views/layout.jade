@@ -38,10 +38,14 @@ html
     hgroup#head
       a(href="/")
         h1 Miliam Jorde
-        h2
+      h2
+        if subtitle
+          = subtitle
+        else
           = "är nu "
           span= humanAge
           = " gammal"
+          
     #content
       block content
 
@@ -53,4 +57,6 @@ html
     script(src="/plusone.js")
 
     //- App stuff
+    script(src="/js/more.js")
     script(src="/js/app.js")
+    

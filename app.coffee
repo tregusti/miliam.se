@@ -34,11 +34,13 @@ errorHandler = (err, req, res, next) ->
   # allowing you to respond however you like
   if err instanceof NotFoundError
     log.warn "404: #{req.url} REFERRER: #{req.headers.referer or null}"
+    res.status 404
     res.render '404.jade',
       title: '404 bebisar borta'
       status: 404
   else
     log.warn "500: #{req.url} REFERRER: #{req.headers.referer or null} ERROR: #{JSON.stringify err}\n#{util.inspect err.stack}"
+    res.status 500
     res.render '500.jade',
       status: 500
       title: 'Nu blev det fel'
@@ -73,6 +75,7 @@ app.locals.use (req, res) ->
   res.locals.description = 'En pojkes uppväxt i bilder'
   res.locals.url         = 'http://miliam.se/'
   res.locals.title       = ''
+  res.locals.subtitle    = ''
   res.locals.navigation  = require('./lib/navigation')
   res.locals.keywords    = require('./lib/keywords').join ', '
 
@@ -87,10 +90,11 @@ app.locals.use (req, res) ->
 app.get ///^
   (?:                 # no capture (but group because of optionality)
     /(\d\d\d\d)       # year
-      (?:/(\d\d)      # month
-        (?:/(\d\d))?  # optional date
-      )?              # optional month
-    )?                # optional year
+    (?:/(\d\d)        # month
+      (?:/(\d\d))?    # optional date
+    )?                # optional month
+  )?                  # optional year
+  (?:/p([1-9]\d*))?   # optional page
   /?                  # We may have a trailing slash
   $///, routes.list
 app.get /^\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/([\w-]+)$/, routes.entry
