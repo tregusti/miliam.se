@@ -24,6 +24,7 @@ module.exports = (req, res, next) ->
       data =
         title: list.title
         entries: list.entries
+        more: list.more
       res.render view, data, (err, html) ->
         if json
           res.json
