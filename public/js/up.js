@@ -7,4 +7,11 @@
     });
   });
 
+  function scrollHandler(e) {
+    opacity = window.scrollY > 100 ? 1 : 0;
+    $('#up').css("opacity", opacity);
+  }
+
+  $(window).on('scroll', scrollHandler.throttle(50));
+
 })(this, jQuery);

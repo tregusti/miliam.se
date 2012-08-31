@@ -1,5 +1,28 @@
 #up
+  size = 40px
+
+  box-sizing: border-box
   position: absolute
-  bottom: padding
   right: padding
+  bottom: padding
   smallwhitetext()
+
+  wideplus = "screen and (min-width: " + (normalWidth + 20 + 100) + ")"
+
+  @media wideplus
+    opacity: 0
+    transition: opacity .2s ease-in
+    position: fixed
+    bottom: 52px // Footer height including margins
+    left: 50%
+    margin-left: (normalWidth / 2) + padding
+    text-decoration: none
+    &:before
+      font-size: size * .75
+      box()
+      text-shadow: none
+      content: "▲"
+      color: green
+
+    span
+      display: none
