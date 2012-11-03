@@ -14,6 +14,7 @@ class Entry
     @title = null
     @text = null
     @time = null
+    @videos = null
     @images = null
 
   serialize: ->
@@ -123,7 +124,10 @@ parseContents = (entry, contents) ->
   for line in chunks.shift().split('\n')
     m = line.match /^(\w+):\s*(.+)$/
     if m
-      if m[1] is 'image'
+      if m[1] is 'video'
+        meta[m[1]] ?= []
+        meta[m[1]].push m[2]
+      else if m[1] is 'image'
         meta[m[1]] ?= []
         meta[m[1]].push createImageObject(entry.basepath, m[2])
       else
@@ -132,6 +136,7 @@ parseContents = (entry, contents) ->
   entry.text = chunks.join('\n\n') or null
   entry.title = meta.title if 'title' of meta
   entry.images = meta.image if 'image' of meta
+  entry.videos = meta.video if 'video' of meta
   # Special treatment for datetime
   if 'time' of meta
     if 'date' of meta

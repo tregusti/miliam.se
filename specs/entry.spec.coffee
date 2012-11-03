@@ -119,6 +119,32 @@ describe 'Entry', ->
             entry.should.have.property 'humanDate', "6 jun 2012"
 
 
+      # VIDEO INFO
+
+      describe 'with video meta data', ->
+        it 'should be null when no videos', (done) ->
+          spy = spyfs.on '/tmp/no-video/info.txt', 'title: only'
+          Entry.load spy.dirname, (err, entry) ->
+            entry.should.have.property 'videos', null
+            done()
+
+        it 'should contain single video', (done) ->
+          spy = spyfs.on '/tmp/one-video/info.txt', 'video: idididid'
+          Entry.load spy.dirname, (err, entry) ->
+            entry.should.have.property 'videos'
+            entry.videos.should.have.length 1
+            entry.videos[0].should.equal "idididid"
+            done()
+
+        it 'should handle multiple videos with images', (done) ->
+          spy = spyfs.on '/tmp/one-video/info.txt', 'video: vid1\nimage: img1\nvideo: vid2'
+          Entry.load spy.dirname, (err, entry) ->
+            entry.videos.should.have.length 2
+            entry.videos[0].should.equal "vid1"
+            entry.videos[1].should.equal "vid2"
+            entry.images.should.have.length 1
+            done()
+
 
 
 
