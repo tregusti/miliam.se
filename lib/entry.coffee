@@ -150,6 +150,8 @@ parseContents = (entry, contents) ->
 parseVideo = (input) ->
   if ///^http://youtu\.be/(.*)$///.test(input)
     RegExp.$1
+  else if ///^http://www\.youtube\.com/watch\?v=(.*?)($|&)///.test(input)
+    RegExp.$1
   else
     input
 
