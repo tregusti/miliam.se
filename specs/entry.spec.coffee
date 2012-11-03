@@ -145,6 +145,14 @@ describe 'Entry', ->
             entry.images.should.have.length 1
             done()
 
+        it 'should parse short youtube url', (done) ->
+          spy = spyfs.on '/tmp/one-video/info.txt', 'video: http://youtu.be/n43q8Ye_XVU'
+          Entry.load spy.dirname, (err, entry) ->
+            entry.should.have.property 'videos'
+            entry.videos.should.have.length 1
+            entry.videos[0].should.equal "n43q8Ye_XVU"
+            done()
+
 
 
 

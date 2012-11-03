@@ -126,7 +126,7 @@ parseContents = (entry, contents) ->
     if m
       if m[1] is 'video'
         meta[m[1]] ?= []
-        meta[m[1]].push m[2]
+        meta[m[1]].push parseVideo(m[2])
       else if m[1] is 'image'
         meta[m[1]] ?= []
         meta[m[1]].push createImageObject(entry.basepath, m[2])
@@ -146,6 +146,12 @@ parseContents = (entry, contents) ->
     entry.time = new Date "#{today} #{meta.time}"
   else
     entry.time = null
+
+parseVideo = (input) ->
+  if ///^http://youtu\.be/(.*)$///.test(input)
+    RegExp.$1
+  else
+    input
 
 
 createImageObject = (base, name) ->
