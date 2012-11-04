@@ -7,6 +7,7 @@ should = chai.should()
 expect = chai.expect
 spies = require 'chai-spies'
 chai.use spies
+mockery = require 'mockery'
 
 spyfs = require './helpers/spy-fs'
 
@@ -15,7 +16,12 @@ ArgumentError = require '../lib/errors/argument'
 Entry = require '../lib/entry'
 
 describe 'Entry', ->
-  afterEach -> spyfs.off()
+  beforeEach ->
+    mockery.enable()
+  afterEach ->
+    mockery.disable()
+    mockery.deregisterAll()
+    spyfs.off()
 
   it 'should exist', ->
     expect(Entry).to.be.defined
@@ -122,6 +128,17 @@ describe 'Entry', ->
       # VIDEO INFO
 
       describe 'with video meta data', ->
+        beforeEach ->
+          @req = chai.spy "request", ( url, cb ) ->
+            response =
+              statusCode: 200
+            json =
+              width: 300
+              height: 200
+            cb null, response, JSON.stringify(json)
+
+          mockery.registerMock 'request', @req
+
         it 'should be null when no videos', (done) ->
           spy = spyfs.on '/tmp/no-video/info.txt', 'title: only'
           Entry.load spy.dirname, (err, entry) ->
@@ -133,15 +150,15 @@ describe 'Entry', ->
           Entry.load spy.dirname, (err, entry) ->
             entry.should.have.property 'videos'
             entry.videos.should.have.length 1
-            entry.videos[0].should.equal "idididid"
+            entry.videos[0].should.eql id: "idididid"
             done()
 
         it 'should handle multiple videos with images', (done) ->
-          spy = spyfs.on '/tmp/one-video/info.txt', 'video: vid1\nimage: img1\nvideo: vid2'
+          spy = spyfs.on '/tmp/two-video/info.txt', 'video: vid1\nimage: img1\nvideo: vid2'
           Entry.load spy.dirname, (err, entry) ->
             entry.videos.should.have.length 2
-            entry.videos[0].should.equal "vid1"
-            entry.videos[1].should.equal "vid2"
+            entry.videos[0].should.eql id: "vid1"
+            entry.videos[1].should.eql id: "vid2"
             entry.images.should.have.length 1
             done()
 
@@ -150,7 +167,7 @@ describe 'Entry', ->
           Entry.load spy.dirname, (err, entry) ->
             entry.should.have.property 'videos'
             entry.videos.should.have.length 1
-            entry.videos[0].should.equal "n43q8Ye_XVU"
+            entry.videos[0].should.eql id: "n43q8Ye_XVU"
             done()
 
         it 'should parse short youtube url', (done) ->
@@ -158,8 +175,18 @@ describe 'Entry', ->
           Entry.load spy.dirname, (err, entry) ->
             entry.should.have.property 'videos'
             entry.videos.should.have.length 1
-            entry.videos[0].should.equal "n43q8Ye_XVU"
+            entry.videos[0].should.eql id: "n43q8Ye_XVU"
             done()
+
+        it 'should fetch video ratio when missing', (done) ->
+          spy = spyfs.on '/tmp/one-video/info.txt', 'video: n43q8Ye_XVU'
+          req = @req
+          Entry.load spy.dirname, (err, entry) ->
+            req.should.have.been.called.once
+            entry.videos[0].id.should.equal "n43q8Ye_XVU"
+            entry.videos[0].should.have.property "ratio"
+            entry.videos[0].ratio.should.equal 1.5
+            done err
 
 
 

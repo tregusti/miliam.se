@@ -3,10 +3,13 @@ Path = require("path")
 
 sprintf = require('sprintf').sprintf
 marked  = require 'marked'
+Q       = require 'q'
 
 Guard = require("./guard")
 age   = require("./age")
 log   = require('./log') 'Entry'
+
+require '../public/js/augment'
 
 class Entry
   constructor: ->
@@ -117,7 +120,7 @@ Object.defineProperty Entry::, 'humanDate',
 
 
 
-parseContents = (entry, contents) ->
+parseContents = ( entry, contents, done ) ->
   chunks = contents.split '\n\n'
 
   meta = {}
@@ -126,7 +129,7 @@ parseContents = (entry, contents) ->
     if m
       if m[1] is 'video'
         meta[m[1]] ?= []
-        meta[m[1]].push parseVideo(m[2])
+        meta[m[1]].push parseVideoId(m[2])
       else if m[1] is 'image'
         meta[m[1]] ?= []
         meta[m[1]].push createImageObject(entry.basepath, m[2])
@@ -147,13 +150,35 @@ parseContents = (entry, contents) ->
   else
     entry.time = null
 
-parseVideo = (input) ->
-  if ///^http://youtu\.be/(.*)$///.test(input)
-    RegExp.$1
-  else if ///^http://www\.youtube\.com/watch\?v=(.*?)($|&)///.test(input)
-    RegExp.$1
-  else
-    input
+  promise = Q.resolve()
+  promise = promise.then loadVideoRatio.curry(video) for video in entry.videos when not video.ratio
+  promise = promise.then -> done()
+  promise.end()
+
+
+
+loadVideoRatio = ( video ) ->
+  request = require 'request'
+
+  deferred = Q.defer()
+  url = "http://www.youtube.com/oembed?url=youtu.be/#{video.id}&format=json"
+  request url, (error, response, body) ->
+    return deferred.reject error if error
+    return deferred.reject new Error "Statuscode #{response.statusCode}" unless response.statusCode is 200
+    data = JSON.parse body
+    video.ratio = Math.round(1000*(data.width / data.height)) / 1000 # round to 3 decimals
+    deferred.resolve()
+
+  deferred.promise
+
+parseVideoId = (input) ->
+  id = if ///^http://youtu\.be/(.*)$///.test(input)
+         RegExp.$1
+       else if ///^http://www\.youtube\.com/watch\?v=(.*?)($|&)///.test(input)
+         RegExp.$1
+       else
+         input
+  id: id
 
 
 createImageObject = (base, name) ->
@@ -181,8 +206,8 @@ Entry.load = (path, options, callback) ->
     callback new Error("Not valid contents in #{path}"), null unless contents
 
     log.debug "File loaded: #{contents} #{err}"
-    parseContents entry, contents
-
-    callback null, entry
+    parseContents entry, contents, (err) ->
+      callback err, null if err
+      callback null, entry
 
 module.exports = Entry
