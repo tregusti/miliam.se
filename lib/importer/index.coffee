@@ -183,7 +183,8 @@ Importer =
 
       .fail (err) ->
         log.error 'Entry import error: ' + util.inspect err
-        callback err
+        eventuallyRemoveOkFolder().then ->
+          callback err
 
       .end()
 

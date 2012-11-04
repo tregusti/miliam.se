@@ -236,3 +236,11 @@ describe 'Importer', ->
         spies.rmdir.should.have.been.called.once
         spies.rmdir.__spy.calls[0][0].should.equal Path.join createDirectory, 'ok'
         done()
+
+    it "should remove 'ok' folder when error importing", (done) ->
+      entry.title = ""
+      Importer.import entry, dataDirectory, (err) ->
+        expect(err).to.not.equal null
+        spies.rmdir.should.have.been.called.once
+        spies.rmdir.__spy.calls[0][0].should.equal Path.join createDirectory, 'ok'
+        done()
