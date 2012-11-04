@@ -403,7 +403,7 @@ describe 'Entry', ->
         ratio : 1.5
       entry.videos.push
         id    : "video-2"
-        ratio : 2/3
+        ratio : .667
 
     it "should respond to serialize", ->
       entry.should.respondTo 'serialize'
@@ -449,3 +449,7 @@ describe 'Entry', ->
     it "should do nothing if 'original' isn't present in image name", ->
       entry.images[0].original = "image3.jpg"
       entry.serialize().should.contain "image: image3\n"
+
+    it "should serialize image data for all videos", ->
+      entry.serialize().should.contain "video: video-1 r=1.5"
+      entry.serialize().should.contain "video: video-2 r=0.667"
