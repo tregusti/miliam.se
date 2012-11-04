@@ -90,10 +90,15 @@
       section
         text-align: justify
 
-      img.attachment, iframe.attachment
+      .attachment, iframe.attachment
+        display: inline-block
         width: narrowWidth
         margin: 10px -11px 0 -11px
         box-shadow: 0 0 5px rgba(0, 0, 0, .6)
+
+        img
+          display: block
+          width: narrowWidth
 
       @media wide
         header
@@ -123,7 +128,7 @@
               // Kill the top margin
               margin-top: 0
 
-        img.attachment, iframe.attachment
+        .attachment, iframe.attachment
           float: left
           margin: 0 0 padding 0
 
