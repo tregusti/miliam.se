@@ -168,6 +168,21 @@ describe 'Importer', ->
 
         done()
 
+    it "should handle capital letter extensions", (done) ->
+      # TODO: Remove this timeout. Way too long.
+      @timeout 500
+
+      spies.findit.add file = "#{createDirectory}/miliam1.JPg"
+
+      entry.title = 'Oh boy'
+      Importer.import entry, dataDirectory, (err) ->
+        spies.imggen.should.have.been.called.once
+
+        spies.imggen.__spy.calls[0][0].should.equal file
+        spies.imggen.__spy.calls[0][1].should.equal entry.basepath
+
+        done()
+
 
 
     it "should move original image", (done) ->
@@ -218,6 +233,14 @@ describe 'Importer', ->
       entry.title = 'Lige meget'
       entry.time = new Date('2012-02-28T14:14:14+0100')
       Importer.import entry, dataDirectory, (err) ->
+        spies.rmdir.should.have.been.called.once
+        spies.rmdir.__spy.calls[0][0].should.equal Path.join createDirectory, 'ok'
+        done()
+
+    it "should remove 'ok' folder when error importing", (done) ->
+      entry.title = ""
+      Importer.import entry, dataDirectory, (err) ->
+        expect(err).to.not.equal null
         spies.rmdir.should.have.been.called.once
         spies.rmdir.__spy.calls[0][0].should.equal Path.join createDirectory, 'ok'
         done()

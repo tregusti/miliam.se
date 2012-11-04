@@ -45,7 +45,7 @@ html
           = "är nu "
           span= humanAge
           = " gammal"
-          
+
     #content
       block content
 
@@ -53,10 +53,14 @@ html
       aside#about.
         Liam är son till Sigyn och Glenn Jorde
 
-    //- Google plus stuff
-    script(src="/plusone.js")
+    nav
+      a#up(href=url, title="Upp till toppen på sidan")
+        span Upp till toppen
 
     //- App stuff
+    script(src="/js/augment.js")
+    script(src="/js/up.js")
     script(src="/js/more.js")
     script(src="/js/app.js")
-    
+    script(src="/js/matchmedia.js")
+    script(src="/js/picturefill.js")

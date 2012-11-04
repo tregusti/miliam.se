@@ -4,19 +4,27 @@ article.entry
       h1= entry.title
   if entry.images
     each image in entry.images
-      img(src=data2www(image.w320), alt=entry.title)
+      div(data-picture, data-alt=entry.title).attachment
+        div(data-src=data2www(image.w320))
+        div(data-src=data2www(image.w640), data-media="(-webkit-min-device-pixel-ratio: 1.5),(-o-min-device-pixel-ratio: 1.5),(-ms-min-device-pixel-ratio: 1.5),(min--moz-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5),(min-resolution: 1.5dppx)")
+        noscript
+          img(src=image.w320, alt=entry.title)
+  if entry.videos
+    each video in entry.videos
+      iframe.attachment(
+        width="320",
+        height=320/video.ratio,
+        src="http://www.youtube.com/embed/#{video.id}?fs=1&amp;rel=0",
+        frameborder="0",
+        allowfullscreen
+      )
   footer
     if show_fblike
-      div(
-        class="fb-like",
-        data-send="false",
-        data-href=entry.url
-        data-layout="button_count",
-        data-action="Gilla",
-        data-width="90",
-        data-show-faces="false",
-        data-font="arial"
-        )
+      iframe.fb-like(
+        src="https://www.facebook.com/plugins/like.php?show-faces=false&amp;send=false&amp;layout=button_count&amp;href=http://miliam.se" + entry.path,
+        scrolling="no",
+        frameborder="0"
+      )
     if show_plusone
       div(
         class="g-plusone",

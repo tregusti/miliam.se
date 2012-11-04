@@ -71,7 +71,7 @@ describe "Image generator", ->
 
   it "should write the files out", (done) ->
     imggen '/tmp/path/image.jpg', '/tmp/data', ->
-      spies.gm_write.should.be.called.exactly 3.times
+      spies.gm_write.should.be.called.exactly 3 # times
 
       spies.gm_write.__spy.calls[0][0].should.equal '/tmp/data/image.w320.jpg'
       spies.gm_write.__spy.calls[1][0].should.equal '/tmp/data/image.w640.jpg'
@@ -81,7 +81,7 @@ describe "Image generator", ->
 
   it "resizes the image to a minimum width but no height", (done) ->
     imggen '/tmp/path/image.jpg', '/tmp/data', ->
-      spies.gm_resize.should.be.called.exactly 3.times
+      spies.gm_resize.should.be.called.exactly 3 # times
 
       spies.gm_resize.__spy.calls[0].should.eql [ 320, null, '^' ]
       spies.gm_resize.__spy.calls[1].should.eql [ 640, null, '^' ]
