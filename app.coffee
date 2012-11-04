@@ -1,9 +1,9 @@
-Path = require "path"
+Path    = require "path"
 express = require "express"
-http = require "http"
-stylus = require 'stylus'
-nib = require 'nib'
-util = require 'util'
+http    = require "http"
+stylus  = require 'stylus'
+nib     = require 'nib'
+util    = require 'util'
 
 require './setup'
 
@@ -50,10 +50,11 @@ app.configure ->
   app.set "port", config.get 'port'
   app.set "views", __dirname + "/views"
   app.set "view engine", "jade"
-  app.use express.favicon(__dirname + "/public/favicon.ico")
+  app.use express.compress()
   app.use express.logger("dev")
-  app.use express.bodyParser()
+  app.use express.favicon(__dirname + "/public/favicon.ico")
   app.use express.methodOverride()
+  app.use express.bodyParser()
   app.use stylusMiddleware()
   app.use express.static __dirname + "/public"
   app.use app.router
