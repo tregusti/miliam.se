@@ -7,6 +7,7 @@ should = chai.should()
 expect = chai.expect
 spies = require 'chai-spies'
 chai.use spies
+mockery = require 'mockery'
 
 spyfs = require './helpers/spy-fs'
 
@@ -15,7 +16,12 @@ ArgumentError = require '../lib/errors/argument'
 Entry = require '../lib/entry'
 
 describe 'Entry', ->
-  afterEach -> spyfs.off()
+  beforeEach ->
+    mockery.enable()
+  afterEach ->
+    mockery.disable()
+    mockery.deregisterAll()
+    spyfs.off()
 
   it 'should exist', ->
     expect(Entry).to.be.defined
@@ -119,8 +125,68 @@ describe 'Entry', ->
             entry.should.have.property 'humanDate', "6 jun 2012"
 
 
+      # VIDEO INFO
 
+      describe 'with video meta data', ->
+        beforeEach ->
+          @req = chai.spy "request", ( url, cb ) ->
+            response =
+              statusCode: 200
+            json =
+              width: 300
+              height: 200
+            cb null, response, JSON.stringify(json)
 
+          mockery.registerMock 'request', @req
+
+        it 'should be null when no videos', (done) ->
+          spy = spyfs.on '/tmp/no-video/info.txt', 'title: only'
+          Entry.load spy.dirname, (err, entry) ->
+            entry.should.have.property 'videos', null
+            done()
+
+        it 'should contain single video', (done) ->
+          spy = spyfs.on '/tmp/one-video/info.txt', 'video: idididid'
+          Entry.load spy.dirname, (err, entry) ->
+            entry.should.have.property 'videos'
+            entry.videos.should.have.length 1
+            entry.videos[0].should.have.property "id", "idididid"
+            done()
+
+        it 'should handle multiple videos with images', (done) ->
+          spy = spyfs.on '/tmp/two-video/info.txt', 'video: vid1\nimage: img1\nvideo: vid2'
+          Entry.load spy.dirname, (err, entry) ->
+            entry.videos.should.have.length 2
+            entry.videos[0].should.have.property "id", "vid1"
+            entry.videos[1].should.have.property "id", "vid2"
+            entry.images.should.have.length 1
+            done()
+
+        it 'should parse short youtube url', (done) ->
+          spy = spyfs.on '/tmp/one-video/info.txt', 'video: http://youtu.be/n43q8Ye_XVU'
+          Entry.load spy.dirname, (err, entry) ->
+            entry.should.have.property 'videos'
+            entry.videos.should.have.length 1
+            entry.videos[0].should.have.property "id", "n43q8Ye_XVU"
+            done()
+
+        it 'should parse short youtube url', (done) ->
+          spy = spyfs.on '/tmp/one-video/info.txt', 'video: http://www.youtube.com/watch?v=n43q8Ye_XVU&feature=g-all-u'
+          Entry.load spy.dirname, (err, entry) ->
+            entry.should.have.property 'videos'
+            entry.videos.should.have.length 1
+            entry.videos[0].should.have.property "id", "n43q8Ye_XVU"
+            done()
+
+        it 'should fetch video ratio when missing', (done) ->
+          spy = spyfs.on '/tmp/one-video/info.txt', 'video: n43q8Ye_XVU'
+          req = @req
+          Entry.load spy.dirname, (err, entry) ->
+            req.should.have.been.called.once
+            entry.videos[0].id.should.equal "n43q8Ye_XVU"
+            entry.videos[0].should.have.property "ratio"
+            entry.videos[0].ratio.should.equal 1.5
+            done err
 
 
 
@@ -331,6 +397,13 @@ describe 'Entry', ->
         w320:     "image2.w320.jpg"
         w640:     "image2.w640.jpg"
         w1024:    "image2.w1024.jpg"
+      entry.videos = []
+      entry.videos.push
+        id    : "video-1"
+        ratio : 1.5
+      entry.videos.push
+        id    : "video-2"
+        ratio : .667
 
     it "should respond to serialize", ->
       entry.should.respondTo 'serialize'
@@ -376,3 +449,7 @@ describe 'Entry', ->
     it "should do nothing if 'original' isn't present in image name", ->
       entry.images[0].original = "image3.jpg"
       entry.serialize().should.contain "image: image3\n"
+
+    it "should serialize image data for all videos", ->
+      entry.serialize().should.contain "video: video-1 r=1.5"
+      entry.serialize().should.contain "video: video-2 r=0.667"

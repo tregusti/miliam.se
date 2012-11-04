@@ -3,10 +3,13 @@ Path = require("path")
 
 sprintf = require('sprintf').sprintf
 marked  = require 'marked'
+Q       = require 'q'
 
 Guard = require("./guard")
 age   = require("./age")
 log   = require('./log') 'Entry'
+
+require '../public/js/augment'
 
 class Entry
   constructor: ->
@@ -14,6 +17,7 @@ class Entry
     @title = null
     @text = null
     @time = null
+    @videos = null
     @images = null
 
   serialize: ->
@@ -26,6 +30,7 @@ class Entry
     a.push "date: #{date}" if date
     a.push "time: #{time}" if time
     a.push "image: #{image.original.match(/^(.*?)(\.original)?\.jpg/)[1]}" for image in @images when image.original if @images
+    a.push "video: #{video.id} r=#{video.ratio}" for video in @videos if @videos
     a.push "\n#{@text}" if @text
     a.join '\n'
 
@@ -116,14 +121,17 @@ Object.defineProperty Entry::, 'humanDate',
 
 
 
-parseContents = (entry, contents) ->
+parseContents = ( entry, contents, done ) ->
   chunks = contents.split '\n\n'
 
   meta = {}
   for line in chunks.shift().split('\n')
     m = line.match /^(\w+):\s*(.+)$/
     if m
-      if m[1] is 'image'
+      if m[1] is 'video'
+        meta[m[1]] ?= []
+        meta[m[1]].push parseVideoId(m[2])
+      else if m[1] is 'image'
         meta[m[1]] ?= []
         meta[m[1]].push createImageObject(entry.basepath, m[2])
       else
@@ -132,6 +140,7 @@ parseContents = (entry, contents) ->
   entry.text = chunks.join('\n\n') or null
   entry.title = meta.title if 'title' of meta
   entry.images = meta.image if 'image' of meta
+  entry.videos = meta.video if 'video' of meta
   # Special treatment for datetime
   if 'time' of meta
     if 'date' of meta
@@ -141,6 +150,36 @@ parseContents = (entry, contents) ->
     entry.time = new Date "#{today} #{meta.time}"
   else
     entry.time = null
+
+  promise = Q.resolve()
+  promise = promise.then loadVideoRatio.curry(video) for video in entry.videos when not video.ratio if entry.videos
+  promise = promise.then -> done()
+  promise.end()
+
+
+
+loadVideoRatio = ( video ) ->
+  request = require 'request'
+
+  deferred = Q.defer()
+  url = "http://www.youtube.com/oembed?url=youtu.be/#{video.id}&format=json"
+  request url, (error, response, body) ->
+    return deferred.reject error if error
+    return deferred.reject new Error "Statuscode #{response.statusCode}" unless response.statusCode is 200
+    data = JSON.parse body
+    video.ratio = Math.round(1000*(data.width / data.height)) / 1000 # round to 3 decimals
+    deferred.resolve()
+
+  deferred.promise
+
+parseVideoId = (input) ->
+  id = if ///^http://youtu\.be/(.*)$///.test(input)
+         RegExp.$1
+       else if ///^http://www\.youtube\.com/watch\?v=(.*?)($|&)///.test(input)
+         RegExp.$1
+       else
+         input
+  id: id
 
 
 createImageObject = (base, name) ->
@@ -168,8 +207,8 @@ Entry.load = (path, options, callback) ->
     callback new Error("Not valid contents in #{path}"), null unless contents
 
     log.debug "File loaded: #{contents} #{err}"
-    parseContents entry, contents
-
-    callback null, entry
+    parseContents entry, contents, (err) ->
+      callback err, null if err
+      callback null, entry
 
 module.exports = Entry
