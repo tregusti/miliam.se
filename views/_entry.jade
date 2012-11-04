@@ -4,7 +4,16 @@ article.entry
       h1= entry.title
   if entry.images
     each image in entry.images
-      img(src=data2www(image.w320), alt=entry.title)
+      img(src=data2www(image.w320), alt=entry.title).attachment
+  if entry.videos
+    each video in entry.videos
+      iframe.attachment(
+        width="320",
+        height=320/video.ratio,
+        src="http://www.youtube.com/embed/#{video.id}?fs=1&amp;rel=0",
+        frameborder="0",
+        allowfullscreen
+      )
   footer
     if show_fblike
       div(
