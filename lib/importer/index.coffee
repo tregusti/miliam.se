@@ -25,7 +25,7 @@ eventuallyResolveImages = (entry) ->
 
   finder = require('findit').find from
   finder.on 'file', (file, stat) ->
-    images.push file if Path.extname(file) is '.jpg'
+    images.push file if /^\.jpg$/i.test(Path.extname(file))
   finder.on 'end', ->
     if images.length
       entry.images = []

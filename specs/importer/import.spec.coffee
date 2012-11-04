@@ -168,6 +168,21 @@ describe 'Importer', ->
 
         done()
 
+    it "should handle capital letter extensions", (done) ->
+      # TODO: Remove this timeout. Way too long.
+      @timeout 500
+
+      spies.findit.add file = "#{createDirectory}/miliam1.JPg"
+
+      entry.title = 'Oh boy'
+      Importer.import entry, dataDirectory, (err) ->
+        spies.imggen.should.have.been.called.once
+
+        spies.imggen.__spy.calls[0][0].should.equal file
+        spies.imggen.__spy.calls[0][1].should.equal entry.basepath
+
+        done()
+
 
 
     it "should move original image", (done) ->
