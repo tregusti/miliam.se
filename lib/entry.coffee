@@ -151,7 +151,7 @@ parseContents = ( entry, contents, done ) ->
     entry.time = null
 
   promise = Q.resolve()
-  promise = promise.then loadVideoRatio.curry(video) for video in entry.videos when not video.ratio
+  promise = promise.then loadVideoRatio.curry(video) for video in entry.videos when not video.ratio if entry.videos
   promise = promise.then -> done()
   promise.end()
 

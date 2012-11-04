@@ -150,15 +150,15 @@ describe 'Entry', ->
           Entry.load spy.dirname, (err, entry) ->
             entry.should.have.property 'videos'
             entry.videos.should.have.length 1
-            entry.videos[0].should.eql id: "idididid"
+            entry.videos[0].should.have.property "id", "idididid"
             done()
 
         it 'should handle multiple videos with images', (done) ->
           spy = spyfs.on '/tmp/two-video/info.txt', 'video: vid1\nimage: img1\nvideo: vid2'
           Entry.load spy.dirname, (err, entry) ->
             entry.videos.should.have.length 2
-            entry.videos[0].should.eql id: "vid1"
-            entry.videos[1].should.eql id: "vid2"
+            entry.videos[0].should.have.property "id", "vid1"
+            entry.videos[1].should.have.property "id", "vid2"
             entry.images.should.have.length 1
             done()
 
@@ -167,7 +167,7 @@ describe 'Entry', ->
           Entry.load spy.dirname, (err, entry) ->
             entry.should.have.property 'videos'
             entry.videos.should.have.length 1
-            entry.videos[0].should.eql id: "n43q8Ye_XVU"
+            entry.videos[0].should.have.property "id", "n43q8Ye_XVU"
             done()
 
         it 'should parse short youtube url', (done) ->
@@ -175,7 +175,7 @@ describe 'Entry', ->
           Entry.load spy.dirname, (err, entry) ->
             entry.should.have.property 'videos'
             entry.videos.should.have.length 1
-            entry.videos[0].should.eql id: "n43q8Ye_XVU"
+            entry.videos[0].should.have.property "id", "n43q8Ye_XVU"
             done()
 
         it 'should fetch video ratio when missing', (done) ->
@@ -397,6 +397,13 @@ describe 'Entry', ->
         w320:     "image2.w320.jpg"
         w640:     "image2.w640.jpg"
         w1024:    "image2.w1024.jpg"
+      entry.videos = []
+      entry.videos.push
+        id    : "video-1"
+        ratio : 1.5
+      entry.videos.push
+        id    : "video-2"
+        ratio : 2/3
 
     it "should respond to serialize", ->
       entry.should.respondTo 'serialize'
