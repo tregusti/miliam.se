@@ -173,13 +173,15 @@ loadVideoRatio = ( video ) ->
   deferred.promise
 
 parseVideoId = (input) ->
-  id = if ///^http://youtu\.be/(.*)$///.test(input)
-         RegExp.$1
-       else if ///^http://www\.youtube\.com/watch\?v=(.*?)($|&)///.test(input)
-         RegExp.$1
-       else
-         input
-  id: id
+  if ///^http://youtu\.be/(.*)$///.test(input)
+    id: RegExp.$1
+  else if ///^http://www\.youtube\.com/watch\?v=(.*?)($|&)///.test(input)
+    id: RegExp.$1
+  else if ///^(.+?)\s+r=(.+?)$///.test(input)
+    id: RegExp.$1
+    ratio: parseFloat(RegExp.$2, 10)
+  else
+    id: input
 
 
 createImageObject = (base, name) ->

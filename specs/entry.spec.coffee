@@ -162,6 +162,14 @@ describe 'Entry', ->
             entry.images.should.have.length 1
             done()
 
+        it "should load ratio from info.txt file", (done) ->
+          spy = spyfs.on '/tmp/two-video/info.txt', 'video: vid1 r=1.9'
+          Entry.load spy.dirname, (err, entry) ->
+            entry.videos.should.have.length 1
+            entry.videos[0].should.have.property "id", "vid1"
+            entry.videos[0].should.have.property "ratio", 1.9
+            done()
+
         it 'should parse short youtube url', (done) ->
           spy = spyfs.on '/tmp/one-video/info.txt', 'video: http://youtu.be/n43q8Ye_XVU'
           Entry.load spy.dirname, (err, entry) ->
@@ -188,6 +196,12 @@ describe 'Entry', ->
             entry.videos[0].ratio.should.equal 1.5
             done err
 
+        it 'should not fetch video ratio when already present', (done) ->
+          spy = spyfs.on '/tmp/one-video/info.txt', 'video: n43q8Ye_XVU r=2'
+          req = @req
+          Entry.load spy.dirname, (err, entry) ->
+            req.should.have.been.not_called
+            done err
 
 
       # IMAGE INFO
