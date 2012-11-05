@@ -8,7 +8,7 @@ exports.generate = (path, outpath, callback) ->
   return callback new ArgumentError 'outpath' unless outpath
 
   gm = require('gm')(path).autoOrient()
-  basename = Path.basename path, '.jpg'
+  basename = Path.basename path.toLowerCase(), '.jpg'
 
   f = (w, cb) ->
     file = Path.join outpath, "#{basename}.w#{w}.jpg"

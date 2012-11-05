@@ -31,7 +31,7 @@ describe "Image generator", ->
 
     # define gm mock module
     gmMock = chai.spy 'gm', (file) ->
-      expect(file).to.match /\.jpg$/
+      expect(file).to.match /\.jpg$/i
       gmObject
     gmObject = {}
     Object.defineProperty gmObject, 'toString',   get: -> -> "#{gmMock}"
@@ -73,6 +73,14 @@ describe "Image generator", ->
     imggen '/tmp/path/image.jpg', '/tmp/data', ->
       spies.gm_write.should.be.called.exactly 3 # times
 
+      spies.gm_write.__spy.calls[0][0].should.equal '/tmp/data/image.w320.jpg'
+      spies.gm_write.__spy.calls[1][0].should.equal '/tmp/data/image.w640.jpg'
+      spies.gm_write.__spy.calls[2][0].should.equal '/tmp/data/image.w960.jpg'
+
+      done()
+
+  it "should handle uppercase extensions", (done) ->
+    imggen '/tmp/path/image.JPG', '/tmp/data', ->
       spies.gm_write.__spy.calls[0][0].should.equal '/tmp/data/image.w320.jpg'
       spies.gm_write.__spy.calls[1][0].should.equal '/tmp/data/image.w640.jpg'
       spies.gm_write.__spy.calls[2][0].should.equal '/tmp/data/image.w960.jpg'
