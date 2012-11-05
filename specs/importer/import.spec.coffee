@@ -39,12 +39,12 @@ describe 'Importer', ->
       @time = new Date
       @basepath = createDirectory
 
-    spies.imggen      = chai.spy 'image-generator', (path, outpath, cb)       -> setTimeout (-> cb null), 10
-    spies.gm_identify = chai.spy 'gm.identify',     (cb)                      -> setTimeout (-> cb null, { exif : true }), 10
-    spies.mkdirp      = chai.spy 'mkdirp',          (path, cb)                -> setTimeout (-> cb null), 10
-    spies.writeFile   = chai.spy 'fs.writeFile',    (path, data, cb)          -> setTimeout (-> cb null), 10
-    spies.rename      = chai.spy 'fs.rename',       (from, to, cb)            -> setTimeout (-> cb null), 10
-    spies.rmdir       = chai.spy 'fs.rmdir',        (path, cb)                -> setTimeout (-> cb null), 10
+    spies.imggen      = chai.spy 'image-generator', (path, outpath, cb)       -> process.nextTick -> cb null
+    spies.gm_identify = chai.spy 'gm.identify',     (cb)                      -> process.nextTick -> cb null, exif: true
+    spies.mkdirp      = chai.spy 'mkdirp',          (path, cb)                -> process.nextTick -> cb null
+    spies.writeFile   = chai.spy 'fs.writeFile',    (path, data, cb)          -> process.nextTick -> cb null
+    spies.rename      = chai.spy 'fs.rename',       (from, to, cb)            -> process.nextTick -> cb null
+    spies.rmdir       = chai.spy 'fs.rmdir',        (path, cb)                -> process.nextTick -> cb null
     spies.findit      =
       find: ->
         EventEmitter = require('events').EventEmitter
