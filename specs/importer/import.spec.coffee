@@ -193,12 +193,30 @@ describe 'Importer', ->
       entry.title = "Cutie pie"
 
       Importer.import entry, null, (err) ->
-        expect(err).to.be.null
         spies.rename.should.have.been.called.once
 
         expect(spies.rename.__spy.calls[0][0]).to.equal file1
         expect(spies.rename.__spy.calls[0][1]).to.equal Path.join dataDirectory, '2012/06/06/cutie-pie/cutie.jpg'
 
+        expect(err).to.be.null
+        done()
+
+
+
+    it "should move original and lowercase extension", (done) ->
+      file1 = "#{createDirectory}/meat.JPG"
+      spies.findit.add file1
+
+      entry.time = new Date("2012-06-06T19:31:00+0200")
+      entry.title = "Meatloaf"
+
+      Importer.import entry, null, (err) ->
+        spies.rename.should.have.been.called.once
+
+        expect(spies.rename.__spy.calls[0][0]).to.equal file1
+        expect(spies.rename.__spy.calls[0][1]).to.equal Path.join dataDirectory, '2012/06/06/meatloaf/meat.jpg'
+
+        expect(err).to.be.null
         done()
 
 

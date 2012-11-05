@@ -119,7 +119,7 @@ eventuallyMoveImages = (entry) ->
 
   mover = (file) ->
     from = Path.join config.get('paths:create'), file
-    to = Path.join entry.basepath, file
+    to = Path.join entry.basepath, file.replace(/\.jpg$/i, ".jpg")
     Q.ninvoke fs, 'rename', from, to
 
   Q.all (mover file for file in files)
