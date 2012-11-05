@@ -1,6 +1,6 @@
 {
   "name": "miliam",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "private": true,
   "scripts": {
     "start": "./node_modules/jake/bin/cli.js start",
