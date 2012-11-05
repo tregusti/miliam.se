@@ -29,7 +29,7 @@ class Entry
     a.push "title: #{@title}"
     a.push "date: #{date}" if date
     a.push "time: #{time}" if time
-    a.push "image: #{image.original.match(/^(.*?)(\.original)?\.jpg/)[1]}" for image in @images when image.original if @images
+    a.push "image: #{image.original.match(/^(.*?)(\.original)?\.jpg/i)[1]}" for image in @images when image.original if @images
     a.push "video: #{video.id} r=#{video.ratio}" for video in @videos if @videos
     a.push "\n#{@text}" if @text
     a.join '\n'
