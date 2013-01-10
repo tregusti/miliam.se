@@ -9,6 +9,8 @@ log = require('../log') 'Importer'
 
 TEMPLATE = "
 title: Ändra mig\n
+date: yyyy-mm-dd\n
+time: hh:mm\n
 \n
 Lite exempeltext. Brödtexten börjar 2 radbrytningar efter title etc ovanför.
 "
