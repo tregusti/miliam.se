@@ -1,7 +1,21 @@
 {
-  "name": "miliam",
-  "version": "0.7.6",
   "dependencies": {
+    "chai": {
+      "version": "1.1.1"
+    },
+    "chai-spies": {
+      "version": "0.3.0",
+      "from": "https://github.com/tregusti/chai-spies/tarball/master"
+    },
+    "coffee-script": {
+      "version": "1.4.0"
+    },
+    "colors": {
+      "version": "0.6.0-1"
+    },
+    "date-utils": {
+      "version": "1.2.12"
+    },
     "express": {
       "version": "3.0.0beta3",
       "dependencies": {
@@ -45,6 +59,36 @@
         }
       }
     },
+    "findit": {
+      "version": "0.1.2",
+      "from": "git://github.com/pahen/node-findit.git#372caa32caf56b09b50e543092725e35925a8406",
+      "dependencies": {
+        "seq": {
+          "version": "0.3.5",
+          "dependencies": {
+            "chainsaw": {
+              "version": "0.0.9",
+              "dependencies": {
+                "traverse": {
+                  "version": "0.3.9"
+                }
+              }
+            },
+            "hashish": {
+              "version": "0.0.4",
+              "dependencies": {
+                "traverse": {
+                  "version": "0.6.3"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "gm": {
+      "version": "1.3.2"
+    },
     "jade": {
       "version": "0.26.3",
       "dependencies": {
@@ -56,70 +100,56 @@
         }
       }
     },
-    "stylus": {
-      "version": "0.28.2",
-      "from": "git://github.com/LearnBoost/stylus.git#42d89a5e919c6196a3525c00fb22edeafc88fff3",
+    "jake": {
+      "version": "0.5.8",
       "dependencies": {
-        "cssom": {
-          "version": "0.2.5"
+        "minimatch": {
+          "version": "0.2.9",
+          "dependencies": {
+            "lru-cache": {
+              "version": "2.0.4"
+            },
+            "sigmund": {
+              "version": "1.0.0"
+            }
+          }
         },
-        "debug": {
-          "version": "0.7.0"
+        "utilities": {
+          "version": "0.0.19"
         }
       }
-    },
-    "nib": {
-      "version": "0.5.0"
-    },
-    "sprintf": {
-      "version": "0.1.1"
     },
     "marked": {
       "version": "0.2.6"
     },
-    "winston": {
-      "version": "0.6.2",
+    "mkdirp": {
+      "version": "0.3.4"
+    },
+    "mocha": {
+      "version": "1.7.4",
       "dependencies": {
-        "async": {
-          "version": "0.1.22"
+        "commander": {
+          "version": "0.6.1"
         },
-        "cycle": {
-          "version": "1.0.1"
+        "growl": {
+          "version": "1.6.1"
         },
-        "eyes": {
-          "version": "0.1.8"
+        "diff": {
+          "version": "1.0.2"
         },
-        "pkginfo": {
-          "version": "0.2.3"
+        "debug": {
+          "version": "0.7.0"
         },
-        "request": {
-          "version": "2.9.203"
+        "mkdirp": {
+          "version": "0.3.3"
         },
-        "stack-trace": {
-          "version": "0.0.6"
+        "ms": {
+          "version": "0.3.0"
         }
       }
     },
-    "q": {
-      "version": "0.8.6"
-    },
-    "slug": {
-      "version": "0.2.2",
-      "dependencies": {
-        "unicode": {
-          "version": "0.4.3",
-          "dependencies": {
-            "bufferstream": {
-              "version": "0.5.1",
-              "dependencies": {
-                "buffertools": {
-                  "version": "1.1.0"
-                }
-              }
-            }
-          }
-        }
-      }
+    "mockery": {
+      "version": "1.1.2"
     },
     "nconf": {
       "version": "0.6.5",
@@ -143,26 +173,11 @@
         }
       }
     },
-    "coffee-script": {
-      "version": "1.4.0"
+    "nib": {
+      "version": "0.5.0"
     },
-    "date-utils": {
-      "version": "1.2.12"
-    },
-    "mkdirp": {
-      "version": "0.3.4"
-    },
-    "rss": {
-      "version": "0.0.3",
-      "from": "git://github.com/langmi/node-rss.git#master",
-      "dependencies": {
-        "xml": {
-          "version": "0.0.7"
-        },
-        "logging": {
-          "version": "2.0.21"
-        }
-      }
+    "q": {
+      "version": "0.8.6"
     },
     "request": {
       "version": "2.11.4",
@@ -188,88 +203,71 @@
         }
       }
     },
-    "chai": {
-      "version": "1.1.1"
-    },
-    "chai-spies": {
-      "version": "0.3.0",
-      "from": "https://github.com/tregusti/chai-spies/tarball/master"
-    },
-    "colors": {
-      "version": "0.6.0-1"
-    },
-    "gm": {
-      "version": "1.3.2"
-    },
-    "mockery": {
-      "version": "1.1.2"
-    },
-    "mocha": {
-      "version": "1.7.4",
+    "rss": {
+      "version": "0.0.3",
+      "from": "git://github.com/langmi/node-rss.git#master",
       "dependencies": {
-        "commander": {
-          "version": "0.6.1"
+        "xml": {
+          "version": "0.0.7"
         },
-        "growl": {
-          "version": "1.6.1"
-        },
-        "diff": {
-          "version": "1.0.2"
+        "logging": {
+          "version": "2.0.21"
+        }
+      }
+    },
+    "slug": {
+      "version": "0.2.2",
+      "dependencies": {
+        "unicode": {
+          "version": "0.4.3",
+          "dependencies": {
+            "bufferstream": {
+              "version": "0.5.1",
+              "dependencies": {
+                "buffertools": {
+                  "version": "1.1.0"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sprintf": {
+      "version": "0.1.1"
+    },
+    "stylus": {
+      "version": "0.28.2",
+      "from": "git://github.com/LearnBoost/stylus.git#42d89a5e919c6196a3525c00fb22edeafc88fff3",
+      "dependencies": {
+        "cssom": {
+          "version": "0.2.5"
         },
         "debug": {
           "version": "0.7.0"
-        },
-        "mkdirp": {
-          "version": "0.3.3"
-        },
-        "ms": {
-          "version": "0.3.0"
         }
       }
     },
-    "jake": {
-      "version": "0.5.8",
+    "winston": {
+      "version": "0.6.2",
       "dependencies": {
-        "minimatch": {
-          "version": "0.2.9",
-          "dependencies": {
-            "lru-cache": {
-              "version": "2.0.4"
-            },
-            "sigmund": {
-              "version": "1.0.0"
-            }
-          }
+        "async": {
+          "version": "0.1.22"
         },
-        "utilities": {
-          "version": "0.0.19"
-        }
-      }
-    },
-    "findit": {
-      "version": "0.1.2",
-      "from": "git://github.com/pahen/node-findit.git#372caa32caf56b09b50e543092725e35925a8406",
-      "dependencies": {
-        "seq": {
-          "version": "0.3.5",
-          "dependencies": {
-            "chainsaw": {
-              "version": "0.0.9",
-              "dependencies": {
-                "traverse": {
-                  "version": "0.3.9"
-                }
-              }
-            },
-            "hashish": {
-              "version": "0.0.4",
-              "dependencies": {
-                "traverse": {
-                  "version": "0.6.3"
-                }
-              }
-            }
-          }
+        "cycle": {
+          "version": "1.0.1"
+        },
+        "eyes": {
+          "version": "0.1.8"
+        },
+        "pkginfo": {
+          "version": "0.2.3"
+        },
+        "request": {
+          "version": "2.9.203"
+        },
+        "stack-trace": {
+          "version": "0.0.6"
         }
       }
     }
