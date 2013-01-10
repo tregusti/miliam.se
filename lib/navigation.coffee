@@ -6,6 +6,7 @@ long_months = ' Januari Februari Mars April Maj Juni Juli Augusti September Okto
 fixture =
   2011: [ 12 ]
   2012: [ 4, 6, 7, 8, 9, 10, 11, 12 ]
+  2013: [1..12]
 
 d2s = (y, m) -> sprintf "%04d-%02d", y, m
 
@@ -25,6 +26,6 @@ for year in [2011..2015] when year <= now.getFullYear()
       # show a link if year is 2013+, we expect to post at least once a month until further notice
       # show link if 2011 or 2012 if the fixture contain info about it
       # but hide link if it is in the future
-      link: 2012 < year or (fixture[year].indexOf(month) >= 0 and current <= snow)
+      link: fixture[year].indexOf(month) >= 0 and current <= snow
 
 module.exports = data
