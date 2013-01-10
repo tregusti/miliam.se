@@ -9,6 +9,8 @@ log = require('../log') 'Importer'
 
 TEMPLATE = "
 title: Ändra mig\n
+date: yyyy-mm-dd\n
+time: hh:mm\n
 \n
 Lite exempeltext. Brödtexten börjar 2 radbrytningar efter title etc ovanför.
 "
@@ -29,7 +31,12 @@ eventuallyResolveImages = (entry) ->
   finder.on 'end', ->
     if images.length
       entry.images = []
-      entry.images.push original: Path.basename(image) for image in images
+      f = (image) ->
+        o =
+          original: Path.basename(image).toLowerCase()
+          imported: Path.basename(image)
+        entry.images.push o
+      f image for image in images
     deferred.resolve()
   deferred.promise
 
@@ -44,7 +51,7 @@ eventuallySetDateFromImages = (entry) ->
   gm = require 'gm'
 
   parse = (image) ->
-    path = Path.join config.get('paths:create'), image.original
+    path = Path.join config.get('paths:create'), image.imported
     local = Q.defer()
     gm(path).identify (err, info) ->
       local.reject err if err
@@ -104,7 +111,7 @@ eventuallyGenerateImages = (entry) ->
   promises = []
   if entry.images?.length > 0
     for image in entry.images
-      from    = Path.join config.get('paths:create'), image.original
+      from    = Path.join config.get('paths:create'), image.imported
       promises.push Q.ncall Generator.generate, null, from, entry.basepath
 
   Q.all promises
@@ -113,13 +120,13 @@ eventuallyMoveImages = (entry) ->
   log.debug 'Begin moving original images to data structure'
   fs = require 'fs'
   files = if entry.images?.length > 0
-            image.original for image in entry.images
+            image.imported for image in entry.images
           else
             []
 
   mover = (file) ->
     from = Path.join config.get('paths:create'), file
-    to = Path.join entry.basepath, file.replace(/\.jpg$/i, ".jpg")
+    to = Path.join entry.basepath, file.toLowerCase()
     Q.ninvoke fs, 'rename', from, to
 
   Q.all (mover file for file in files)

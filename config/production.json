@@ -8,6 +8,9 @@
     "data"     : "../Dropbox/miliam.se/data",
     "create"   : "../Dropbox/miliam.se/create"
   },
+  "list"       : {
+    "count"    : 10
+  },
   "log"        : {
     "location" : "../log/production.log",
     "console"  : false,

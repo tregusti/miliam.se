@@ -79,7 +79,7 @@ describe 'Importer', ->
     Object.defineProperty gmObject, 'identify',   get: -> spies.gm_identify
 
     mockery.registerMock 'gm', (file) ->
-      expect(file).to.match /\.jpg$/
+      expect(file).to.match /\.jpg$/i
       gmObject
 
     mockery.enable()
@@ -115,7 +115,7 @@ describe 'Importer', ->
 
     it "should import earliest image capture date if not specified in info.txt", (done) ->
       # These are the files we want to have in the dir
-      file1 = "#{createDirectory}/miliam1.jpg"
+      file1 = "#{createDirectory}/miliam1.JPG"
       file2 = "#{createDirectory}/miliam2.jpg"
 
       spies.findit.add file1
@@ -203,8 +203,8 @@ describe 'Importer', ->
 
 
 
-    it "should move original and lowercase extension", (done) ->
-      file1 = "#{createDirectory}/meat.JPG"
+    it "should move original and lowercase filename", (done) ->
+      file1 = "#{createDirectory}/Meat.JPG"
       spies.findit.add file1
 
       entry.time = new Date("2012-06-06T19:31:00+0200")
@@ -243,7 +243,7 @@ describe 'Importer', ->
         expect(err).to.be.null
         spies.writeFile.should.have.been.called.twice
         expect(spies.writeFile.__spy.calls[1][0]).to.equal createDirectory + '/info.txt'
-        expect(spies.writeFile.__spy.calls[1][1]).to.equal "title: Ändra mig\n\nLite exempeltext. Brödtexten börjar 2 radbrytningar efter title etc ovanför."
+        expect(spies.writeFile.__spy.calls[1][1]).to.equal "title: Ändra mig\ndate: yyyy-mm-dd\ntime: hh:mm\n\nLite exempeltext. Brödtexten börjar 2 radbrytningar efter title etc ovanför."
         done()
 
 
