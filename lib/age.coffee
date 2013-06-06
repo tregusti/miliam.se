@@ -15,14 +15,17 @@ days_between = (d1, d2) ->
   t = d1.clone().valueOf() - d2.clone().valueOf()
   Math.abs(t) / 86400000
 
-between = (start, end) ->
+between = (inStart, inEnd) ->
+  start = inStart.clone()
+  end = inEnd.clone()
+  
   # resets
   years = months = 0
 
   # years
   years++ while start.isBefore end.clone().addYears(-years - 1).addDays(1)
   start = start.addYears years
-
+  
   # months
   months++ while start.isBefore end.clone().addMonths(-months - 1).addDays(1)
   start = start.addMonths months
