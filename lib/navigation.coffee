@@ -6,7 +6,9 @@ long_months = ' Januari Februari Mars April Maj Juni Juli Augusti September Okto
 fixture =
   2011: [ 12 ]
   2012: [ 4, 6, 7, 8, 9, 10, 11, 12 ]
-  2013: [1..12]
+  2013: [ 1..12 ]
+  2014: [ 1..12 ]
+  2015: [ 1..12 ]
 
 d2s = (y, m) -> sprintf "%04d-%02d", y, m
 
@@ -15,7 +17,7 @@ snow = d2s now.getFullYear(), now.getMonth() + 1
 
 data = {}
 
-for year in [2011..2015] when year <= now.getFullYear()
+for year in [2011..2020] when year <= now.getFullYear()
   for month in [1..12]
     current = d2s year, month
     data[year] = [] unless data[year]
