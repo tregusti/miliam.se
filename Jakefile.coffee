@@ -1,11 +1,12 @@
 require 'colors'
 require './setup'
 
-fs       = require 'fs'
-child    = require 'child_process'
-Path     = require 'path'
-Entry    = require './lib/entry'
-Importer = require './lib/importer'
+fs            = require 'fs'
+CoffeeScript  = require 'coffee-script'
+child         = require 'child_process'
+Path          = require 'path'
+Entry         = require './lib/entry'
+Importer      = require './lib/importer'
 
 invoke = (tasks) ->
   tasks.forEach (task) ->
