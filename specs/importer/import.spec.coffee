@@ -243,7 +243,7 @@ describe 'Importer', ->
         expect(err).to.be.null
         spies.writeFile.should.have.been.called.twice
         expect(spies.writeFile.__spy.calls[1][0]).to.equal createDirectory + '/info.txt'
-        expect(spies.writeFile.__spy.calls[1][1]).to.equal "title: Ändra mig\ndate: yyyy-mm-dd\ntime: hh:mm\n\nLite exempeltext. Brödtexten börjar 2 radbrytningar efter title etc ovanför."
+        expect(spies.writeFile.__spy.calls[1][1]).to.equal "title: Ändra mig\ndate: yyyy-mm-dd\ntime: hh:mm\ntype: post\n\nLite exempeltext. Brödtexten börjar 2 radbrytningar efter title etc ovanför."
         done()
 
 

@@ -1,4 +1,4 @@
-article.entry
+article.entry(data-type=entry.type)
   header
     a(href=entry.path)
       h1= entry.title
@@ -19,6 +19,10 @@ article.entry
         allowfullscreen
       )
   footer
+    time(pubdate)
+      = entry.humanDate
+      = " "
+      = entry.humanTime
     if show_fblike
       iframe.fb-like(
         src="https://www.facebook.com/plugins/like.php?show-faces=false&amp;send=false&amp;layout=button_count&amp;href=http://miliam.se" + entry.path,
@@ -33,9 +37,5 @@ article.entry
         data-expandTo="top"
         data-annotation="bubble"
         )
-    time(pubdate)
-      = entry.humanDate
-      = " "
-      = entry.humanTime
   section.body
     != entry.html
