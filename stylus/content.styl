@@ -70,9 +70,9 @@
       &:first-child
         margin-top: 0
       @media wide
-        overflow: hidden
+        clearfix()
 
-      header
+      &[data-type="post"] header
         margin: 5px 0
         border-bottom: 2px solid green
 
@@ -83,12 +83,45 @@
           font: 20px/1.4 headline
           margin-bottom: -6px
           text-shadow: 1px 1px 0 rgba(0, 0, 0, .2)
+          @media wide
+            font-size: 24px
+
+      &[data-type="quote"] header
+        // Fonts for quotation marks
+        // http://www.russfussuk.com/design-blog.php?p=1
+        margin: 5px 0
+        size = 550px
+
+        &:before
+          font-size: size
+          font-family: Arizonia
+          color: green
+          position: absolute
+          z-index: -1
+          opacity: .6
+          content: "“"
+          top: -214px
+          left: -60px
+
+        h1
+          font-size: 30px
+          padding-left: 10px
+          font-style: italic
+          @media wide
+            font-size: 40px
+            margin-right: 110px
+
+
 
       footer
-        overflow: hidden
+        clearfix()
+        margin-top: 20px
         .fb-like
-          width: 100px // see: https://developers.facebook.com/docs/reference/plugins/like/
-          height: 20px
+          // see: https://developers.facebook.com/docs/reference/plugins/like/
+          // important to override width: 100% which is way too wide
+          width: 100px !important
+          // important to override height: auto which is 700% higher than in need to be
+          height: 20px !important
           border: none;
           float: left
         .g-plusone
@@ -99,6 +132,15 @@
           text-align: right
           display: block
           smalltext()
+
+      @media wide
+        footer
+          margin-top: 0
+        &[data-type="quote"] footer
+          .fb-like, .g-plusone
+            clear: both
+            float: right
+            margin-top: 15px
 
       section
         text-align: justify
@@ -124,7 +166,7 @@
           time
             padding-top: 5px
         h1
-          margin-right: 300px
+          margin-right: 220px
 
         section.body
           width: narrowWidth
