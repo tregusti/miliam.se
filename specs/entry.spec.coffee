@@ -59,7 +59,18 @@ describe 'Entry', ->
             done()
 
 
+        describe 'type', ->
+          it 'defaults to type "post"', (done) ->
+            spy = spyfs.on '/tmp/type/info.txt', 'title: hej'
+            Entry.load spy.dirname, (err, entry) ->
+              entry.should.have.a.property 'type', 'post'
+              done()
 
+          it 'parses type "quote"', (done) ->
+            spy = spyfs.on '/tmp/type/info.txt', 'type: quote'
+            Entry.load spy.dirname, (err, entry) ->
+              entry.should.have.a.property 'type', 'quote'
+              done()
 
         # TIME PARSING
 
@@ -380,6 +391,8 @@ describe 'Entry', ->
         @time  = new Date 2012, 11, 9
       entry.path.should.equal '/2012/12/09/miliam-ar-forst'
 
+  # URL
+
   describe "#url property", ->
     it "should exist and be null", ->
       new Entry().should.have.property 'url', null
@@ -390,6 +403,13 @@ describe 'Entry', ->
         @time  = new Date 2012, 11, 9
       entry.url.should.equal 'http://miliam.se/2012/12/09/miliam-ar-forst'
 
+  # TYPE
+
+  describe "#type property", ->
+    it "should exist and default to 'post'", ->
+      new Entry().should.have.property 'type', 'post'
+
+    
 
   # SERIALIZATION
 
@@ -400,6 +420,7 @@ describe 'Entry', ->
       entry.title = "Miliam går på tå"
       entry.time = new Date "2012-05-07T01:00:00+0200"
       entry.text = "Text 1\nText 2\nText 3"
+      entry.type = "post"
       entry.images = []
       entry.images.push
         original: "image1.original.jpg"
@@ -442,6 +463,7 @@ describe 'Entry', ->
       entry.serialize().should.contain "title: Miliam går på tå"
       entry.serialize().should.contain "date: 2012-05-07"
       entry.serialize().should.contain "time: 01:00:00"
+      entry.serialize().should.contain "type: post"
       entry.serialize().should.contain "Text 1\nText 2\nText 3"
 
     it "should serialize image data for many images", ->

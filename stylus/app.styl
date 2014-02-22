@@ -1,4 +1,5 @@
 @import url('/ubuntu/stylesheet.css')
+@import url("//fonts.googleapis.com/css?family=Arizonia:400")
 
 @import 'reset'
 
@@ -35,6 +36,14 @@ box()
   margin-top: 30px
   &:first-child
     margin-top: 0
+
+clearfix()
+  &:after
+    content: "."
+    visibility: hidden
+    display: block
+    height: 0
+    clear: both
 
 link(color, underlined=false)
   color: color

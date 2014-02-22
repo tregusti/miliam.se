@@ -19,6 +19,7 @@ class Entry
     @time = null
     @videos = null
     @images = null
+    @type = 'post'
 
   serialize: ->
     throw new Error "A title is required" unless @title
@@ -29,6 +30,7 @@ class Entry
     a.push "title: #{@title}"
     a.push "date: #{date}" if date
     a.push "time: #{time}" if time
+    a.push "type: #{@type}"
     a.push "image: #{image.original.match(/^(.*?)(\.original)?\.jpg/i)[1]}" for image in @images when image.original if @images
     a.push "video: #{video.id} r=#{video.ratio}" for video in @videos if @videos
     a.push "\n#{@text}" if @text
@@ -140,6 +142,7 @@ parseContents = ( entry, contents, done ) ->
   entry.text = chunks.join('\n\n') or null
   entry.title = meta.title if 'title' of meta
   entry.images = meta.image if 'image' of meta
+  entry.type = "quote" if meta.type is "quote"
   entry.videos = meta.video if 'video' of meta
   # Special treatment for datetime
   if 'time' of meta
