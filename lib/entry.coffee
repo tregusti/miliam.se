@@ -2,12 +2,12 @@ fs   = require("fs")
 Path = require("path")
 
 sprintf = require('sprintf').sprintf
-marked  = require 'marked'
 Q       = require 'q'
 
-Guard = require("./guard")
-age   = require("./age")
-log   = require('./log') 'Entry'
+Guard     = require "./guard"
+generator = require './html-generator'
+age       = require "./age"
+log       = require('./log') 'Entry'
 
 require '../public/js/augment'
 
@@ -41,7 +41,7 @@ Object.defineProperty Entry::, 'html',
   enumerable: true,
   get: ->
     return null unless @text
-    marked @text
+    generator @text
 
 Object.defineProperty Entry::, 'subtitle',
   enumerable: true,

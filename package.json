@@ -12,7 +12,7 @@
     "stylus": "git://github.com/LearnBoost/stylus.git#42d89a5e919c6196a3525c00fb22edeafc88fff3",
     "nib": "0.5.x",
     "sprintf": "*",
-    "marked": "0.2.x",
+    "marked": "~0.3.1",
     "winston": "0.6.x",
     "q": "0.8.6",
     "slug": "0.2.x",
