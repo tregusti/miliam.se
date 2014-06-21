@@ -6,6 +6,7 @@ CoffeeScript  = require 'coffee-script'
 child         = require 'child_process'
 Path          = require 'path'
 Entry         = require './lib/entry'
+EntryList     = require './lib/entry-list'
 Importer      = require './lib/importer'
 
 invoke = (tasks) ->
@@ -113,7 +114,54 @@ namespace 'import', ->
       if callback instanceof Function
         callback err
       else
-        if err
+      if err
           console.error "Error: #{err.message}".red
         else
           console.info 'OK!'.green
+
+# EXPORT
+namespace 'export', ->
+  desc 'Export data to ghost json format'
+  task 'json', (style) ->
+    EntryList.load config.get('paths:data'), (err, data) ->
+      return console.error err if err
+
+      out =
+        meta:
+          exported_on: (new Date).getTime()
+          version: '000'
+        data:
+          posts: []
+          tags: [{
+            id: 1,
+            name: "Quote",
+            slug: 'quote'
+          }]
+          posts_tags: []
+
+      build = (entry) ->
+        # Guards
+        throw new Error 'bad time for entry.' unless entry.time
+
+        id   = out.data.posts.length + 1
+        date = entry.time.getTime()
+        out.data.posts_tags.push { post_id: id, tag_id: 1 } if entry.type is 'quote'
+
+        # Return object
+        id:    id
+        title: entry.title.trim() # trailing tab in some case
+        slug:  entry.slug
+        # TODO image:
+        markdown: entry.text or ''
+        page:     false
+        statue:   'published',
+        language: 'sv_SE'
+        author_id: 1
+        created_at: date,
+        created_by: 1,
+        published_at: date,
+        published_by: 1
+
+      out.data.posts.push build entry for entry in data.entries.reverse()
+      json = if style is 'pretty' then JSON.stringify out, null, 2 else JSON.stringify out
+      console.log json
