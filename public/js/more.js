@@ -13,7 +13,7 @@
       currentPage = currentPage !== undefined ? currentPage : m[2] || 1
       $.getJSON(path + '/p' + ++currentPage).done(function(json) {
         more.before(json.html);
-        picturefill();
+        window.picturefill && picturefill();
         if (json.more)
           enable(); // Enable if there's more to fetch
         else
