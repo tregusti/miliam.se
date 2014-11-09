@@ -373,8 +373,8 @@
     },
     "findit": {
       "version": "0.1.2",
-      "from": "findit@git://github.com/pahen/node-findit.git#372caa32caf56b09b50e543092725e35925a8406",
-      "resolved": "git://github.com/pahen/node-findit.git#372caa32caf56b09b50e543092725e35925a8406",
+      "from": "findit@git://github.com/substack/node-findit.git#372caa32caf56b09b50e543092725e35925a8406",
+      "resolved": "git://github.com/substack/node-findit.git#372caa32caf56b09b50e543092725e35925a8406",
       "dependencies": {
         "seq": {
           "version": "0.3.5",
