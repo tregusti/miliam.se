@@ -113,9 +113,9 @@ describe 'EntryList', ->
       it "invokes constructor with year, month and date", (done) ->
         cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
         opts =
-          year: 2011
-          month: 2
-          date: 9
+          year: '2011'
+          month: '02'
+          date: '09'
         EntryList.load '/tmp', opts, (err, list) ->
           list.title.should.equal "9 februari 2011"
           done()
@@ -171,7 +171,7 @@ describe 'EntryList', ->
         EntryList.load '/tmp', options, (err, list) ->
           list.entries.should.have.length 2
           done()
-      
+
       it "should indicate if more entries are available when results are limited", (done) ->
         cp.exec = chai.spy (str, callback) -> callback null, paths.join('\n')
         options =

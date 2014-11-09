@@ -4,11 +4,12 @@ article.entry(data-type=entry.type)
       h1= entry.title
   if entry.images
     each image in entry.images
-      div(data-picture, data-alt=entry.title).attachment
-        div(data-src=data2www(image.w320))
-        div(data-src=data2www(image.w640), data-media="(-webkit-min-device-pixel-ratio: 1.5),(-o-min-device-pixel-ratio: 1.5),(-ms-min-device-pixel-ratio: 1.5),(min--moz-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5),(min-resolution: 1.5dppx)")
-        noscript
-          img(src=data2www(image.w320), alt=entry.title)
+      img(
+        src=data2www(image.w320)
+        srcset=srcset(image)
+        sizes="320px"
+        alt=entry.title
+        ).attachment
   if entry.videos
     each video in entry.videos
       iframe.attachment(

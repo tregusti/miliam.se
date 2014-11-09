@@ -31,6 +31,6 @@
     "chai-spies": "https://github.com/tregusti/chai-spies/tarball/master",
     "jake": "~0.5.8",
     "mockery": "~1.1.2",
-    "findit": "git://github.com/pahen/node-findit.git#372caa32caf56b09b50e543092725e35925a8406"
+    "findit": "git://github.com/substack/node-findit.git#372caa32caf56b09b50e543092725e35925a8406"
   }
 }

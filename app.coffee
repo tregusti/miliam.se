@@ -86,6 +86,8 @@ app.locals.use (req, res) ->
 
   res.locals.data2www = require './lib/data2www'
 
+  res.locals.srcset = require './lib/srcset'
+
 
 # routes
 app.get ///^
