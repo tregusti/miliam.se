@@ -7,11 +7,13 @@ exports.generate = (path, outpath, callback) ->
   return callback new ArgumentError 'path' unless path
   return callback new ArgumentError 'outpath' unless outpath
 
-  gm = require('gm')(path).autoOrient()
   basename = Path.basename path.toLowerCase(), '.jpg'
 
   f = (w, cb) ->
     file = Path.join outpath, "#{basename}.w#{w}.jpg"
+    log.debug "Try read '#{file}' from disk"
+    gm = require('gm')(path).autoOrient()
+    log.debug "Did read '#{file}' from disk"
     log.debug "Try write '#{file}' to disk"
     gm.resize(w, null, '^').write file, (err) ->
       throw err if err

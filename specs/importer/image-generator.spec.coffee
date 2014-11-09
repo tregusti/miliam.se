@@ -66,7 +66,7 @@ describe "Image generator", ->
 
   it "should auto rotate the image", (done) ->
     imggen '/tmp/path/image.jpg', '/tmp/data', ->
-      spies.gm_orient.should.be.called.once
+      spies.gm_orient.should.be.called.exactly 3 # times
       done()
 
   it "should write the files out", (done) ->
