@@ -9,9 +9,9 @@
   "dependencies": {
     "express": "3.0.0beta3",
     "jade": "0.26.x",
-    "stylus": "git://github.com/LearnBoost/stylus.git#42d89a5e919c6196a3525c00fb22edeafc88fff3",
-    "nib": "0.5.x",
-    "sprintf": "*",
+    "stylus": "0.49.3",
+    "nib": "1.0.4",
+    "sprintf": "0.1.1",
     "marked": "~0.3.1",
     "winston": "0.6.x",
     "q": "0.8.6",
@@ -20,15 +20,15 @@
     "coffee-script": "~1.4.0",
     "date-utils": "~1.2.11",
     "mkdirp": "~0.3.3",
-    "rss": "git://github.com/langmi/node-rss.git#master",
+    "rss": "0.0.4",
     "request": "~2.11.4"
   },
   "devDependencies": {
     "gm": "1.3.x",
-    "colors": "*",
+    "colors": "~1.0.3",
     "mocha": "1.x",
     "chai": "~1.1.1",
-    "chai-spies": "https://github.com/tregusti/chai-spies/tarball/master",
+    "chai-spies": "~0.5.1",
     "jake": "~0.5.8",
     "mockery": "~1.1.2",
     "findit": "git://github.com/substack/node-findit.git#372caa32caf56b09b50e543092725e35925a8406"
