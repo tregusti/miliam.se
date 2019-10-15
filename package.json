@@ -7,7 +7,7 @@
     "test": "./node_modules/jake/bin/cli.js specs:pretty"
   },
   "dependencies": {
-    "express": "3.0.0beta3",
+    "express": "3.11.0",
     "jade": "0.26.x",
     "stylus": "git://github.com/LearnBoost/stylus.git#42d89a5e919c6196a3525c00fb22edeafc88fff3",
     "nib": "0.5.x",
