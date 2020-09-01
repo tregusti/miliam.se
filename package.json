@@ -24,7 +24,7 @@
     "request": "~2.11.4"
   },
   "devDependencies": {
-    "gm": "1.3.x",
+    "gm": "1.21.x",
     "colors": "*",
     "mocha": "1.x",
     "chai": "~1.1.1",
